@@ -1,0 +1,5 @@
+django
+djangorestframework
+environs
+social-auth-core
+social-auth-app-django
