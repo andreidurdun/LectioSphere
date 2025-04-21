@@ -1,13 +1,18 @@
 from django.db import models
 from django.core.validators import MinLengthValidator, RegexValidator
+from django.contrib.auth.models import AbstractUser
 
-class User(models.Model):
+
+class User(AbstractUser):
     first_name = models.CharField(
         max_length=50,
         validators=[MinLengthValidator(3)],
         verbose_name="First Name"
+       
     )
+
     
+
     last_name = models.CharField(
         max_length=50,
         validators=[MinLengthValidator(3)],

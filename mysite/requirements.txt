@@ -3,3 +3,14 @@ djangorestframework
 environs
 social-auth-core
 social-auth-app-django
+
+asgiref
+django-extensions
+pillow
+sqlparse
+tzdata
+
+djoser
+django-cors-headers
+djangorestframework-simplejwt
+dj-rest-auth[with_social] django-allauth

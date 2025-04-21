@@ -38,30 +38,33 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'api',
     'rest_framework',
     'rest_framework.authtoken', 
-    'social_django',  # python social auth
+    'django_extensions',
+    'corsheaders',
+
+    'djoser',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-}
+SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
-for key in ['GOOGLE_OAUTH2_KEY',
-            'GOOGLE_OAUTH2_SECRET']:
-    exec("SOCIAL_AUTH_{key} = os.environ.get('{key}', '')".format(key=key))
+
+
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
 
@@ -77,7 +80,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.auth_allowed',
     'social_core.pipeline.social_auth.social_user',
     'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email',  # <- this line not included by default
+    'social_core.pipeline.social_auth.associate_by_email', 
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
@@ -88,12 +91,20 @@ SOCIAL_AUTH_PIPELINE = (
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+    "allauth.account.middleware.AccountMiddleware"
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173", # aplicatia react va trebui sa fie pe acest port
+]
+
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -167,3 +178,41 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'api.User'  # Setam modelul de utilizator personalizat
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+REST_USE_JWT = True
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+}
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        }
+    }
+}
+
+
+# Autentificare doar cu email
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+# Câmpuri necesare la înregistrare
+ACCOUNT_SIGNUP_FIELDS = ['email']
+
+# Dezactivează username-ul
+ACCOUNT_USERNAME_REQUIRED = False
+
+# Alte setări utile
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True

@@ -1,0 +1,36 @@
+# ▶️ Fisiere Django
+*.pyc
+__pycache__/
+db.sqlite3
+
+# ▶️ Media & static local
+/media/
+/staticfiles/
+
+# ▶️ Setari locale
+.env
+*.env
+*.local
+
+# ▶️ VS Code settings
+.vscode/
+
+# ▶️ Jupyter, pycache & test output
+.ipynb_checkpoints/
+*.log
+
+# ▶️ Mediul virtual
+venv/
+ENV/
+env/
+
+# ▶️ Mac & Windows stuff
+.DS_Store
+Thumbs.db
+
+# ▶️ Backup files
+*.bak
+*.swp
+*.swo
+
+tutorials.txt

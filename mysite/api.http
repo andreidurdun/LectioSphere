@@ -1,0 +1,48 @@
+//https://djoser.readthedocs.io/en/latest/getting_started.html
+
+GET http://localhost:8000/auth/users/me/ HTTP/1.1  
+Authorization: Token ab4305c70b6d3148ee42236c1d977e91b19b280c  // intoarce date despre utilizator
+
+###
+POST http://localhost:8000/auth/token/login/ HTTP/1.1   
+Content-Type: application/json                               //intoarce un Token
+
+{
+  "username": "test1",
+  "password": "test1",
+  "email": "test1@test.com"
+}
+
+
+###
+POST http://localhost:8000/auth/token/logout/ HTTP/1.1 
+Authorization: Token ab4305c70b6d3148ee42236c1d977e91b19b280c    // delogheaza utilizatorul
+
+###
+POST http://localhost:8000/auth/jwt/create/ HTTP/1.1 
+Content-Type: application/json                               //intoarce un Token
+
+{
+  "username": "test1",
+  "password": "test1",
+  "email": "test1@test.com"
+}
+
+
+###
+POST http://localhost:8000/auth/google/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "access_token": "ya29.a0AZYkNZiLP4Yot4PyLfOMLLMURTHTgCKv_gHs5DJNn5r71Z9Jf8VCEMwEObssmdWAkbT-TpxZM6acmr_sZPh7ysm-hXBDTxbCgpS68vFbEkmm94tfFeLFn0MM5Zy3gVtz3Z7N3bJah_nMABLYT0AoM2JvB0LyomxIZ9QEbAOaaCgYKAfgSARUSFQHGX2MivF031nEKROpCvNUDeunyzQ0175"
+}
+
+###
+GET http://localhost:8000/auth/users/me/ HTTP/1.1  
+Authorization: Token 04960d94416e37a0d8bf0543d5c42009bbcb3008
+// autentificare cu cheia de la google
+
+###
+POST http://localhost:8000/auth/token/logout/ HTTP/1.1 
+Authorization: Token 04960d94416e37a0d8bf0543d5c42009bbcb3008    
+// delogheaza utilizatorul
