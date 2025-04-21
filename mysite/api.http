@@ -1,4 +1,5 @@
 //https://djoser.readthedocs.io/en/latest/getting_started.html
+//https://developers.google.com/oauthplayground
 
 GET http://localhost:8000/auth/users/me/ HTTP/1.1  
 Authorization: Token ab4305c70b6d3148ee42236c1d977e91b19b280c  // intoarce date despre utilizator
