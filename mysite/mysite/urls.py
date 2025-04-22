@@ -18,6 +18,7 @@ Including another URLconf
 #from django.urls import path
 
 from django.urls import path, include, re_path
+from django.contrib import admin
 
 from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
@@ -27,6 +28,7 @@ class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path("", include("api.urls")),
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
