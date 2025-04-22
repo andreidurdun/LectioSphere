@@ -13,4 +13,5 @@ tzdata
 djoser
 django-cors-headers
 djangorestframework-simplejwt
-dj-rest-auth[with_social] django-allauth
+dj-rest-auth[with_social] 
+django-allauth

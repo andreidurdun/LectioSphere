@@ -7,4 +7,5 @@ urlpatterns = [
     path("libraries/", views.LibraryListCreate.as_view(), name="library-list-create"),
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
+    
 ]
