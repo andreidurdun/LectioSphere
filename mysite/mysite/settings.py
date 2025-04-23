@@ -138,6 +138,7 @@ DATABASES = {
 }
 
 
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -215,4 +216,4 @@ ACCOUNT_USERNAME_REQUIRED = False
 
 # Alte setări utile
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
+#ACCOUNT_UNIQUE_EMAIL = True
