@@ -1,0 +1,44 @@
+# https://djoser.readthedocs.io/en/latest/base_endpoints.html
+//creare cont 
+
+POST http://localhost:8000/auth/users/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "andreidurdun2@gmail.com",
+    "name" : "Andrei Durdun",
+    "password" : "12345678Abc",
+    "re_password" : "12345678Abc"
+}
+
+//activare contul
+//uid = in url-ul din email, dupa activate/
+//token = in url dupa uid
+###
+POST http://localhost:8000/auth/users/activation/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "uid" : "MQ",
+    "token" : "coq84t-a894b4f0f3f0caeea21ba73876246eac"
+}
+
+###
+POST http://localhost:8000/auth/users/resend_activation/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "andreidurdun2@gmail.com"
+}
+
+//login
+# https://djoser.readthedocs.io/en/latest/jwt_endpoints.html
+
+###
+POST http://localhost:8000/auth/jwt/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "andreidurdun2@gmail.com",
+    "password" : "12345678Abc"
+}

@@ -19,6 +19,7 @@ Including another URLconf
 
 from django.urls import path, include, re_path
 from django.contrib import admin
+from django.views.generic import TemplateView
 
 from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
@@ -35,3 +36,5 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls.jwt')),
     path('auth/google/', GoogleLogin.as_view(), name='google_login'),
 ]
+
+urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]

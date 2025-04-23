@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'dj_rest_auth',
     'dj_rest_auth.registration',
+    'accounts',
 
 ]
 
@@ -63,8 +64,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-
-
+ACCOUNT_LOGIN_METHOD = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email', 'name', 'password1', 'password2']
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
 
@@ -111,7 +112,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'build')],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,6 +138,15 @@ DATABASES = {
     }
 }
 
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'lectiosphere@gmail.com'
+EMAIL_HOST_PASSWORD = 'pdokxmpvqujdiokv'
+DEFAULT_FROM_EMAIL = 'lectiosphere@gmail.com'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -173,12 +183,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'build/static')
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'api.User'  # Setam modelul de utilizator personalizat
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -204,15 +217,22 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-# Autentificare doar cu email
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+AUTH_USER_MODEL = 'accounts.UserAccount'  # Setam modelul de utilizator personalizat
 
-# Câmpuri necesare la înregistrare
-ACCOUNT_SIGNUP_FIELDS = ['email']
-
-# Dezactivează username-ul
-ACCOUNT_USERNAME_REQUIRED = False
-
-# Alte setări utile
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'USERNAME_CHANGE_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGE_EMAIL_CONFIRMATION': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {
+        'user_create': 'accounts.serializers.UserCreateSerializer',
+        'user': 'accounts.serializers.UserCreateSerializer',
+        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+    }
+}

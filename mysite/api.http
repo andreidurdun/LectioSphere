@@ -2,11 +2,11 @@
 //https://developers.google.com/oauthplayground
 
 GET http://localhost:8000/auth/users/me/ HTTP/1.1  
-Authorization: Token ab4305c70b6d3148ee42236c1d977e91b19b280c  // intoarce date despre utilizator
+Authorization: Token ab4305c70b6d3148ee42236c1d977e91b19b280c  
 
 ###
 POST http://localhost:8000/auth/token/login/ HTTP/1.1   
-Content-Type: application/json                               //intoarce un Token
+Content-Type: application/json                              
 
 {
   "username": "test1",
@@ -47,3 +47,7 @@ Authorization: Token 04960d94416e37a0d8bf0543d5c42009bbcb3008
 POST http://localhost:8000/auth/token/logout/ HTTP/1.1 
 Authorization: Token 04960d94416e37a0d8bf0543d5c42009bbcb3008    
 // delogheaza utilizatorul
+
+
+### //testare API Books
+GET http://localhost:8000/api/books/search/?author=mihai eminescu HTTP/1.1

@@ -1,8 +1,12 @@
 from django.urls import path, re_path, include
-from .views import views
+from . import views
+from .views import GoogleBooksAPIView
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'books', GoogleBooksAPIView, basename='books') # ia automat numele metodelor ca ruta (ex: books/search/parametrii)
 
 urlpatterns = [
-    path("userprofile/", views.UserListCreate.as_view(), name="userprofile-view-create"),
-    path("books/", views.BookListCreate.as_view(), name="book-list-create"),
-    path("libraries/", views.LibraryListCreate.as_view(), name="library-list-create"),
+
+    path('api/', include(router.urls)),
 ]
