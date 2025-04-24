@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.conf import settings
 
 class UserAccountManager(BaseUserManager):
     def create_user(self, email, name, password=None, **extra_fields):
@@ -37,6 +38,15 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         return self.name
     def get_short_name(self):
         return self.name
-
     def __str__(self):
         return self.email
+
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+    bio = models.TextField(blank=True)
+    #profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.user.email} - profile"

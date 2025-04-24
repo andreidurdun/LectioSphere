@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
-from .User import User
+from accounts.models import UserAccount
 from .Post import Post
 
 class Comment(models.Model):
@@ -18,10 +18,9 @@ class Comment(models.Model):
         blank=False,
         verbose_name="Date of Comment"
     )
-    
     # Relatie cu modelul User
     user = models.ForeignKey(
-        'User', 
+        UserAccount, 
         on_delete=models.CASCADE,
         null=False, 
         blank=False,
@@ -30,7 +29,7 @@ class Comment(models.Model):
 
     # Relatie cu modelul Post
     post = models.ForeignKey(
-        'Post', 
+        Post, 
         on_delete=models.CASCADE, 
         null=False, 
         blank=False,
@@ -38,5 +37,5 @@ class Comment(models.Model):
     )
 
     def __str__(self):
-        return f"Comment by {self.user.username} on {self.date} – {self.text}..."
+        return f"Comment by X on {self.date} – {self.text}..."
     

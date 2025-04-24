@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from api.models.User import User
+#from api.models.User import User
 from api.models.Book import Book
 from api.models.Comment import Comment
 from api.models.Event import Event
@@ -13,7 +13,7 @@ from api.models.ReadingSheet import ReadingSheet
 from api.models.Shelf import Shelf
 from api.models.ShelfBooks import ShelfBooks
 
-from api.serializers import UserSerializer
+#from api.serializers import UserSerializer
 from api.serializers import BookSerializer
 from api.serializers import CommentSerializer
 from api.serializers import EventSerializer
@@ -71,7 +71,7 @@ class ShelfBooksListCreate(generics.ListCreateAPIView):
     queryset = ShelfBooks.objects.all()
     serializer_class = ShelfBooksSerializer
    
-class UserListCreate(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+# class UserListCreate(generics.ListCreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
    

@@ -64,6 +64,13 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+
+
+
+#AUTH_USER_MODEL = 'account.UserAccount'  # Setam modelul de utilizator personalizat
+
+
+
 ACCOUNT_LOGIN_METHOD = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email', 'name', 'password1', 'password2']
 
@@ -200,7 +207,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
 }
 
 REST_USE_JWT = True

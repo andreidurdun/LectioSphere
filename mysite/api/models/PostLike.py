@@ -1,12 +1,13 @@
 from django.db import models
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
-from .User import User
+from accounts.models import UserAccount
 from .Post import Post
 
 class PostLike(models.Model):
     # Relatie cu modelul User
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        UserAccount, 
+        on_delete=models.CASCADE,
         null=False, 
         blank=False,
     )

@@ -1,12 +1,12 @@
 from django.db import models
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
-from .User import User
+from accounts.models import UserAccount
 
 class Shelf(models.Model):
    
     # Relatie cu modelul User
     user = models.ForeignKey(
-        User, 
+        UserAccount, 
         on_delete=models.CASCADE,
         blank=True, 
         null=True
@@ -19,4 +19,4 @@ class Shelf(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} - {self.user.username}"
+        return f"{self.name}"

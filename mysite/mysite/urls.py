@@ -35,6 +35,10 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls.authtoken')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
     path('auth/google/', GoogleLogin.as_view(), name='google_login'),
+
+    path('api/accounts/', include('accounts.urls')),
+    path('api/', include('api.urls')),
+    
 ]
 
 urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]

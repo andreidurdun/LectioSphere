@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models.User import User
+#from .models.User import User
+from accounts.models import UserAccount
 from .models.Book import Book
 from .models.Comment import Comment
 from .models.Event import Event
@@ -20,7 +21,7 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all()) 
+    user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
     book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
     class Meta:
         model = Comment
@@ -43,7 +44,7 @@ class MediaSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all()) 
+    user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
     book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
     class Meta:
         model = Post
@@ -52,7 +53,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class PostLikeSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all()) 
+    user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
     post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
     class Meta:
         model = PostLike
@@ -61,7 +62,7 @@ class PostLikeSerializer(serializers.ModelSerializer):
 
 
 class ReadingSheetSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all()) 
+    user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
     book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.all())
     class Meta:
@@ -71,7 +72,7 @@ class ReadingSheetSerializer(serializers.ModelSerializer):
 
 
 class ShelfSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all()) 
+    user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
     class Meta:
         model = Shelf
         fields = ["name", "user"]
@@ -87,7 +88,7 @@ class ShelfBooksSerializer(serializers.ModelSerializer):
 
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["first_name", "last_name", "username", "email", "description", "friends"]
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ["first_name", "last_name", "username", "email", "description", "friends"]
