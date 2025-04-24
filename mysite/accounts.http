@@ -42,3 +42,12 @@ Content-Type: application/json
     "email" : "andreidurdun2@gmail.com",
     "password" : "12345678Abc"
 }
+
+###
+DELETE http://localhost:8000/auth/users/me/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NDg0MTg5LCJpYXQiOjE3NDU0ODM4ODksImp0aSI6ImFlNDYyOGI2NDBjNzRmMTdiY2NiYjBmODI2YmYyOTYxIiwidXNlcl9pZCI6MX0.SfSXOEdYhUZf3nfEf3lLzeODKBqOqY_uVAlOOSCZG1E
+Content-Type: application/json
+
+{
+    "current_password" : "12345678Abc"
+}
