@@ -3,11 +3,15 @@ import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert, Image }
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import LoginMenu from './LoginMenu';
 
-export default function LoginMenu ({navigation}) {
+export default function RegisterMenu ({navigation}) {
 
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [cPassword, setCPassword] = useState('');
+    
     
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -42,7 +46,7 @@ export default function LoginMenu ({navigation}) {
         <SafeAreaView style={styles.container}>
 
             <Image
-                source={require('../assets/favicon.png')} // Replace with your actual image path
+                source={require('../assets/favicon.png')}
                 style={styles.bigIcon}
                 resizeMode="contain"
             />
@@ -54,6 +58,18 @@ export default function LoginMenu ({navigation}) {
                 Literary Experience, Community, Thoughts, Interaction, Organization
             </Text>
         
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Name:</Text>
+                <TextInput
+                    style={styles.input}
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="Enter your name"
+                    autoCapitalize="none"
+                    placeholderTextColor="#E5C3D1" // Placeholder text color
+                />
+            </View>
+
             <View style={styles.inputGroup}>
                 <Text style={styles.label}>Email:</Text>
                 <TextInput
@@ -77,21 +93,33 @@ export default function LoginMenu ({navigation}) {
                     placeholderTextColor="#E5C3D1" // Placeholder text color
                 />
             </View>
+
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Confirm your password:</Text>
+                <TextInput
+                    style={styles.input}
+                    value={cPassword}
+                    onChangeText={setCPassword}
+                    placeholder="Enter your password"
+                    secureTextEntry
+                    placeholderTextColor="#E5C3D1" // Placeholder text color
+                />
+            </View>
             
             <View style={{ marginTop: 12, width: '100%' }}>
                 <Button
-                    title="Login"
+                    title="Register"
                     onPress={handleSubmit}
                     color="#613F75" // Set button color to match the theme
                 />
             </View>
 
             <Text style={styles.registerText}>
-                Don't have an account?{' '}
+                Already have an account?{' '}
                 <Text
                     style={{ color: '#613F75', textDecorationLine: 'underline' }}
-                    onPress={() => navigation.navigate('RegisterMenu')}>
-                    Register Now!
+                    onPress={() => navigation.navigate('LoginMenu')}>
+                    Log In!
                 </Text>
             </Text>
 
