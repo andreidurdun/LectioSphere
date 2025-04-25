@@ -13,7 +13,6 @@ from .models.ShelfBooks import ShelfBooks
 
 
 
-
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
@@ -88,7 +87,3 @@ class ShelfBooksSerializer(serializers.ModelSerializer):
 
 
 
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ["first_name", "last_name", "username", "email", "description", "friends"]

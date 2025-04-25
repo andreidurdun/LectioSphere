@@ -17,7 +17,10 @@ class UserCreateSerializer(UserCreateSerializer):
         print("Email context:", context)
         return context
         
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['bio']
+        fields = '__all__'
+        
