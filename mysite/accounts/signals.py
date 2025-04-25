@@ -4,7 +4,7 @@ from .models import UserAccount
 from .models import Profile
 from django.conf import settings
 
-
+# in momentul in care un user este creat, se va crea automat un profil pentru el
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_profile(sender, instance, created, **kwargs):
     if created:

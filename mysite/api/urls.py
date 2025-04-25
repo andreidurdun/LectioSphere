@@ -10,5 +10,4 @@ urlpatterns = [
     path("reading_sheets/", views.ReadingSheetListCreate.as_view(), name="reading-sheet-list-create"),
     path("shelves/", views.ShelfListCreate.as_view(), name="shelf-list-create"),
     path("shelves_books/", views.ShelfBooksListCreate.as_view(), name="shelf-books-list-create"),
-    #path("userprofile/", views.UserListCreate.as_view(), name="userprofile-view-create"),
 ]
