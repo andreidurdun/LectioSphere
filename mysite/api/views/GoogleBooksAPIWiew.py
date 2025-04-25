@@ -58,5 +58,31 @@ class GoogleBooksAPIView(ViewSet):
 
         items = response.json().get("items", [])
         return Response(self._format_books(items))
+    
+    @action(detail=False, methods=["get"])
+    def category(self, request):
+        category = request.query_params.get("name")
+
+        if not category:
+            return Response({"error": "Category 'name' parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        category_map = {
+            "recent": "q=fiction&orderBy=newest",
+            "popular": "q=bestseller&orderBy=relevance",
+        }
+
+        if category in category_map:
+            url = f"https://www.googleapis.com/books/v1/volumes?{category_map[category]}&maxResults=10"
+        else:
+            url = f"https://www.googleapis.com/books/v1/volumes?q=subject:{category}&maxResults=10"
+
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            return Response({"error": "Google Books API error"}, status=response.status_code)
+
+        items = response.json().get("items", [])
+        return Response(self._format_books(items))
+
 
     

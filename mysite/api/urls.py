@@ -1,5 +1,6 @@
 from django.urls import path, re_path, include
 from .views import views
+from .views import GoogleBooksAPIView
 
 urlpatterns = [
    
@@ -11,4 +12,7 @@ urlpatterns = [
     path("shelves/", views.ShelfListCreate.as_view(), name="shelf-list-create"),
     path("shelves_books/", views.ShelfBooksListCreate.as_view(), name="shelf-books-list-create"),
     #path("userprofile/", views.UserListCreate.as_view(), name="userprofile-view-create"),
+    path("books/search/", GoogleBooksAPIView.as_view({"get": "search"}), name="google-books-search"),
+    path("books/category/", GoogleBooksAPIView.as_view({"get": "category"}), name="google-books-category"),
+
 ]
