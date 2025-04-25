@@ -21,24 +21,16 @@ from django.urls import path, include, re_path
 from django.contrib import admin
 from django.views.generic import TemplateView
 
-from dj_rest_auth.registration.views import SocialLoginView
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from dj_rest_auth.registration.views import SocialLoginView
-
-class GoogleLogin(SocialLoginView):
-    adapter_class = GoogleOAuth2Adapter
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("api.urls")),
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
-    path('auth/google/', GoogleLogin.as_view(), name='google_login'),
+    re_path(r'^auth/', include('djoser.social.urls')),
 
     path('api/accounts/', include('accounts.urls')),
     path('api/', include('api.urls')),
-
 ]
 
 urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]

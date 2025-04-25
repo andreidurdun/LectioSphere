@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,14 +47,10 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'djoser',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
     'accounts',
+    'social_django',
+    'rest_framework_simplejwt.token_blacklist',
+    'rest_framework_simplejwt',
 
 ]
 
@@ -74,13 +71,6 @@ AUTHENTICATION_BACKENDS = (
 ACCOUNT_LOGIN_METHOD = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email', 'name', 'password1', 'password2']
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
-
-SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
-
-# If this is not set, PSA constructs a plausible username from the first portion of the
-# user email, plus some random disambiguation characters if necessary.
-SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
@@ -106,7 +96,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
-    "allauth.account.middleware.AccountMiddleware"
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -127,6 +116,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -217,20 +208,33 @@ REST_USE_JWT = True
 
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
-}
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': '833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com',
-            'secret': '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',
-            'key': ''
-        }
-    }
+   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 
 AUTH_USER_MODEL = 'accounts.UserAccount'  # Setam modelul de utilizator personalizat
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'openid',
+]
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
+
+# SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [
+#     'http://localhost:8000',
+#     'http://127.0.0.1:8000',
+#     'http://localhost:8000/complete/google-oauth2/',
+#     'http://127.0.0.1:8000/complete/google-oauth2/',
+#     'http://localhost:5173',  # Dacă folosești un frontend separat
+
+# ]
+# SOCIAL_AUTH_REDIRECT_IS_HTTPS = False
+# LOGIN_REDIRECT_URL = '/'
+# LOGOUT_REDIRECT_URL = '/'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -243,10 +247,17 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
+    'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': [
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+        'http://localhost:8000/complete/google-oauth2/',
+    ],
     'SERIALIZERS': {
         'user_create': 'accounts.serializers.UserCreateSerializer',
         'user': 'accounts.serializers.UserCreateSerializer',
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
+        'current_user': 'accounts.serializers.UserCreateSerializer',
     },
     'DOMAIN': 'localhost:5173',  # Domeniul tău
     'SITE_NAME': 'LectioSphere',  # Numele site-ului tău

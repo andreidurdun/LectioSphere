@@ -6,7 +6,8 @@ Content-Type: application/json
 
 {
     "email" : "andreidurdun2@gmail.com",
-    "name" : "Andrei Durdun",
+    "first_name" : "Andrei",
+    "last_name" : "Durdun",
     "password" : "12345678Abc",
     "re_password" : "12345678Abc"
 }
@@ -51,3 +52,13 @@ Content-Type: application/json
 {
     "current_password" : "12345678Abc"
 }
+
+//autentificarea cu google
+
+###
+//aceasta cerere se realizeaza din frontend  (tutorial part 10, de la min 20)
+//redirect_uri = ulr-ul unde vrei sa te duca dupa autentificare
+GET http://localhost:8000/auth/o/google-oauth2/?redirect_uri=http://localhost:8000 HTTP/1.1
+
+###
+GET http://localhost:8000/auth/o/google-oauth2/?redirect_uri=http://localhost:8000/complete/google-oauth2/ HTTP/1.1
