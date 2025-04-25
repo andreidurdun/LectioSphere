@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-ko^=a9e+t4l57g+#47l@um7cn5k##wseh(!gkqjfr7v!4w-n93
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -98,9 +98,13 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", # aplicatia react va trebui sa fie pe acest port
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173", # aplicatia react va trebui sa fie pe acest port
+#     'http://192.168.1.131:8000',
+#     'exp://192.168.1.131:8081'
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 ROOT_URLCONF = 'mysite.urls'

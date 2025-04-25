@@ -7,10 +7,12 @@ import LoginMenu from './LoginMenu';
 
 export default function RegisterMenu ({navigation}) {
 
-    const [name, setName] = useState('');
+    
     const [email, setEmail] = useState('');
+    const [first_name, setFirstName] = useState('');
+    const [last_name, setLastName] = useState('');
     const [password, setPassword] = useState('');
-    const [cPassword, setCPassword] = useState('');
+    const [re_password, setRePassword] = useState('');
     
     
     const [fontsLoaded] = useFonts({
@@ -24,22 +26,44 @@ export default function RegisterMenu ({navigation}) {
     }
 
     const handleSubmit = async () => {
-        Alert.alert('Login Info', `Username: ${email}\nPassword: ${password}`);
+        const userData = {
+            email,
+            first_name,
+            last_name,
+            password,
+            re_password
+        };
+
         try {
-            // const res = await axios.post('https://fakestoreapi.com/auth/login', {
-            //   email,
-            //   password,
-            // });
-      
-            // // Salvează token-ul în AsyncStorage
-            // await AsyncStorage.setItem('auth_token', res.data.token);
-      
-            // Navighează la pagina Home după login
-            navigation.replace('HomePage');  // Asigură-te că folosești `navigation.navigate`
-          } catch (err) {
-            console.error(err);
-            // Poți adăuga un mesaj de eroare aici
-          }
+            console.log
+            const response = await axios.post('http://192.168.1.131:8000/auth/users/', userData, 
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            
+            Alert.alert(response.data);
+
+            if (response.status === 201) {
+                const activationData = {
+                    uid: response.data.uid, // Assuming the response contains the uid
+                    token: response.data.token // Assuming the response contains the token
+                };
+
+                await axios.post('http://192.168.1.131:8000/auth/users/activation/', activationData, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                Alert.alert('Success', 'Account activated successfully!');
+                navigation.replace('LoginMenu');
+            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Failed to create account. Please try again.');
+        }
     };
 
     return (
@@ -59,12 +83,24 @@ export default function RegisterMenu ({navigation}) {
             </Text>
         
             <View style={styles.inputGroup}>
-                <Text style={styles.label}>Name:</Text>
+                <Text style={styles.label}>First Name:</Text>
                 <TextInput
                     style={styles.input}
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Enter your name"
+                    value={first_name}
+                    onChangeText={setFirstName}
+                    placeholder="Enter your first name"
+                    autoCapitalize="none"
+                    placeholderTextColor="#E5C3D1" // Placeholder text color
+                />
+            </View>
+
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Last Name:</Text>
+                <TextInput
+                    style={styles.input}
+                    value={last_name}
+                    onChangeText={setLastName}
+                    placeholder="Enter your last name"
                     autoCapitalize="none"
                     placeholderTextColor="#E5C3D1" // Placeholder text color
                 />
@@ -98,9 +134,9 @@ export default function RegisterMenu ({navigation}) {
                 <Text style={styles.label}>Confirm your password:</Text>
                 <TextInput
                     style={styles.input}
-                    value={cPassword}
-                    onChangeText={setCPassword}
-                    placeholder="Enter your password"
+                    value={re_password}
+                    onChangeText={setRePassword}
+                    placeholder="Confirm your password"
                     secureTextEntry
                     placeholderTextColor="#E5C3D1" // Placeholder text color
                 />

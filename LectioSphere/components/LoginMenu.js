@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert, Image }
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginMenu ({navigation}) {
 
@@ -20,21 +21,24 @@ export default function LoginMenu ({navigation}) {
     }
 
     const handleSubmit = async () => {
-        Alert.alert('Login Info', `Username: ${email}\nPassword: ${password}`);
         try {
-            // const res = await axios.post('https://fakestoreapi.com/auth/login', {
-            //   email,
-            //   password,
-            // });
-      
-            // // Salvează token-ul în AsyncStorage
-            // await AsyncStorage.setItem('auth_token', res.data.token);
-      
-            // Navighează la pagina Home după login
-            navigation.replace('HomePage');  // Asigură-te că folosești `navigation.navigate`
+            const response = await axios.post('http://localhost:8000/auth/jwt/create/', 
+                {
+                    email: email,
+                    password: password
+                });
+
+            if (response.status === 200) {
+                const { access, refresh } = response.data;
+                await AsyncStorage.setItem('accessToken', access);
+                await AsyncStorage.setItem('refreshToken', refresh);
+                //Alert.alert('Login Successful', 'You have been logged in successfully.');
+            } else {
+                Alert.alert('Login Failed', 'Invalid email or password.');
+            }
+            navigation.replace('HomePage');
           } catch (err) {
             console.error(err);
-            // Poți adăuga un mesaj de eroare aici
           }
     };
 
