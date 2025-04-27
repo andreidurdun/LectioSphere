@@ -265,3 +265,4 @@ DJOSER = {
         'activation': 'accounts.email.CustomActivationEmail',
     }
 }
+

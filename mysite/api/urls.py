@@ -1,6 +1,7 @@
 from django.urls import path, re_path, include
 from .views import views
 from .views import GoogleBooksAPIView
+from .views import BooksView
 
 urlpatterns = [
    
@@ -14,5 +15,6 @@ urlpatterns = [
     #path("userprofile/", views.UserListCreate.as_view(), name="userprofile-view-create"),
     path("books/search/", GoogleBooksAPIView.as_view({"get": "search"}), name="google-books-search"),
     path("books/category/", GoogleBooksAPIView.as_view({"get": "category"}), name="google-books-category"),
-
+    path("books/recommendation/", GoogleBooksAPIView.as_view({"post": "recommendation"}), name="books-recommendation"),
+    path("books/currently_reading/add/", BooksView.as_view({"post": "add_to_currently_reading"}), name="add-currently-reading"),
 ]

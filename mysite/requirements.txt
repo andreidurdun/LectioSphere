@@ -17,3 +17,6 @@ dj-rest-auth[with_social]
 django-allauth
 
 requests
+
+sentence-transformers 
+scikit-learn
