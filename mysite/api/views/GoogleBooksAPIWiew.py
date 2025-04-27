@@ -5,6 +5,15 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.viewsets import ViewSet
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+import requests
+
 #GET http://localhost:8000/api/books/search/?author=mihai eminescu HTTP/1.1
 class GoogleBooksAPIView(ViewSet):
     GOOGLE_API_BASE = "https://www.googleapis.com/books/v1/volumes?q="
@@ -84,5 +93,39 @@ class GoogleBooksAPIView(ViewSet):
         items = response.json().get("items", [])
         return Response(self._format_books(items))
 
+
+    # model = SentenceTransformer('all-MiniLM-L6-v2')
+    # @action(detail=False, methods=["post"])
+    # def recommendation(self, request):
+    #     input_description = request.data.get("description")
+    #     if not input_description:
+    #         return Response({"error": "Missing 'description'"}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     # 1. Căutăm cărți de bază (poți schimba genul aici)
+    #     url = "https://www.googleapis.com/books/v1/volumes?q=subject:fiction&maxResults=20"
+    #     response = requests.get(url)
+    #     if response.status_code != 200:
+    #         return Response({"error": "Failed to fetch from Google Books"}, status=500)
+
+    #     books = response.json().get("items", [])
+    #     formatted_books = self._format_books(books)
+
+    #     # 2. Extragem doar cele cu descriere
+    #     books_with_desc = [b for b in formatted_books if b["description"]]
+    #     if not books_with_desc:
+    #         return Response({"error": "No books with description found"}, status=404)
+
+    #     # 3. Facem embeddings
+    #     descriptions = [b["description"] for b in books_with_desc]
+    #     book_embeddings = self.model.encode(descriptions)
+    #     input_embedding = self.model.encode([input_description])
+
+    #     # 4. Similaritate cosine
+    #     sims = cosine_similarity(input_embedding, book_embeddings)[0]
+    #     top_indices = np.argsort(sims)[::-1][:5]
+
+    #     # 5. Returnăm top 5 recomandări
+    #     recommended_books = [books_with_desc[i] | {"similarity": round(float(sims[i]), 3)} for i in top_indices]
+    #     return Response({"recommendations": recommended_books})
 
     

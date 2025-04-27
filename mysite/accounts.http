@@ -20,8 +20,8 @@ POST http://localhost:8000/auth/users/activation/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "uid" : "MQ",
-    "token" : "cot8aw-bf98b5a59624cd88765237c2ef57b755"
+    "uid" : "Mw",
+    "token" : "cowyqv-57e0d8f980195bad44fa506c3694eb82"
 }
 
 ###
@@ -45,8 +45,9 @@ Content-Type: application/json
 }
 
 ###
+//DELETE Account
 DELETE http://localhost:8000/auth/users/me/ HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NDg0MTg5LCJpYXQiOjE3NDU0ODM4ODksImp0aSI6ImFlNDYyOGI2NDBjNzRmMTdiY2NiYjBmODI2YmYyOTYxIiwidXNlcl9pZCI6MX0.SfSXOEdYhUZf3nfEf3lLzeODKBqOqY_uVAlOOSCZG1E
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NzUzNTk2LCJpYXQiOjE3NDU3NDk5OTYsImp0aSI6ImM1ZjJlMTg3ZDc3ZjQzZjBhMWY3YWI3OTgxMzdlY2Y2IiwidXNlcl9pZCI6Mn0.AqKl1TkwWx3V9p8ToFbb7wAr8QVkD7fqy3qj5d-LnFs
 Content-Type: application/json
 
 {
