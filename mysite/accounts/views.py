@@ -2,6 +2,9 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from .models import Profile
 from .serializers import ProfileSerializer
+from rest_framework.response import Response
+import requests
+from rest_framework import status
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
@@ -9,3 +12,27 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user.profile
+    
+class ActivateAccountView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, uid, token, *args, **kwargs):
+        if not uid or not token:
+            return Response({"error": "Missing 'uid' or 'token'"}, status=status.HTTP_400_BAD_REQUEST)
+
+        url = "http://localhost:8000/auth/users/activation/"
+        payload = {
+            "uid": uid,
+            "token": token
+        }
+
+        try:
+            response = requests.post(url, json=payload)
+            if response.status_code == 204:
+                return Response({"success": "Account activated successfully"}, status=status.HTTP_200_OK)
+            elif response.status_code == 403:
+                return Response({"error": "Activation link is invalid or expired"}, status=status.HTTP_403_FORBIDDEN) 
+            else:
+                return Response({"error": "Activation failed"}, status=response.status_code)
+        except requests.exceptions.RequestException as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
