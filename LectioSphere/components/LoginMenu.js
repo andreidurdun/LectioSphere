@@ -4,6 +4,7 @@ import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } fro
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import getIP from '../IPADDRESS';
 
 export default function LoginMenu ({navigation}) {
 
@@ -22,7 +23,7 @@ export default function LoginMenu ({navigation}) {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/auth/jwt/create/', 
+            const response = await axios.post(getIP+':8000/auth/jwt/create/', 
                 {
                     email: email,
                     password: password

@@ -4,6 +4,7 @@ import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } fro
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import LoginMenu from './LoginMenu';
+import getIP from '../IPADDRESS';
 
 export default function RegisterMenu ({navigation}) {
 
@@ -35,34 +36,36 @@ export default function RegisterMenu ({navigation}) {
         };
 
         try {
-            console.log
-            const response = await axios.post('http://192.168.1.131:8000/auth/users/', userData, 
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+            // const response = await axios.post(getIP+':8000/auth/users/', userData, 
+            //     {
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         }
+            //     });
+
+            const response = await axios.post(getIP+':8000/auth/users/', userData);
             
+            console.log(response.data); // Verifică ce răspuns ai
             Alert.alert(response.data);
 
             if (response.status === 201) {
-                const activationData = {
-                    uid: response.data.uid, // Assuming the response contains the uid
-                    token: response.data.token // Assuming the response contains the token
-                };
+                // const activationData = {
+                //     uid: response.data.uid, // Assuming the response contains the uid
+                //     token: response.data.token // Assuming the response contains the token
+                // };
 
-                await axios.post('http://192.168.1.131:8000/auth/users/activation/', activationData, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                // await axios.post('http://192.168.1.131:8000/auth/users/activation/', activationData, {
+                //     headers: {
+                //         'Content-Type': 'application/json'
+                //     }
+                // });
 
-                Alert.alert('Success', 'Account activated successfully!');
+                // Alert.alert('Success', 'Account activated successfully!');
                 navigation.replace('LoginMenu');
             }
         } catch (error) {
             console.error(error);
-            Alert.alert('Error', 'Failed to create account. Please try again.');
+            Alert.alert(error);
         }
     };
 
