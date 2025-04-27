@@ -8,3 +8,34 @@ GET http://localhost:8000/api/books/category/?name=popular HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NTc5NTQ3LCJpYXQiOjE3NDU1NzU5NDcsImp0aSI6ImQyNDM0YmM2ZjJjYTQwNDdhOGQ5NDQ5M2ZiZDY5Y2QzIiwidXNlcl9pZCI6MX0.ISLucib6sFchMQKggZQnRuBDM1v564Jec9B8_C6tYck
 //recent = Recently Published
 //popular = Popular Now
+
+
+//testare rcomanadari
+###
+POST http://localhost:8000/api/books/recommendation/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NTg3NTcyLCJpYXQiOjE3NDU1ODM5NzIsImp0aSI6ImM0YjJkMzgxMjQ3MjQ4MzA5ZTEzMjEyOTU2ZDAwZWNlIiwidXNlcl9pZCI6MX0.jJxT_GooMifsDz_SzVTgo0SpcLxZJuIn0ui5HOmb-2w
+Content-Type: application/json
+
+{
+  "description": "A young wizard discovers his magical powers and attends a school for magic."
+}
+
+###
+POST http://localhost:8000/api/books/currently_reading/add/
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NzUzNzYyLCJpYXQiOjE3NDU3NTAxNjIsImp0aSI6ImQ1N2IxNjgzZDhlOTRiM2JhOGUzMTllNmMzNmU0OTYwIiwidXNlcl9pZCI6M30.MrdaKbc8-wEsFSyhXnkljCcL3tJtNmJfm0GGGJVzSwQ
+
+{
+    "book": {
+        "ISBN": "9781234567890",
+        "title": "Example Book",
+        "author": "John Doe",
+        "genre": "Fiction",
+        "rating": 4.5,
+        "nr_pages": 320,
+        "publication_year": 2021,
+        "series": "Example Series",
+        "description": "This is an example book description."
+    }
+}
+
