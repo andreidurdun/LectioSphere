@@ -9,10 +9,11 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
-import requests
+
+# from sentence_transformers import SentenceTransformer
+# from sklearn.metrics.pairwise import cosine_similarity
+# import numpy as np
+# import requests
 
 #GET http://localhost:8000/api/books/search/?author=mihai eminescu HTTP/1.1
 class GoogleBooksAPIView(ViewSet):
