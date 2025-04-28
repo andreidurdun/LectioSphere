@@ -23,24 +23,37 @@ export default function LoginMenu ({navigation}) {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://192.168.1.129:8000/auth/jwt/create/', 
-                {
-                    email: email,
-                    password: password
-                });
+            const serverUrl = getIP();
+            const response = await axios.post(`${serverUrl}:8000/auth/jwt/create/`, {
+                email: email,
+                password: password
+            });
 
             if (response.status === 200) {
                 const { access, refresh } = response.data;
                 await AsyncStorage.setItem('accessToken', access);
                 await AsyncStorage.setItem('refreshToken', refresh);
-                //Alert.alert('Login Successful', 'You have been logged in successfully.');
-            } else {
-                Alert.alert('Login Failed', 'Invalid email or password.');
+                navigation.replace('HomePage');
+            } 
+        } catch (error) {
+            console.error('Login error:', error.response?.data || error.message);
+            
+            // Extract error messages from response
+            let errorMessage = 'Login failed. Please check your credentials and try again.';
+            if (error.response?.data) {
+                const errorData = error.response.data;
+                if (typeof errorData === 'object') {
+                    const errorDetails = Object.entries(errorData)
+                        .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+                        .join('\n');
+                    errorMessage = errorDetails || errorMessage;
+                } else if (typeof errorData === 'string') {
+                    errorMessage = errorData;
+                }
             }
-            navigation.replace('HomePage');
-          } catch (err) {
-            console.error(err);
-          }
+            
+            Alert.alert('Login Error', errorMessage);
+        }
     };
 
     return (
@@ -67,6 +80,7 @@ export default function LoginMenu ({navigation}) {
                     onChangeText={setEmail}
                     placeholder="Enter your Email"
                     autoCapitalize="none"
+                    keyboardType="email-address"
                     placeholderTextColor="#E5C3D1" // Placeholder text color
                 />
             </View>

@@ -7,14 +7,12 @@ import LoginMenu from './LoginMenu';
 import getIP from '../IPADDRESS';
 
 export default function RegisterMenu ({navigation}) {
-
     
     const [email, setEmail] = useState('');
     const [first_name, setFirstName] = useState('');
     const [last_name, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [re_password, setRePassword] = useState('');
-    
     
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -27,6 +25,17 @@ export default function RegisterMenu ({navigation}) {
     }
 
     const handleSubmit = async () => {
+        // Validare de bază pe frontend înainte de a trimite la server
+        if (!email || !first_name || !last_name || !password || !re_password) {
+            Alert.alert('Validation Error', 'All fields are required');
+            return;
+        }
+
+        if (password !== re_password) {
+            Alert.alert('Validation Error', 'Passwords do not match');
+            return;
+        }
+
         const userData = {
             email,
             first_name,
@@ -36,36 +45,52 @@ export default function RegisterMenu ({navigation}) {
         };
 
         try {
-            // const response = await axios.post(getIP+':8000/auth/users/', userData, 
-            //     {
-            //         headers: {
-            //             'Content-Type': 'application/json'
-            //         }
-            //     });
-
-            const response = await axios.post('http://192.168.1.129:8000/auth/users/', userData);
+            const serverUrl = getIP();
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+            console.log('Sending registration request with data:', JSON.stringify(userData));
+            const response = await axios.post(`http://192.168.1.129:8000/auth/users/`, userData, config);
             
-            console.log(response.data); // Verifică ce răspuns ai
-            Alert.alert(response.data);
-
-            if (response.status === 201) {
-                // const activationData = {
-                //     uid: response.data.uid, // Assuming the response contains the uid
-                //     token: response.data.token // Assuming the response contains the token
-                // };
-
-                // await axios.post('http://192.168.1.131:8000/auth/users/activation/', activationData, {
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     }
-                // });
-
-                // Alert.alert('Success', 'Account activated successfully!');
-                navigation.replace('LoginMenu');
-            }
+            console.log('Registration successful:', response.data);
+            Alert.alert(
+                'Registration Successful', 
+                'Your account has been created. Please check your email for activation instructions.',
+                [{ text: 'OK', onPress: () => navigation.replace('LoginMenu') }]
+            );
         } catch (error) {
-            console.error(error);
-            Alert.alert(error);
+            console.error('Registration error:', error);
+            
+            // Extract error messages from response
+            let errorMessage = 'Registration failed. Please try again.';
+            if (error.response) {
+                console.error('Error status:', error.response.status);
+                console.error('Error data:', JSON.stringify(error.response.data));
+                
+                const errorData = error.response.data;
+                if (typeof errorData === 'object') {
+                    // Convert object errors to readable format
+                    const errorDetails = Object.entries(errorData)
+                        .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+                        .join('\n');
+                    errorMessage = errorDetails || errorMessage;
+                } else if (typeof errorData === 'string') {
+                    errorMessage = errorData;
+                }
+                
+                if (error.response.status === 400) {
+                    errorMessage = 'Validation error: ' + errorMessage;
+                } else if (error.response.status === 500) {
+                    errorMessage = 'Server error (500). The server encountered an internal error. Please check server logs for details.';
+                }
+            } else if (error.request) {
+                // The request was made but no response was received
+                errorMessage = 'No response received from server. Please check if the server is running.';
+            }
+            
+            Alert.alert('Registration Error', errorMessage);
         }
     };
 
@@ -117,6 +142,7 @@ export default function RegisterMenu ({navigation}) {
                     onChangeText={setEmail}
                     placeholder="Enter your Email"
                     autoCapitalize="none"
+                    keyboardType="email-address"
                     placeholderTextColor="#E5C3D1" // Placeholder text color
                 />
             </View>

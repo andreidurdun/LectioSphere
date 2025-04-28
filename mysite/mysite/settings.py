@@ -67,8 +67,8 @@ AUTHENTICATION_BACKENDS = (
 
 
 
-ACCOUNT_LOGIN_METHOD = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email', 'name', 'password1', 'password2']
+# ACCOUNT_LOGIN_METHOD = {'email'}
+# ACCOUNT_SIGNUP_FIELDS = ['email', 'name', 'password1', 'password2']
 
 
 SOCIAL_AUTH_PIPELINE = (
@@ -242,8 +242,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
-    'USERNAME_CHANGE_EMAIL_CONFIRMATION': True,
-    'PASSWORD_CHANGE_EMAIL_CONFIRMATION': True,
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     'SEND_CONFIRMATION_EMAIL': True,
     'SET_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
@@ -263,10 +263,15 @@ DJOSER = {
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
         'current_user': 'accounts.serializers.UserCreateSerializer',
     },
-    'DOMAIN': 'localhost:5173',  # Domeniul tău
-    'SITE_NAME': 'LectioSphere',  # Numele site-ului tău
+    'DOMAIN': '192.168.1.129:8000',  # Modificat pentru a se potrivi cu domeniul de backend
+    'SITE_NAME': 'LectioSphere',
     'EMAIL': {
         'activation': 'accounts.email.CustomActivationEmail',
+    },
+    'PERMISSIONS': {
+        'user_create': ['rest_framework.permissions.AllowAny'],
+        'user_list': ['rest_framework.permissions.IsAdminUser'],
+        'user': ['rest_framework.permissions.IsAuthenticated'],
     }
 }
 
