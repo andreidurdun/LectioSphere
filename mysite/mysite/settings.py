@@ -69,7 +69,7 @@ AUTHENTICATION_BACKENDS = (
 
 
 ACCOUNT_LOGIN_METHOD = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email', 'name', 'password1', 'password2']
+ACCOUNT_SIGNUP_FIELDS = ['email', 'first_name', 'last_name', 'password1', 'password2']
 
 
 SOCIAL_AUTH_PIPELINE = (
