@@ -43,7 +43,7 @@ export default function RegisterMenu ({navigation}) {
             //         }
             //     });
 
-            const response = await axios.post(getIP+':8000/auth/users/', userData);
+            const response = await axios.post('http://192.168.1.129:8000/auth/users/', userData);
             
             console.log(response.data); // Verifică ce răspuns ai
             Alert.alert(response.data);

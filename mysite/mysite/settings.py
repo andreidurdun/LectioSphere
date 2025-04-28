@@ -255,6 +255,7 @@ DJOSER = {
         'http://localhost:8000',
         'http://127.0.0.1:8000',
         'http://localhost:8000/complete/google-oauth2/',
+        'http://192.168.1.129:8000'
     ],
     'SERIALIZERS': {
         'user_create': 'accounts.serializers.UserCreateSerializer',

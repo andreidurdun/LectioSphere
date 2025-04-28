@@ -23,7 +23,7 @@ export default function LoginMenu ({navigation}) {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post(getIP+':8000/auth/jwt/create/', 
+            const response = await axios.post('http://192.168.1.129:8000/auth/jwt/create/', 
                 {
                     email: email,
                     password: password
