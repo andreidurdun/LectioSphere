@@ -20,8 +20,8 @@ POST http://localhost:8000/auth/users/activation/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "uid" : "Mw",
-    "token" : "cowyqv-57e0d8f980195bad44fa506c3694eb82"
+    "uid" : "NQ",
+    "token" : "cox3rs-2fbf83fe36a51522e40968b02c602c8d"
 }
 
 ###

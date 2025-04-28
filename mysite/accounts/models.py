@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.conf import settings
+import json
+
 
 class UserAccountManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -47,6 +49,18 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True)
     #profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    embedding = models.TextField(null=True, blank=True) #pentru recomandari
+
+    def set_embedding(self, embedding_list):
+        """Primeste o lista de floats si o salveaza în format text JSON"""
+        self.embedding = json.dumps(embedding_list)
+        self.save()
+
+    def get_embedding(self):
+        """Returneaza embedding-ul ca lista de floats"""
+        if self.embedding:
+            return json.loads(self.embedding)
+        return None
     
     def __str__(self):
         return f"{self.user.email} - profile"
