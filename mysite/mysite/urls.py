@@ -31,6 +31,7 @@ urlpatterns = [
 
     path('api/accounts/', include('accounts.urls')),
     path('api/', include('api.urls')),
+    path("", include('accounts.urls')),
 ]
 
 #urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]
