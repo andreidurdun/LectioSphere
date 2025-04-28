@@ -1,36 +1,57 @@
 
 ### //testare API Books
-GET http://localhost:8000/api/books/search/?author=mihai eminescu HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NTc5NTQ3LCJpYXQiOjE3NDU1NzU5NDcsImp0aSI6ImQyNDM0YmM2ZjJjYTQwNDdhOGQ5NDQ5M2ZiZDY5Y2QzIiwidXNlcl9pZCI6MX0.ISLucib6sFchMQKggZQnRuBDM1v564Jec9B8_C6tYck
+GET http://localhost:8000/api/books/search/?volumes?q=subject:romance HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODMzNTA4LCJpYXQiOjE3NDU4Mjk5MDgsImp0aSI6ImI0MDY5MmExMGM5NTRkYWE4NjNkOTdkYzZlYzBkMDg5IiwidXNlcl9pZCI6NX0.B-MrXf62jvFqiUMAu5C6rFywzwPmeJ7Slb37J_rtIDo
 
 ### //returnare catri dupa categorie
 GET http://localhost:8000/api/books/category/?name=popular HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NTc5NTQ3LCJpYXQiOjE3NDU1NzU5NDcsImp0aSI6ImQyNDM0YmM2ZjJjYTQwNDdhOGQ5NDQ5M2ZiZDY5Y2QzIiwidXNlcl9pZCI6MX0.ISLucib6sFchMQKggZQnRuBDM1v564Jec9B8_C6tYck
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
+
 //recent = Recently Published
 //popular = Popular Now
+
+### //adaugare o care la read
+POST http://localhost:8000/api/books/read/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODMzNTA4LCJpYXQiOjE3NDU4Mjk5MDgsImp0aSI6ImI0MDY5MmExMGM5NTRkYWE4NjNkOTdkYzZlYzBkMDg5IiwidXNlcl9pZCI6NX0.B-MrXf62jvFqiUMAu5C6rFywzwPmeJ7Slb37J_rtIDo
+Content-Type: application/json
+
+  
+  {
+      "book": {
+          "ISBN": "9781234567894",
+          "title": "Example Book",
+          "author": "John Doe",
+          "genre": "Romance",
+          "rating": 4.5,
+          "nr_pages": 320,
+          "publication_year": 2021,
+          "series": "Example Series",
+          "description": "This is an example book description."
+      }
+  }
+
 
 
 //testare rcomanadari
 ###
-POST http://localhost:8000/api/books/recommendation/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NTg3NTcyLCJpYXQiOjE3NDU1ODM5NzIsImp0aSI6ImM0YjJkMzgxMjQ3MjQ4MzA5ZTEzMjEyOTU2ZDAwZWNlIiwidXNlcl9pZCI6MX0.jJxT_GooMifsDz_SzVTgo0SpcLxZJuIn0ui5HOmb-2w
-Content-Type: application/json
+GET http://localhost:8000/api/books/recommendation/history/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
 
-{
-  "description": "A young wizard discovers his magical powers and attends a school for magic."
-}
+### // recomandari generalizate
+GET http://localhost:8000/api/books/recommendation/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
 
 ###
 POST http://localhost:8000/api/books/currently_reading/add/
 Content-Type: application/json
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NzUzNzYyLCJpYXQiOjE3NDU3NTAxNjIsImp0aSI6ImQ1N2IxNjgzZDhlOTRiM2JhOGUzMTllNmMzNmU0OTYwIiwidXNlcl9pZCI6M30.MrdaKbc8-wEsFSyhXnkljCcL3tJtNmJfm0GGGJVzSwQ
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODMzNTA4LCJpYXQiOjE3NDU4Mjk5MDgsImp0aSI6ImI0MDY5MmExMGM5NTRkYWE4NjNkOTdkYzZlYzBkMDg5IiwidXNlcl9pZCI6NX0.B-MrXf62jvFqiUMAu5C6rFywzwPmeJ7Slb37J_rtIDo
 
 {
     "book": {
-        "ISBN": "9781234567890",
+        "ISBN": "9781234567899",
         "title": "Example Book",
         "author": "John Doe",
-        "genre": "Fiction",
+        "genre": "Romance",
         "rating": 4.5,
         "nr_pages": 320,
         "publication_year": 2021,
@@ -39,3 +60,41 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
     }
 }
 
+
+### 
+
+POST http://localhost:8000/api/books/read_list/add/
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODQyNDk1LCJpYXQiOjE3NDU4Mzg4OTUsImp0aSI6ImE1M2YxZTE5Nzc5MzRiYTZiN2ExYWIzZjM0ZGRiYzZlIiwidXNlcl9pZCI6NX0.LTSo8XJV04JNRm0hQHZD4olxuJxnbG_QpPuO8cawZJI
+
+{
+    "book": {
+        "ISBN": "9781234567899",
+        "title": "Example Book",
+        "author": "John Doe",
+        "genre": "Romance",
+        "rating": 4.5,
+        "nr_pages": 320,
+        "publication_year": 2021,
+        "series": "Example Series",
+        "description": "This is an example book description."
+    }
+}
+###
+DELETE http://localhost:8000/api/books/read_list/remove/
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODQyNDk1LCJpYXQiOjE3NDU4Mzg4OTUsImp0aSI6ImE1M2YxZTE5Nzc5MzRiYTZiN2ExYWIzZjM0ZGRiYzZlIiwidXNlcl9pZCI6NX0.LTSo8XJV04JNRm0hQHZD4olxuJxnbG_QpPuO8cawZJI
+
+{
+    
+    "ISBN": "9781234567899"
+     
+}
+
+###
+GET http://localhost:8000/api/books/read/get/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODQyNDk1LCJpYXQiOjE3NDU4Mzg4OTUsImp0aSI6ImE1M2YxZTE5Nzc5MzRiYTZiN2ExYWIzZjM0ZGRiYzZlIiwidXNlcl9pZCI6NX0.LTSo8XJV04JNRm0hQHZD4olxuJxnbG_QpPuO8cawZJI
+
+###
+GET http://localhost:8000/api/books/get/9781234567890 HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODQyNDk1LCJpYXQiOjE3NDU4Mzg4OTUsImp0aSI6ImE1M2YxZTE5Nzc5MzRiYTZiN2ExYWIzZjM0ZGRiYzZlIiwidXNlcl9pZCI6NX0.LTSo8XJV04JNRm0hQHZD4olxuJxnbG_QpPuO8cawZJI
