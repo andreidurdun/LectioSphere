@@ -17,7 +17,24 @@ class UserCreateSerializer(UserCreateSerializer):
         print("Email context:", context)
         return context
         
+
+
+    
+# serializator pentru a crea un profil de utilizator
 class ProfileSerializer(serializers.ModelSerializer):
+
+    # acestea de mai sus, vor fi afisate in API, dar nu vor fi salvate in baza de date
+    followers_count = serializers.SerializerMethodField() # numarul de urmaritori ai utilizatorului
+    following_count = serializers.SerializerMethodField() # numarul de persoane pe care le urmareste utilizatorul
+   
     class Meta:
         model = Profile
-        fields = ['bio']
+        fields = ['id', 'user', 'bio', 'profile_picture', 'followers_count', 'following_count']
+
+    def get_followers_count(self, obj):
+        # returneaza numarul de urmaritori ai profilului
+        return obj.followers.count()
+
+    def get_following_count(self, obj):
+        # returneaza numarul de persoane pe care le urmareste utilizatorul
+        return obj.following.count()
