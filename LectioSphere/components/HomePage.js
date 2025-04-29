@@ -63,7 +63,7 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
     return (
         <SafeAreaView style={styles.screen}>
             
-            <TopBar pageName="OwnProfilePage" />
+            <TopBar pageName="SearchPage" />
 
             <View style={styles.header}>
                 <Text style={styles.title}>Welcome to LectioSphere</Text>
