@@ -19,7 +19,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "INTERNET"
+      ],
+      "intentFilters": [],
+      "cleartextTraffic": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

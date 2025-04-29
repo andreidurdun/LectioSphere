@@ -12,7 +12,7 @@ class UserCreateSerializer(UserCreateSerializer):
     
     def get_email_context(self):
         context = super().get_email_context()
-        context['domain'] = 'localhost:5173'  # sau domeniul tău real
+        context['domain'] = '192.168.1.129:8000'  # sau domeniul tău real
         context['site_name'] = 'LectioSphere'
         print("Email context:", context)
         return context
