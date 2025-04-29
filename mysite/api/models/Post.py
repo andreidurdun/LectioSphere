@@ -5,6 +5,15 @@ from .Book import Book
 
 class Post(models.Model):
 
+    # ce tip de postari (actiuni) sunt disponibile
+    class ActionChoices(models.TextChoices):
+        WANT_TO_READ = 'want_to_read', 'Want to Read'
+        MADE_PROGRESS = 'made_progress', 'Made Progress'
+        FINISHED_READING = 'finished_reading', 'Finished Reading'
+        REVIEW = 'review', 'Review'
+        POST = 'post', 'Post'
+
+           
     description = models.TextField(
         validators=[MaxLengthValidator(255)],
         verbose_name="Description",
@@ -36,8 +45,11 @@ class Post(models.Model):
     )
 
     # TO DO
-    action = models.TextField(
-        help_text="Info like characters, version, theme, rating, reviews, posters etc."
+    action = models.CharField(
+        max_length=50,
+        choices=ActionChoices.choices,
+        help_text="Select the type of post: characters, version, theme, rating, reviews, posters.",
+        verbose_name="Action"
     )
     
     rating = models.IntegerField(

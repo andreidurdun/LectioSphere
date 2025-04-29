@@ -44,7 +44,8 @@ class MediaSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
-    book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
+    #book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
+    book = BookSerializer(read_only=True)  
     class Meta:
         model = Post
         fields = ["description", "date", "user", "book", "action", "rating"]

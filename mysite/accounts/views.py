@@ -67,11 +67,15 @@ class ProfileUpdateView(APIView):
         serializer = ProfileSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"detail": "Profile updated successfully."}, serializer.data, status=status.HTTP_200_OK)
+            return Response(
+                {"detail": "Profile updated successfully.", "data": serializer.data},
+                status=status.HTTP_200_OK
+            )
         else:
-            return Response({"detail": "Invalid data."}, serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+            return Response(
+                {"detail": "Invalid data.", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 # stergem contul utilizatorului curent
 # daca stergem profilul, se va sterge si userul din baza de date
