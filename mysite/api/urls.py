@@ -16,7 +16,7 @@ urlpatterns = [
     path("books/search/", GoogleBooksAPIView.as_view({"get": "search"}), name="google-books-search"),
     path("books/category/", GoogleBooksAPIView.as_view({"get": "category"}), name="google-books-category"),
     path("books/recommendation/<str:category>/", GoogleBooksAPIView.as_view({"get": "recommendation"}), name="books-recommendation"),
-    path("books/recommendation/", GoogleBooksAPIView.as_view({"get": "recommendation_generalized"}), name="books-recommendation_eneralized"),
+    path("books/recommendation/", GoogleBooksAPIView.as_view({"get": "recommendation_generalized"}), name="books-recommendation_generalized"),
     path("books/currently_reading/add/", BooksView.as_view({"post": "add_to_currently_reading"}), name="add-currently-reading"),
     path("books/read/add/", BooksView.as_view({"post": "add_to_read"}), name="add-read"),
     path("books/read_list/add/", BooksView.as_view({"post": "add_to_read_list"}), name="add-read-list"),
@@ -27,4 +27,5 @@ urlpatterns = [
     path("books/read/get/", BooksView.as_view({"get": "get_read"}), name="get-read"),
     path("books/read_list/get/", BooksView.as_view({"get": "get_read_list"}), name="get-read-list"),
     path("books/get/<str:isbn>/", BooksView.as_view({"get": "get_book"}), name="get-book"),
+    path("books/get_friends_books/", BooksView.as_view({"get": "get_friends_books"}), name="get-friends-books"),
 ]
