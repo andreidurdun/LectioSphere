@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
-import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import LoginMenu from './LoginMenu';
-import getIP from '../IPADDRESS';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function RegisterMenu ({navigation}) {
+export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
     
     const [email, setEmail] = useState('');
     const [first_name, setFirstName] = useState('');
@@ -45,30 +43,52 @@ export default function RegisterMenu ({navigation}) {
         };
 
         try {
-            const serverUrl = getIP();
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
                 }
             };
-            console.log('Sending registration request with data:', JSON.stringify(userData));
-            const response = await axios.post(`http://192.168.1.129:8000/auth/users/`, userData, config);
+            // Folosim URL-ul API din props
+            const response = await axios.post(`${apiBaseUrl}/auth/users/`, userData, config);
             
-            console.log('Registration successful:', response.data);
-            Alert.alert(
-                'Registration Successful', 
-                'Your account has been created. Please check your email for activation instructions.',
-                [{ text: 'OK', onPress: () => navigation.replace('LoginMenu') }]
-            );
+            // Înregistrarea a fost reușită, acum încercăm să autentificăm utilizatorul
+            try {
+                const loginResponse = await axios.post(`${apiBaseUrl}/auth/jwt/create/`, {
+                    email: email,
+                    password: password
+                });
+
+                if (loginResponse.status === 200) {
+                    const { access, refresh } = loginResponse.data;
+                    
+                    // Salvăm refresh tokenul
+                    await AsyncStorage.setItem('refreshToken', refresh);
+                    
+                    // Folosim funcția transmisă prin props pentru a salva tokenul și a actualiza starea
+                    saveAuthToken(access);
+                    
+                    Alert.alert(
+                        'Registration Successful',
+                        'Your account has been created and you have been logged in.',
+                        [{ text: 'OK', onPress: () => navigation.replace('HomePage') }]
+                    );
+                }
+            } catch (loginError) {
+                console.error('Auto-login error:', loginError.response?.data || loginError.message);
+                
+                // Dacă autentificarea automată eșuează, redirecționăm utilizatorul către pagina de login
+                Alert.alert(
+                    'Registration Successful',
+                    'Your account has been created. Please log in with your credentials.',
+                    [{ text: 'OK', onPress: () => navigation.replace('LoginMenu') }]
+                );
+            }
         } catch (error) {
-            console.error('Registration error:', error);
+            console.error('Registration error:', error.response?.data || error.message);
             
             // Extract error messages from response
             let errorMessage = 'Registration failed. Please try again.';
             if (error.response) {
-                console.error('Error status:', error.response.status);
-                console.error('Error data:', JSON.stringify(error.response.data));
-                
                 const errorData = error.response.data;
                 if (typeof errorData === 'object') {
                     // Convert object errors to readable format

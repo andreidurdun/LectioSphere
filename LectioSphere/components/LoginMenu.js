@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
-import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import getIP from '../IPADDRESS';
 
-export default function LoginMenu ({navigation}) {
+export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -23,20 +21,25 @@ export default function LoginMenu ({navigation}) {
 
     const handleSubmit = async () => {
         try {
-            const serverUrl = getIP();
-            const response = await axios.post(`${serverUrl}:8000/auth/jwt/create/`, {
+            const response = await axios.post(`${apiBaseUrl}/auth/jwt/create/`, {
                 email: email,
                 password: password
             });
 
             if (response.status === 200) {
                 const { access, refresh } = response.data;
-                await AsyncStorage.setItem('accessToken', access);
+                
+                // Salvăm refresh token-ul
                 await AsyncStorage.setItem('refreshToken', refresh);
+                
+                // Folosim funcția transmisă prin props pentru a salva access token-ul
+                // și a actualiza starea de autentificare
+                saveAuthToken(access);
+                
                 navigation.replace('HomePage');
             } 
         } catch (error) {
-            console.error('Login error:', error.response?.data || error.message);
+            console.error('Login error details:', error.response?.data || error.message);
             
             // Extract error messages from response
             let errorMessage = 'Login failed. Please check your credentials and try again.';
