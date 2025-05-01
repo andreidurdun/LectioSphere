@@ -4,31 +4,28 @@ from rest_framework.permissions import IsAuthenticated
 from api.models import Post, Book
 from api.serializers import PostSerializer, BookSerializer
 from rest_framework.viewsets import ViewSet
-import json  # <-- adaugă acest import!
+import json 
 import requests
+from rest_framework.decorators import action
 
 
 class PostsView(ViewSet):
     permission_classes = [IsAuthenticated]
 
+    # adaugam o postare la o carte
+    @action(detail=True, methods=['post'])
     def add_post(self, request):
         user = request.user
-
-        description = request.data.get('description')
         action = request.data.get('action')
-        rating = request.data.get('rating')
-
-        # pentru a ne referi la cartea despre care vrem sa postam, o vom identiifca in postare dupa ISBN (dam ca si input ISBN-ul apoi cautarea es va face automat)
-        ISBN = request.data.get('ISBN')   
+        ISBN = request.data.get('ISBN')
 
         if not ISBN:
             return Response({"error": "ISBN is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Cautăm cartea în baza noastră locală mai întâi
+    
         book = Book.objects.filter(ISBN=ISBN).first()
-
         if not book:
-            # Dacă nu există local, căutăm în Google Books API
+            
             google_api_url = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{ISBN}"
             response = requests.get(google_api_url)
 
@@ -40,40 +37,87 @@ class PostsView(ViewSet):
             if "items" not in data or len(data["items"]) == 0:
                 return Response({"error": "No book found with the provided ISBN"}, status=status.HTTP_404_NOT_FOUND)
 
-            # Extragem informațiile importante
             book_info = data["items"][0]["volumeInfo"]
             title = book_info.get("title")
-            authors = ", ".join(book_info.get("authors", []))  # list to string
+            authors = ", ".join(book_info.get("authors", []))
             published_date = book_info.get("publishedDate")
             description_book = book_info.get("description", "")
             page_count = book_info.get("pageCount", 0)
             thumbnail = book_info.get("imageLinks", {}).get("thumbnail", "")
             categories = ", ".join(book_info.get("categories", []))
 
-            # Creăm cartea local
             book = Book.objects.create(
                 title=title,
                 author=authors,
                 ISBN=ISBN,
-                genre=categories, 
+                genre=categories,
                 rating="1",
-                nr_pages=page_count,  
+                nr_pages=page_count,
                 publication_year=int(published_date[:4]) if published_date else None,
                 series="None",
                 description=description_book,
-            )   
+            )
 
-        # Acum avem cartea (fie existentă, fie creată acum)
+    
+        post_data = request.data.copy()
+        post_data['user'] = user.id
+        post_data['book'] = book.ISBN
 
-        # Creăm Post-ul
-        post = Post.objects.create(
-            user=user,
-            book=book,
-            description=description,
-            action=action,
-            rating=rating,
-        )
+        serializer = PostSerializer(data=post_data, context={"request": request, "book": book})
+        if serializer.is_valid():
+            post = serializer.save()
+            return Response(PostSerializer(post).data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = PostSerializer(post)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+    # vedem informatii despre o anumita cartea 
+    # de vazut daca va fi utilizata
+    @action(detail=True, methods=['get'])
+    def read_post(self, request, pk=None):
+        try:
+            post = Post.objects.get(pk=pk, user=request.user)
+            serializer = PostSerializer(post)
+            return Response(serializer.data)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+    # stergem o postare
+    @action(detail=True, methods=['delete'])
+    def delete_post(self, request, pk=None):
+        try:
+            post = Post.objects.get(pk=pk, user=request.user)
+            post.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+    # actualizam o postare
+    @action(detail=True, methods=['put', 'patch'])
+    def update_post(self, request, pk=None):
+        try:
+            post = Post.objects.get(pk=pk, user=request.user)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PostSerializer(post, data=request.data, partial=True, context={"request": request, "book": post.book})
+        if serializer.is_valid():
+            post = serializer.save()
+            return Response(PostSerializer(post).data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+    # vedem toate postarile utilizatorului
+    @action(detail=False, methods=['get'])
+    def list_posts(self, request):
+        posts = Post.objects.filter(user=request.user)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)

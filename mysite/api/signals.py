@@ -34,3 +34,25 @@ def update_user_embedding(sender, instance, created, **kwargs):
     # Actualizăm profilul userului
     profile, created = Profile.objects.get_or_create(user=user)
     profile.set_embedding(mean_embedding)
+
+
+
+    
+
+@receiver(post_save, sender=ShelfBooks)
+def create_want_to_read_post(sender, instance, created, **kwargs):
+    if not created:
+        return
+
+    shelf = instance.shelf
+    book = instance.book
+    user = shelf.user
+
+    # Verificăm dacă raftul este "Read List" și NU există deja o postare similară
+    if shelf.name == "Read List" and not Post.objects.filter(user=user, book=book, action=Post.ActionChoices.WANT_TO_READ).exists():
+        Post.objects.create(
+            user=user,
+            book=book,
+            action=Post.ActionChoices.WANT_TO_READ,
+            date=now()
+        )

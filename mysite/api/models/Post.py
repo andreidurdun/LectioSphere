@@ -17,6 +17,8 @@ class Post(models.Model):
     description = models.TextField(
         validators=[MaxLengthValidator(255)],
         verbose_name="Description",
+        null=True,
+        blank=True,
     )
 
     date = models.DateField(
@@ -44,20 +46,20 @@ class Post(models.Model):
         verbose_name="Book",
     )
 
-    # TO DO
+    # Tipul de actiune (ex: review, postare, etc.)
     action = models.CharField(
-        max_length=50,
         choices=ActionChoices.choices,
-        help_text="Select the type of post: characters, version, theme, rating, reviews, posters.",
-        verbose_name="Action"
+        verbose_name="Action",
+        null=False, 
+        blank=False,
     )
     
     rating = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
         choices=[(i, i) for i in range(1, 6)],
-        null=False,
-        blank=False,
-        verbose_name="Rating"
+        verbose_name="Rating",
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
