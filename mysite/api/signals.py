@@ -1,9 +1,10 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from api.models import ShelfBooks, Shelf
+from api.models import ShelfBooks, Shelf, Post
 from accounts.models import Profile
 from sentence_transformers import SentenceTransformer
 import numpy as np
+from django.utils.timezone import now
 
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -39,20 +40,19 @@ def update_user_embedding(sender, instance, created, **kwargs):
 
     
 
-@receiver(post_save, sender=ShelfBooks)
-def create_want_to_read_post(sender, instance, created, **kwargs):
-    if not created:
-        return
+# @receiver(post_save, sender=ShelfBooks)
+# def create_want_to_read_post(sender, instance, created, **kwargs):
+#     if not created:
+#         return
 
-    shelf = instance.shelf
-    book = instance.book
-    user = shelf.user
+#     shelf = instance.shelf
+#     book = instance.book
+#     user = shelf.user
 
-    # Verificăm dacă raftul este "Read List" și NU există deja o postare similară
-    if shelf.name == "Read List" and not Post.objects.filter(user=user, book=book, action=Post.ActionChoices.WANT_TO_READ).exists():
-        Post.objects.create(
-            user=user,
-            book=book,
-            action=Post.ActionChoices.WANT_TO_READ,
-            date=now()
-        )
+#     if shelf.name == "Read" and not Post.objects.filter(user=user, book=book, action=Post.ActionChoices.WANT_TO_READ).exists():
+#         Post.objects.create(
+#             user=user,
+#             book=book,
+#             action=Post.ActionChoices.WANT_TO_READ,
+#             date=now()
+#         )

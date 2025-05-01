@@ -3,23 +3,20 @@ from django.core.validators import MinLengthValidator, MaxLengthValidator, MinVa
 from .Post import Post
 
 class Media(models.Model):
-
-    path = models.CharField(       
-        validators=[MinLengthValidator(2), MaxLengthValidator(255)],
-        blank=False,
-        null=False,
-        verbose_name="Path",
-        
+    file = models.ImageField( 
+        upload_to='posts_pics',
+        default = 'default.jpg', 
+        verbose_name="Media File"
     )
 
-    # Relatie cu modelul Post
     post = models.ForeignKey(
-        Post, 
+        Post,
         on_delete=models.CASCADE,
-        null=False, 
+        null=False,
         blank=False,
+        related_name='media',
         verbose_name="Post"
     )
 
     def __str__(self):
-        return self.path
+        return f"Media for Post {self.post.id} - {self.file.name}"

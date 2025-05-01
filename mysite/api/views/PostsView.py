@@ -1,8 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from api.models import Post, Book
-from api.serializers import PostSerializer, BookSerializer
+from api.models import Post, Book, Media
+from api.serializers import PostSerializer, BookSerializer, MediaSerializer
 from rest_framework.viewsets import ViewSet
 import json 
 import requests
@@ -15,10 +15,15 @@ class PostsView(ViewSet):
     # adaugam o postare la o carte
     @action(detail=True, methods=['post'])
     def add_post(self, request):
+
+        # facem initializarile pentru user(cel care face postarea), actiunea(post, want_to_read etc) si ISBN-ul cartii
+        # pentru a face o postare pentru o carte, trebuie sa avem ISBN-ul cartii
         user = request.user
         action = request.data.get('action')
         ISBN = request.data.get('ISBN')
 
+
+        # mai departe doar cautam cartea dupa ISBN
         if not ISBN:
             return Response({"error": "ISBN is required"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -37,6 +42,8 @@ class PostsView(ViewSet):
             if "items" not in data or len(data["items"]) == 0:
                 return Response({"error": "No book found with the provided ISBN"}, status=status.HTTP_404_NOT_FOUND)
 
+
+            # extragem info de la api si le salvam in baza de date
             book_info = data["items"][0]["volumeInfo"]
             title = book_info.get("title")
             authors = ", ".join(book_info.get("authors", []))
@@ -58,7 +65,8 @@ class PostsView(ViewSet):
                 description=description_book,
             )
 
-    
+        # in continuare, realizam postarea  
+        # gesionam si imaginilen(media) corespunzatoare postarii   
         post_data = request.data.copy()
         post_data['user'] = user.id
         post_data['book'] = book.ISBN
@@ -66,6 +74,10 @@ class PostsView(ViewSet):
         serializer = PostSerializer(data=post_data, context={"request": request, "book": book})
         if serializer.is_valid():
             post = serializer.save()
+            media_files = request.FILES.getlist('media')  
+            for img in media_files:
+                Media.objects.create(file=img, post=post)
+
             return Response(PostSerializer(post).data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -73,8 +85,7 @@ class PostsView(ViewSet):
 
 
 
-    # vedem informatii despre o anumita cartea 
-    # de vazut daca va fi utilizata
+    # vedem informatii despre o anumita postare 
     @action(detail=True, methods=['get'])
     def read_post(self, request, pk=None):
         try:
@@ -115,7 +126,7 @@ class PostsView(ViewSet):
 
 
 
-    # vedem toate postarile utilizatorului
+    # vedem TOATE postarile utilizatorului
     @action(detail=False, methods=['get'])
     def list_posts(self, request):
         posts = Post.objects.filter(user=request.user)

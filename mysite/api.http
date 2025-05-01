@@ -98,3 +98,67 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 ###
 GET http://localhost:8000/api/books/get/9781234567890 HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODQyNDk1LCJpYXQiOjE3NDU4Mzg4OTUsImp0aSI6ImE1M2YxZTE5Nzc5MzRiYTZiN2ExYWIzZjM0ZGRiYzZlIiwidXNlcl9pZCI6NX0.LTSo8XJV04JNRm0hQHZD4olxuJxnbG_QpPuO8cawZJI
+### 
+
+
+
+
+# --- POSTS ---
+# vedem toate postarile unui user OK
+GET http://localhost:8000/posts/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+### 
+# vedem postrea cu id 19 OK
+GET http://localhost:8000/posts/18/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+### 
+# modificam postreacu id 19 OK
+PATCH http://localhost:8000/posts/19/update/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+Content-Type: application/json
+
+{
+  "description": "dar mie imi place tare tare shaorma"
+}
+### 
+# stergem postrea cu id 8 OK
+DELETE http://localhost:8000/posts/18/delete/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+### 
+# facem o postarea de tip "want_to_read"
+POST http://localhost:8000/posts/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+Content-Type: application/json
+
+{
+  "action": "want_to_read",
+  "ISBN": "9781234567890"
+}
+### 
+# facem o postare de tip "post"
+POST http://localhost:8000/posts/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+Content-Type: application/json
+
+{
+  "action": "post",
+  "description": "Mi-a plăcut cum arată coperta!",
+  "ISBN": "9781234567890"
+}
+
+### 
+# facem o postare de tip "review"
+POST http://localhost:8000/posts/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+Content-Type: application/json
+
+{
+  "action": "review",
+  "rating": 5,
+  "description": "SUPERRRRRRRR!",
+  "ISBN": "9781234567890"
+}
+
+
+# extensia REST CLIENT nu gestioneaza ok fisiere media | testam cu httpie in terminal cu comanda de mai jos | aici este un exemplu de postare de tip "post" cu 2 fisiere media
+# http -f POST http://localhost:8000/posts/add/ Authorization:"JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTIwNjMxLCJpYXQiOjE3NDYxMTcwMzEsImp0aSI6Ijc0MWRjZjZhYTc1OTRmMjc5ODY5Yjg0OGFhODcxMTRkIiwidXNlcl9pZCI6MX0.67HB6y31jHuBSJrBIKrYWyCSaZcZjvFE8D0qcSEPz68" action="post" description="Mi-a plăcut cum arată coperta!" ISBN="9781234567890" media@D:/GitHubRepo/LectioSphere/mysite/profile_pics/test.png media@D:/GitHubRepo/LectioSphere/mysite/profile_pics/test.png
