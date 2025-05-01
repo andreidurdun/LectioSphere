@@ -20,6 +20,7 @@ Including another URLconf
 from django.urls import path, include, re_path
 from django.contrib import admin
 from django.views.generic import TemplateView
+from accounts.views import ActivateAccountView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,8 +31,8 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.social.urls')),
 
     path('api/accounts/', include('accounts.urls')),
-    path('api/', include('api.urls')),
-    path("", include('accounts.urls')),
+    path('activate/<str:uid>/<str:token>/', ActivateAccountView.as_view(), name='activate-account'),  # Endpoint pentru activarea contului
+
 ]
 
 #urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]

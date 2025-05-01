@@ -233,7 +233,7 @@ class GoogleBooksAPIView(ViewSet):
         categories = {shelf_book.book.genre for shelf_book in read_books if shelf_book.book.genre}
         recommendations = []
 
-        if  read_books.exists() or not categories:
+        if not read_books.exists() or not categories:
             # Dacă NU are cărți citite sau genuri, recomandăm din bestseller
             try:
                 recommended_books = self.get_recommendated_books(profile_embedding, "bestseller")

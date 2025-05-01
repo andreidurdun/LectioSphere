@@ -255,4 +255,28 @@ class BooksView(ViewSet):
             return Response({"error": "Book not found"}, status=status.HTTP_404_NOT_FOUND)
         
 
+    @action(detail=False, methods=["get"])
+    def get_friends_books(self, request):
+        user = request.user
         
+        # persoanele pe care le urmareste utilizatorul
+        following_profiles = user.profile.following.all()
+
+        if not following_profiles:
+            return Response({"message": "You are not following anyone."}, status=status.HTTP_200_OK)
+        
+        # rafturile Read ale persoanelor urmarite
+        shelves = Shelf.objects.filter(user__profile__in=following_profiles, name="Read")
+
+        if not shelves:
+            return Response({"message": "No friends have read books."}, status=status.HTTP_200_OK)
+        
+        # obtinem toate cartile din rafturile Read ale persoanelor urmarite
+        shelf_books = ShelfBooks.objects.filter(shelf__in=shelves)
+        books = [shelf_book.book for shelf_book in shelf_books]
+
+        if not books:
+            return Response({"error": "No books found in 'Read' shelves of followed users."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
