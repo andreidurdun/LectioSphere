@@ -12,7 +12,7 @@ urlpatterns = [
     # path("reading_sheets/", views.ReadingSheetListCreate.as_view(), name="reading-sheet-list-create"),
     # path("shelves/", views.ShelfListCreate.as_view(), name="shelf-list-create"),
     # path("shelves_books/", views.ShelfBooksListCreate.as_view(), name="shelf-books-list-create"),
-    #path("userprofile/", views.UserListCreate.as_view(), name="userprofile-view-create"),
+    # path("userprofile/", views.UserListCreate.as_view(), name="userprofile-view-create"),
     path("books/search/", GoogleBooksAPIView.as_view({"get": "search"}), name="google-books-search"),
     path("books/category/", GoogleBooksAPIView.as_view({"get": "category"}), name="google-books-category"),
     path("books/recommendation/<str:category>/", GoogleBooksAPIView.as_view({"get": "recommendation"}), name="books-recommendation"),
@@ -28,4 +28,6 @@ urlpatterns = [
     path("books/read_list/get/", BooksView.as_view({"get": "get_read_list"}), name="get-read-list"),
     path("books/get/<str:isbn>/", BooksView.as_view({"get": "get_book"}), name="get-book"),
     path("books/get_friends_books/", BooksView.as_view({"get": "get_friends_books"}), name="get-friends-books"),
+
+    
 ]
