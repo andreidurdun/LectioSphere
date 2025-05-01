@@ -8,6 +8,13 @@ import axios from 'axios';
 const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
 
+    useEffect(() => {
+        // Verificăm dacă utilizatorul este autentificat și încărcăm datele profilului
+        if (isAuthenticated) {
+            fetchUserData();
+        }
+    }, [isAuthenticated]);
+
     const fetchUserData = async () => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
@@ -34,15 +41,6 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
         }
     };
 
-    useEffect(() => {
-        // Verificăm dacă utilizatorul este autentificat și încărcăm datele profilului
-        if (isAuthenticated) {
-            fetchUserData();
-        }
-    }, [isAuthenticated]);
-
-
-
     const handleLogout = async () => {
         Alert.alert(
             'Logout',
@@ -61,41 +59,6 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
             ]
         );
     };
-
-
-    return (
-        <SafeAreaView style={styles.screen}>
-            <TopBar pageName="HomePage" />
-
-            <View style={styles.header}>
-                {/* {isReading ? (
-                    <TouchableOpacity onPress={() => console.log("Pressed Continue Reading")}>
-                        <View style={styles.container}>
-                            <Text style={styles.textContainer}>Continue Reading</Text>
-                            {continueReadingItems.map((item, index) => (
-                                <Text key={index}>{item.titlu}</Text>
-                            ))}
-                        </View>
-                    </TouchableOpacity>
-                ) : null} */}
-
-                <TouchableOpacity onPress={() => console.log("Pressed You May Like")}>
-                    <View style={styles.container}>
-                        <Text style={styles.textContainer}>You May Like</Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => console.log("Pressed Your Friends Are Reading")}>
-                    <View style={styles.container}>
-                        <Text style={styles.textContainer}>Your friends are reading</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-
-            <NavBar navigation={navigation} page="HomePage" />
-        </SafeAreaView>
-    );
-
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -125,7 +88,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 0,
-        backgroundColor: '#FCF8FA',
     },
     header: {
         width: '100%',

@@ -58,7 +58,7 @@ const TopBar = ({pageName}) => {
     else if (pageName == 'FollowPage')
     {
         return (
-            <SafeAreaView style={styles.containerJustified}>
+            <SafeAreaView style={styles.container}>
                 <Image 
                     source={icon} // Replace with your icon path
                     style={styles.icon}
@@ -112,7 +112,7 @@ const TopBar = ({pageName}) => {
     else if (pageName == 'LibraryPage')
     {
         return (
-            <SafeAreaView style={styles.containerJustified}>
+            <SafeAreaView style={styles.container}>
                 <Image 
                     source={icon} // Replace with your icon path
                     style={styles.icon}
@@ -133,10 +133,10 @@ const TopBar = ({pageName}) => {
             </SafeAreaView>
         );
     }
-    else if (pageName == 'ProfilePage')
+    else if (pageName == 'OwnProfilePage')
         {
             return (
-                <SafeAreaView style={styles.containerJustified}>
+                <SafeAreaView style={styles.container}>
                     <Image 
                         source={icon} // Replace with your icon path
                         style={styles.icon}
@@ -162,20 +162,6 @@ const TopBar = ({pageName}) => {
 
 const styles = StyleSheet.create({
     container: {
-        position: 'absolute',
-        top: 20,
-        left: 0,
-        right: 0,
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#F7EDF1',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-        height: 64,
-        zIndex: 1,
-    },
-    containerJustified: {
         position: 'absolute',
         top: 20,
         left: 0,
