@@ -106,7 +106,7 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
     const fetchFriendsAreReading = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/demodificat`, {
+            const response = await axios.get(`${apiBaseUrl}/api/books/get_friends_books/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
             setFriendsAreReadingItems(response.data);
@@ -114,7 +114,7 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/demodificat`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/api/books/get_friends_books/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
                     setFriendsAreReadingItems(retryResponse.data);
