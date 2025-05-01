@@ -17,7 +17,6 @@ COPY . /app/
 EXPOSE 8000
 
 # Stergem baza de date veche daca exista
-
 RUN rm -f db.sqlite3
 
 RUN python manage.py makemigrations accounts

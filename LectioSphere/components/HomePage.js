@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         padding: 0,
+        backgroundColor: '#FCF8FA',
     },
     header: {
         width: '100%',
