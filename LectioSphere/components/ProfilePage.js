@@ -1,19 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, SafeAreaView } from 'react-native';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { refreshAccessToken } from './refreshAccessToken'
 
-const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
+
+const ProfilePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        // Verificăm dacă utilizatorul este autentificat și încărcăm datele profilului
+        if (isAuthenticated) {
+            fetchUserData();
+        }
+    }, [isAuthenticated]);
 
     const fetchUserData = async () => {
         try {
-            const token = await AsyncStorage.getItem('auth_token');
+            let token = await AsyncStorage.getItem('auth_token');
             if (!token) {
-                console.log('No token found');
-                return;
+                console.log('No token found, attempting to refresh token');
+                const refreshedToken = await refreshAccessToken();
+                if (!refreshedToken) {
+                    console.log('Failed to refresh token');
+                    return;
+                }
+                token = refreshedToken;
             }
 
             const response = await axios.get(`${apiBaseUrl}/auth/users/me/`, {
@@ -24,6 +38,7 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
 
             if (response.status === 200) {
                 setUserData(response.data);
+                console.log(userData)
             }
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -33,15 +48,6 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
             }
         }
     };
-
-    useEffect(() => {
-        // Verificăm dacă utilizatorul este autentificat și încărcăm datele profilului
-        if (isAuthenticated) {
-            fetchUserData();
-        }
-    }, [isAuthenticated]);
-
-
 
     const handleLogout = async () => {
         Alert.alert(
@@ -65,56 +71,49 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
 
     return (
         <SafeAreaView style={styles.screen}>
-            <TopBar pageName="HomePage" />
+            <TopBar pageName="ProfilePage" />
 
-            <View style={styles.header}>
-                {/* {isReading ? (
-                    <TouchableOpacity onPress={() => console.log("Pressed Continue Reading")}>
-                        <View style={styles.container}>
-                            <Text style={styles.textContainer}>Continue Reading</Text>
-                            {continueReadingItems.map((item, index) => (
-                                <Text key={index}>{item.titlu}</Text>
-                            ))}
+            <View style={styles.body}>
+                <View style={styles.profileCard}>
+                    <View style={styles.generalInfo}>
+                        <Image>
+
+                        </Image>
+                        <View style={styles.textInfo}>
+                            <View style={styles.followersInfo}>
+                                <Text style={styles.followers}>followers</Text>
+                                <Text style={styles.followers}>following</Text>
+                            </View>
+                            <View style={styles.nameInfo}>
+                                <View style={styles.fullname}>
+
+                                </View>
+                                <View style={styles.username}>
+
+                                </View>
+                                <Image>
+
+                                </Image>
+                            </View>
+
+                            
                         </View>
-                    </TouchableOpacity>
-                ) : null} */}
-
-                <TouchableOpacity onPress={() => console.log("Pressed You May Like")}>
-                    <View style={styles.container}>
-                        <Text style={styles.textContainer}>You May Like</Text>
                     </View>
-                </TouchableOpacity>
+                    <View style={styles.description}>
 
-                <TouchableOpacity onPress={() => console.log("Pressed Your Friends Are Reading")}>
-                    <View style={styles.container}>
-                        <Text style={styles.textContainer}>Your friends are reading</Text>
                     </View>
-                </TouchableOpacity>
+                    
+
+                </View>
+
+                <View style={styles.selection}>
+
+                </View>
+
+
             </View>
 
-            <NavBar navigation={navigation} page="HomePage" />
-        </SafeAreaView>
-    );
-
-
-    return (
-        <SafeAreaView style={styles.screen}>
-            
-            <TopBar pageName="SearchPage" />
-
-            <View style={styles.header}>
-                <Text style={styles.title}>Welcome to LectioSphere</Text>
-                {userData && (
-                    <Text style={styles.welcomeText}>
-                        Hello, {userData.first_name} {userData.last_name}!
-                    </Text>
-                )}
-                <Text style={styles.title}>In tot view-ul asta implementezi logica pentru HomePage</Text>
-            </View>
-
-            
-            <NavBar />
-
+            <NavBar navigation={navigation} page="ProfilePage" />
         </SafeAreaView>
     );
 };
@@ -122,15 +121,29 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         padding: 0,
         backgroundColor: '#FCF8FA',
     },
-    header: {
+    body: {
+        marginTop: 100,
+        marginLeft: 6,
+        marginRight: 6,
+    },
+    profileCard: {
         width: '100%',
-        alignItems: 'center',
-        marginBottom: 20,
+        height: 200,
+        backgroundColor: '#F3E3E9',
+        borderRadius: 8,
+        padding: 12,
+        flexDirection: 'column',
+    },
+    generalInfo: {
+        flexDirection: 'row'
+    },
+    description: {
+
     },
     title: {
         fontSize: 24,
@@ -175,4 +188,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomePage;
+export default ProfilePage;

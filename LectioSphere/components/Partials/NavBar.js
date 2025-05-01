@@ -13,47 +13,47 @@ const bookBlack = require('../../assets/bookBlack.png');
 const humanPurple = require('../../assets/humanPurple.png');
 const humanBlack = require('../../assets/humanBlack.png');
 
-const NavBar = () => {
-    const [active, setActive] = useState('home');
+const NavBar = ({ navigation, page }) => {
+    const [active, setActive] = useState(page);
 
     const handleNavClick = (page) => {
         setActive(page);
+        navigation.replace(page);
     };
 
     return (
         <View style={styles.navBar}>
-
-            <TouchableOpacity onPress={() => handleNavClick('home')} style={styles.button}>
+            <TouchableOpacity onPress={() => handleNavClick('HomePage')} style={styles.button}>
                 <Image
-                    source={active === 'home' ? homePurple : homeBlack}
+                    source={active === 'HomePage' ? homePurple : homeBlack}
                     style={{ width: 25, height: 19.44 }}
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleNavClick('follow')} style={styles.button}>
+            <TouchableOpacity onPress={() => handleNavClick('FollowPage')} style={styles.button}>
                 <Image
-                    source={active === 'follow' ? peoplePurple : peopleBlack}
+                    source={active === 'FollowPage' ? peoplePurple : peopleBlack}
                     style={{ width: 25, height: 17.5 }}
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleNavClick('search')} style={styles.button}>
+            <TouchableOpacity onPress={() => handleNavClick('SearchPage')} style={styles.button}>
                 <Image
-                    source={active === 'search' ? searchPurple : searchBlack}
+                    source={active === 'SearchPage' ? searchPurple : searchBlack}
                     style={{ width: 25, height: 25 }}
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleNavClick('library')} style={styles.button}>
+            <TouchableOpacity onPress={() => handleNavClick('LibraryPage')} style={styles.button}>
                 <Image
-                    source={active === 'library' ? bookPurple : bookBlack}
+                    source={active === 'LibraryPage' ? bookPurple : bookBlack}
                     style={{ width: 25, height: 19.44 }}
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleNavClick('profile')} style={styles.button}>
+            <TouchableOpacity onPress={() => handleNavClick('ProfilePage')} style={styles.button}>
                 <Image
-                    source={active === 'profile' ? humanPurple : humanBlack}
+                    source={active === 'ProfilePage' ? humanPurple : humanBlack}
                     style={{ width: 18.75, height: 25 }}
                 />
             </TouchableOpacity>
@@ -71,20 +71,16 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: '100%',
-        // shadowColor: '#18101D',
-        // shadowOffset: { width: 0, height: 40 },
-        // shadowOpacity: 1,
-        // shadowRadius: 4,
         elevation: 5,
         borderTopWidth: 1,
-        borderTopColor: '#F3E3E9', // Optional: Add a border for better visibility
+        borderTopColor: '#F3E3E9',
     },
     button: {
-        width: 60, // Crește dimensiunea pentru mai mult spațiu
+        width: 60,
         height: 32,
-        justifyContent: 'center', // Centrează conținutul pe verticală
-        alignItems: 'center', // Centrează conținutul pe orizontală
-    }
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 
 export default NavBar;
