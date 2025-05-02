@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback, ScrollView, Image } from 'react-native';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { refreshAccessToken } from './refreshAccessToken'; 
+
+//TO DOOO: Pus link-uri catre pagini, modificat toate imaginile in touchable si luat modificari de la Andrei
 
 const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
@@ -68,18 +70,23 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
     const fetchCategory = async (categoryName, setCategoryState) => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/api/books/category/?name=${categoryName}`, {
+            const response = await axios.get(`${apiBaseUrl}/books/category/?name=${categoryName}`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            setCategoryState(response.data.slice(0, 20));
+            // Filtrăm cărțile care au un `thumbnail` valid
+            const booksWithThumbnail = response.data.filter(book => book.thumbnail);
+
+            // Setăm primele 15 de cărți care au thumbnail
+            setCategoryState(booksWithThumbnail.slice(0, 15));
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/api/books/category/?name=${categoryName}`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/books/category/?name=${categoryName}`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    setCategoryState(retryResponse.data);
+                    const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail);
+                    setCategoryState(booksWithThumbnail.slice(0, 15));
                 } else {
                     console.error(`Unable to refresh token for ${categoryName}.`);
                 }
@@ -115,10 +122,13 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
             fetchCategory('fantasy', setFantasy);
             fetchCategory('romance', setRomance);
             fetchCategory('thriller', setThriller);
-            fetchCategory('sci-fi', setScienceFiction);
+            fetchCategory('science fiction', setScienceFiction);
             fetchCategory('biography', setBiography);
             fetchCategory('history', setHistory);
             fetchCategory('psychology', setPsychology);
+            fetchCategory('business', setBusiness);
+            fetchCategory('economics', setEconomics);
+            fetchCategory('technology', setTechnology);
             fetchCategory('health', setHealth);
             fetchCategory('nutrition', setNutrition);
             fetchCategory('travel', setTravel);
@@ -135,280 +145,320 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
         <SafeAreaView style={styles.screen}>
             <TopBar pageName="SearchPage" />
 
-            <View style={styles.header}>
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 46 }}>
+
+                <View style={styles.header}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Recently Published </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Recently Published </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {recentlyPublishedItems.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.image }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => console.log("Apasat")}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
-
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+    
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Popular Now </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Popular Now </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {popularItems.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
 
-                {/* Fiction */}
+                    {/* Fiction */}
 
-                <View style={styles.categoryContainer}>
-                    <Text style={styles.textCategory}> Fiction </Text>
-                    <View style={styles.horizontalBar} />
-                </View>
+                    <View style={styles.categoryContainer}>
+                        <Text style={styles.textCategory}> Fiction </Text>
+                        <View style={styles.horizontalBar} />
+                    </View>
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Adventure </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Adventure </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {adventure.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Fantasy </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Fantasy </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {fantasy.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Romance </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Romance </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {romance.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Science Fiction </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Science Fiction </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {scienceFiction.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Thriller </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Thriller </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {thriller.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
-                
+                    
 
-                {/* Non-Fiction */}
+                    {/* Non-Fiction */}
 
-                <View style={styles.categoryContainer}>
-                    <Text style={styles.textCategory}> Non-Fiction </Text>
-                    <View style={styles.horizontalBar} />
-                </View>
+                    <View style={styles.categoryContainer}>
+                        <Text style={styles.textCategory}> Non-Fiction </Text>
+                        <View style={styles.horizontalBar} />
+                    </View>
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Biography </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Biography </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {biography.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> History </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> History </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {history.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Psychology </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Psychology </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {psychology.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                
-                {/* Professional & Technical */}
+                    
+                    {/* Professional & Technology */}
 
-                <View style={styles.categoryContainer}>
-                    <Text style={styles.textCategory}> Professional & Technical </Text>
-                    <View style={styles.horizontalBar} />
-                </View>
+                    <View style={styles.categoryContainer}>
+                        <Text style={styles.textCategory}> Professional & Technology </Text>
+                        <View style={styles.horizontalBar} />
+                    </View>
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Business </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Business </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {business.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Economics </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Economics </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {economics.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Technology </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Technology </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {technology.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
 
-                {/* Lifestyle */}
+                    {/* Lifestyle */}
 
-                <View style={styles.categoryContainer}>
-                    <Text style={styles.textCategory}> Lifestyle </Text>
-                    <View style={styles.horizontalBar} />
-                </View>
+                    <View style={styles.categoryContainer}>
+                        <Text style={styles.textCategory}> Lifestyle </Text>
+                        <View style={styles.horizontalBar} />
+                    </View>
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Health </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Health </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {health.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Nutrition </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Nutrition </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {nutrition.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}> Travel </Text>
-                        <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                            <View>
+                                <Text style={styles.textContainer}> Travel </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {travel.map((book, index) => (
                             <Image
                                 key={index}
-                                source={{ uri: book.image }}
+                                source={{ uri: book.thumbnail }}
                                 style={styles.covers}
                             />
                             ))}
                         </ScrollView>
                     </View>
-                </TouchableNativeFeedback> 
 
-            </View>
+
+                </View>
+
+            </ScrollView>
 
             <NavBar navigation={navigation} page="SearchPage" />
         </SafeAreaView>
@@ -443,14 +493,17 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#18101D',
         fontFamily: 'Nunito_600SemiBold',
+        marginBottom: 8,
+        marginHorizontal: 2,
     },
     covers: {
         height: 148,
         width: 98,
-        borderRadius: 4
+        borderRadius: 4,
+        marginRight: 12,
     },
     categoryContainer: {
-        backgroundColor: '#F7EDF1',
+        backgroundColor: '#FCF8FA',
         alignItems: 'center',
         paddingVertical: 10,
         width: '95%',
@@ -464,10 +517,13 @@ const styles = StyleSheet.create({
     horizontalBar: {
         height: 2,
         width: 240,
+        alignItems: 'center',
         backgroundColor: '#613F75', 
-        width: '100%',
         marginTop: 4, 
       },
+    containerImages: {
+        marginHorizontal: 12,
+    },
 });
 
 export default SearchPage;
