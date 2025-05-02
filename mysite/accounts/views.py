@@ -77,8 +77,6 @@ class ProfileUpdateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
-
 # stergem contul utilizatorului curent
 # daca stergem profilul, se va sterge si userul din baza de date
 class DeleteAccountView(APIView):

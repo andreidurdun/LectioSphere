@@ -1,18 +1,12 @@
 from django.urls import path, re_path, include
-from .views import views
+#from .views import views
 from .views import GoogleBooksAPIView
 from .views import BooksView
+from .views import PostsView
+
 
 urlpatterns = [
    
-    # path("books/", views.BookListCreate.as_view(), name="book-list-create"),
-    # path("comments/", views.CommentListCreate.as_view(), name="comment-list-create"),
-    # path("events/", views.EventListCreate.as_view(), name="event-list-create"),
-    # path("posts/", views.PostListCreate.as_view(), name="post-list-create"),
-    # path("reading_sheets/", views.ReadingSheetListCreate.as_view(), name="reading-sheet-list-create"),
-    # path("shelves/", views.ShelfListCreate.as_view(), name="shelf-list-create"),
-    # path("shelves_books/", views.ShelfBooksListCreate.as_view(), name="shelf-books-list-create"),
-    # path("userprofile/", views.UserListCreate.as_view(), name="userprofile-view-create"),
     path("books/search/", GoogleBooksAPIView.as_view({"get": "search"}), name="google-books-search"),
     path("books/category/", GoogleBooksAPIView.as_view({"get": "category"}), name="google-books-category"),
     path("books/recommendation/<str:category>/", GoogleBooksAPIView.as_view({"get": "recommendation"}), name="books-recommendation"),
@@ -29,5 +23,12 @@ urlpatterns = [
     path("books/get/<str:isbn>/", BooksView.as_view({"get": "get_book"}), name="get-book"),
     path("books/get_friends_books/", BooksView.as_view({"get": "get_friends_books"}), name="get-friends-books"),
 
+
+    # urls pentru postari
+    path("posts/add/", PostsView.as_view({"post": "add_post"}), name="add-post"),
+    path("posts/<int:pk>/", PostsView.as_view({"get": "read_post"}), name="read-post"),
+    path("posts/<int:pk>/delete/", PostsView.as_view({"delete": "delete_post"}), name="delete-post"),
+    path("posts/<int:pk>/update/", PostsView.as_view({"put": "update_post", "patch": "update_post"}), name="update-post"),
+    path("posts/", PostsView.as_view({"get": "list_posts"}), name="list-posts"),
     
 ]

@@ -5,9 +5,20 @@ from .Book import Book
 
 class Post(models.Model):
 
+    # ce tip de postari (actiuni) sunt disponibile
+    class ActionChoices(models.TextChoices):
+        WANT_TO_READ = 'want_to_read', 'Want to Read'
+        MADE_PROGRESS = 'made_progress', 'Made Progress'
+        FINISHED_READING = 'finished_reading', 'Finished Reading'
+        REVIEW = 'review', 'Review'
+        POST = 'post', 'Post'
+
+           
     description = models.TextField(
         validators=[MaxLengthValidator(255)],
         verbose_name="Description",
+        null=True,
+        blank=True,
     )
 
     date = models.DateField(
@@ -35,17 +46,20 @@ class Post(models.Model):
         verbose_name="Book",
     )
 
-    # TO DO
-    action = models.TextField(
-        help_text="Info like characters, version, theme, rating, reviews, posters etc."
+    # Tipul de actiune (ex: review, postare, etc.)
+    action = models.CharField(
+        choices=ActionChoices.choices,
+        verbose_name="Action",
+        null=False, 
+        blank=False,
     )
     
     rating = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
         choices=[(i, i) for i in range(1, 6)],
-        null=False,
-        blank=False,
-        verbose_name="Rating"
+        verbose_name="Rating",
+        null=True,
+        blank=True,
     )
 
     def __str__(self):

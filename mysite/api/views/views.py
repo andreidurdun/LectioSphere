@@ -35,11 +35,6 @@ from rest_framework.permissions import AllowAny
 
 from requests.exceptions import HTTPError
 
-
-
-
-
-
 class BookListCreate(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
