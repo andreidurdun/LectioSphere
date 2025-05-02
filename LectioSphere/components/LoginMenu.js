@@ -30,7 +30,7 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
                 const { access, refresh } = response.data;
                 
                 // Salvăm refresh token-ul
-                await AsyncStorage.setItem('refreshToken', refresh);
+                await AsyncStorage.setItem('refresh_token', refresh);
                 
                 // Folosim funcția transmisă prin props pentru a salva access token-ul
                 // și a actualiza starea de autentificare

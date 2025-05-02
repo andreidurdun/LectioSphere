@@ -25,7 +25,7 @@ const setupAxiosInterceptors = (refresh) => {
 
         try {
           // Încercăm să obținem un nou token folosind refresh token-ul
-          const refreshToken = await AsyncStorage.getItem('refreshToken');
+          const refreshToken = await AsyncStorage.getItem('refresh_token');
           if (!refreshToken) {
             // Nu avem refresh token, trebuie să ne autentificăm din nou
             return Promise.reject(error);
@@ -106,7 +106,7 @@ export default function App() {
   const removeAuthToken = async () => {
     try {
       await AsyncStorage.removeItem('auth_token');
-      await AsyncStorage.removeItem('refreshToken');
+      await AsyncStorage.removeItem('refresh_token');
       // Eliminăm token-ul din header-ul default
       delete axios.defaults.headers.common['Authorization'];
       setIsAuthenticated(false);
