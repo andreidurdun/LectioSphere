@@ -66,8 +66,9 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                 if (loginResponse.status === 200) {
                     const { access, refresh } = loginResponse.data;
                     
-                    // Salvăm refresh tokenul
-                    await AsyncStorage.setItem('refreshToken', refresh);
+                    // Salvăm ambele tokenuri
+                    await AsyncStorage.setItem('auth_token', access);
+                    await AsyncStorage.setItem('refresh_token', refresh);
                     
                     // Folosim funcția transmisă prin props pentru a salva tokenul și a actualiza starea
                     saveAuthToken(access);

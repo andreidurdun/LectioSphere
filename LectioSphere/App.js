@@ -7,6 +7,7 @@ import RegisterMenu from './components/RegisterMenu';
 import ProfilePage from './components/ProfilePage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import ProfileEdit from './components/ProfileEdit';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -145,6 +146,17 @@ export default function App() {
         <Stack.Screen name="ProfilePage" options={{ headerShown: false }}>
           {(props) => (
             <ProfilePage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="ProfileEdit" options={{ headerShown: false }}>
+          {(props) => (
+            <ProfileEdit
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}
