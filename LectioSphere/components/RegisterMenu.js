@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
     
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [first_name, setFirstName] = useState('');
     const [last_name, setLastName] = useState('');
     const [password, setPassword] = useState('');
@@ -36,6 +37,7 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
 
         const userData = {
             email,
+            username,
             first_name,
             last_name,
             password,
@@ -51,6 +53,9 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
             // Folosim URL-ul API din props
             const response = await axios.post(`${apiBaseUrl}/auth/users/`, userData, config);
             
+            console.log(response.data);
+
+
             // Înregistrarea a fost reușită, acum încercăm să autentificăm utilizatorul
             try {
                 const loginResponse = await axios.post(`${apiBaseUrl}/auth/jwt/create/`, {
@@ -61,8 +66,9 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                 if (loginResponse.status === 200) {
                     const { access, refresh } = loginResponse.data;
                     
-                    // Salvăm refresh tokenul
-                    await AsyncStorage.setItem('refreshToken', refresh);
+                    // Salvăm ambele tokenuri
+                    await AsyncStorage.setItem('auth_token', access);
+                    await AsyncStorage.setItem('refresh_token', refresh);
                     
                     // Folosim funcția transmisă prin props pentru a salva tokenul și a actualiza starea
                     saveAuthToken(access);
@@ -149,6 +155,18 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                     value={last_name}
                     onChangeText={setLastName}
                     placeholder="Enter your last name"
+                    autoCapitalize="none"
+                    placeholderTextColor="#E5C3D1" // Placeholder text color
+                />
+            </View>
+
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Username:</Text>
+                <TextInput
+                    style={styles.input}
+                    value={username}
+                    onChangeText={setUsername}
+                    placeholder="Enter your username"
                     autoCapitalize="none"
                     placeholderTextColor="#E5C3D1" // Placeholder text color
                 />

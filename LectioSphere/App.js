@@ -8,6 +8,7 @@ import ProfilePage from './components/ProfilePage';
 import SearchPage from './components/SearchPage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import ProfileEdit from './components/ProfileEdit';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -26,7 +27,7 @@ const setupAxiosInterceptors = (refresh) => {
 
         try {
           // Încercăm să obținem un nou token folosind refresh token-ul
-          const refreshToken = await AsyncStorage.getItem('refreshToken');
+          const refreshToken = await AsyncStorage.getItem('refresh_token');
           if (!refreshToken) {
             // Nu avem refresh token, trebuie să ne autentificăm din nou
             return Promise.reject(error);
@@ -107,7 +108,7 @@ export default function App() {
   const removeAuthToken = async () => {
     try {
       await AsyncStorage.removeItem('auth_token');
-      await AsyncStorage.removeItem('refreshToken');
+      await AsyncStorage.removeItem('refresh_token');
       // Eliminăm token-ul din header-ul default
       delete axios.defaults.headers.common['Authorization'];
       setIsAuthenticated(false);
@@ -157,6 +158,17 @@ export default function App() {
         <Stack.Screen name="ProfilePage" options={{ headerShown: false }}>
           {(props) => (
             <ProfilePage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="ProfileEdit" options={{ headerShown: false }}>
+          {(props) => (
+            <ProfileEdit
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}
