@@ -5,12 +5,13 @@ import LoginMenu from './components/LoginMenu';
 import HomePage from './components/HomePage';
 import RegisterMenu from './components/RegisterMenu';
 import ProfilePage from './components/ProfilePage';
+import SearchPage from './components/SearchPage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
-const API_BASE_URL = 'http://192.168.1.133:8000';
+const API_BASE_URL = 'http://192.168.1.134:8000';
 
 // Configurare interceptor global pentru axios
 const setupAxiosInterceptors = (refresh) => {
@@ -134,6 +135,17 @@ export default function App() {
         <Stack.Screen name="HomePage" options={{ headerShown: false }}>
           {(props) => (
             <HomePage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="SearchPage" options={{ headerShown: false }}>
+          {(props) => (
+            <SearchPage
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}

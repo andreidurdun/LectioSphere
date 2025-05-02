@@ -212,7 +212,7 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
 
             </View>
 
-            <NavBar />
+            <NavBar navigation={navigation} page="HomePage" />
         </SafeAreaView>
     );
 };
