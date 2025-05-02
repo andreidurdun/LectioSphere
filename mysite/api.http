@@ -109,30 +109,30 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 
 
 # --- POSTS ---
-# vedem toate postarile unui user OK
+# vedem toate postarile unui user -OK
 GET http://localhost:8000/posts/ 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NDUzLCJpYXQiOjE3NDYxODA4NTMsImp0aSI6IjFmZTZmMTUzYzIyYjQ1ZTE5NDI0YmY0NzMzOWIxMTg3IiwidXNlcl9pZCI6MX0.c6nlkQ1cwfYKxQWOJ6iAuQ-Z2h3qmMA3yuAwNKJiZA8
 ### 
-# vedem postrea cu id 19 OK
-GET http://localhost:8000/posts/18/ 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+# vedem postrea cu id 22 -OK
+GET http://localhost:8000/posts/22/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM
 ### 
-# modificam postreacu id 19 OK
-PATCH http://localhost:8000/posts/19/update/ 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+# modificam postreacu id 22 -OK
+PATCH http://localhost:8000/posts/22/update/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM
 Content-Type: application/json
 
 {
-  "description": "dar mie imi place tare tare shaorma"
+  "description": "AAAAAA"
 }
 ### 
-# stergem postrea cu id 8 OK
-DELETE http://localhost:8000/posts/18/delete/ 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+# stergem postrea cu id 22 -OK
+DELETE http://localhost:8000/posts/22/delete/ 
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM
 ### 
-# facem o postarea de tip "want_to_read"
+# facem o postarea de tip "want_to_read" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg1MjQ4LCJpYXQiOjE3NDYxODE2NDgsImp0aSI6ImI5NGM3NGZkYmQyNDQyMjliYTE3ODg4MDQ3MGQzMTc0IiwidXNlcl9pZCI6MX0.06CKxQGN9tDnqCQeKbe1zO8Op8MSn8NszxAhPHsTRB8
 Content-Type: application/json
 
 {
@@ -140,9 +140,9 @@ Content-Type: application/json
   "ISBN": "9781234567890"
 }
 ### 
-# facem o postare de tip "post"
+# facem o postare de tip "post" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM
 Content-Type: application/json
 
 {
@@ -152,9 +152,9 @@ Content-Type: application/json
 }
 
 ### 
-# facem o postare de tip "review"
+# facem o postare de tip "review" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTI1Mzg5LCJpYXQiOjE3NDYxMjE3ODksImp0aSI6IjRiYjFkOTQ0MTZjZDRhODBhNTRkZDAyN2M5OTE5NTI4IiwidXNlcl9pZCI6MX0.AyRMdplMhPgi9UGNUH_cQAmZT4up34FAB6oNrU85bWw
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg1MjQ4LCJpYXQiOjE3NDYxODE2NDgsImp0aSI6ImI5NGM3NGZkYmQyNDQyMjliYTE3ODg4MDQ3MGQzMTc0IiwidXNlcl9pZCI6MX0.06CKxQGN9tDnqCQeKbe1zO8Op8MSn8NszxAhPHsTRB8
 Content-Type: application/json
 
 {
@@ -165,8 +165,8 @@ Content-Type: application/json
 }
 
 
-# extensia REST CLIENT nu gestioneaza ok fisiere media | testam cu httpie in terminal cu comanda de mai jos | aici este un exemplu de postare de tip "post" cu 2 fisiere media
-# http -f POST http://localhost:8000/posts/add/ Authorization:"JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTIwNjMxLCJpYXQiOjE3NDYxMTcwMzEsImp0aSI6Ijc0MWRjZjZhYTc1OTRmMjc5ODY5Yjg0OGFhODcxMTRkIiwidXNlcl9pZCI6MX0.67HB6y31jHuBSJrBIKrYWyCSaZcZjvFE8D0qcSEPz68" action="post" description="Mi-a plăcut cum arată coperta!" ISBN="9781234567890" media@D:/GitHubRepo/LectioSphere/mysite/profile_pics/test.png media@D:/GitHubRepo/LectioSphere/mysite/profile_pics/test.png
+# extensia REST CLIENT nu gestioneaza ok fisiere media | testam cu httpie in terminal cu comanda de mai jos | aici este un exemplu de postare de tip "post" cu 2 fisiere media -OK
+# http -f POST http://localhost:8000/posts/add/ Authorization:"JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM" action="post" description="Mi-a plăcut cum arată coperta!" ISBN="9781234567890" media@D:/GitHubRepo/LectioSphere/mysite/profile_pics/test.png media@D:/GitHubRepo/LectioSphere/mysite/profile_pics/test.png
 
 
 ### // your friends are reading
