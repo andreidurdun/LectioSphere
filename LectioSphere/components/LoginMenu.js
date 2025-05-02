@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
-import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function LoginMenu ({navigation}) {
+export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,22 +20,43 @@ export default function LoginMenu ({navigation}) {
     }
 
     const handleSubmit = async () => {
-        Alert.alert('Login Info', `Username: ${email}\nPassword: ${password}`);
         try {
-            // const res = await axios.post('https://fakestoreapi.com/auth/login', {
-            //   email,
-            //   password,
-            // });
-      
-            // // Salvează token-ul în AsyncStorage
-            // await AsyncStorage.setItem('auth_token', res.data.token);
-      
-            // Navighează la pagina Home după login
-            navigation.replace('HomePage');  // Asigură-te că folosești `navigation.navigate`
-          } catch (err) {
-            console.error(err);
-            // Poți adăuga un mesaj de eroare aici
-          }
+            const response = await axios.post(`${apiBaseUrl}/auth/jwt/create/`, {
+                email: email,
+                password: password
+            });
+
+            if (response.status === 200) {
+                const { access, refresh } = response.data;
+                
+                // Salvăm refresh token-ul
+                await AsyncStorage.setItem('refreshToken', refresh);
+                
+                // Folosim funcția transmisă prin props pentru a salva access token-ul
+                // și a actualiza starea de autentificare
+                saveAuthToken(access);
+                
+                navigation.replace('HomePage');
+            } 
+        } catch (error) {
+            console.error('Login error details:', error.response?.data || error.message);
+            
+            // Extract error messages from response
+            let errorMessage = 'Login failed. Please check your credentials and try again.';
+            if (error.response?.data) {
+                const errorData = error.response.data;
+                if (typeof errorData === 'object') {
+                    const errorDetails = Object.entries(errorData)
+                        .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+                        .join('\n');
+                    errorMessage = errorDetails || errorMessage;
+                } else if (typeof errorData === 'string') {
+                    errorMessage = errorData;
+                }
+            }
+            
+            Alert.alert('Login Error', errorMessage);
+        }
     };
 
     return (
@@ -62,6 +83,7 @@ export default function LoginMenu ({navigation}) {
                     onChangeText={setEmail}
                     placeholder="Enter your Email"
                     autoCapitalize="none"
+                    keyboardType="email-address"
                     placeholderTextColor="#E5C3D1" // Placeholder text color
                 />
             </View>

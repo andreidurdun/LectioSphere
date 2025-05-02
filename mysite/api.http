@@ -1,9 +1,14 @@
 
 ### //testare API Books
-GET http://localhost:8000/api/books/search/?volumes?q=subject:romance HTTP/1.1
+// /? {author, title, publisher, isbn, q} = 
+GET http://localhost:8000/api/books/search/?author=mihai eminescu HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODMzNTA4LCJpYXQiOjE3NDU4Mjk5MDgsImp0aSI6ImI0MDY5MmExMGM5NTRkYWE4NjNkOTdkYzZlYzBkMDg5IiwidXNlcl9pZCI6NX0.B-MrXf62jvFqiUMAu5C6rFywzwPmeJ7Slb37J_rtIDo
 
 ### //returnare catri dupa categorie
+# category_map = {
+#             "recent": "q=bestseller&orderBy=newest",
+#             "popular": "q=bestseller&orderBy=relevance",
+#         } sau orice categorie 
 GET http://localhost:8000/api/books/category/?name=popular HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
 
@@ -41,7 +46,7 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 GET http://localhost:8000/api/books/recommendation/ HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
 
-###
+### // Continue Reading add
 POST http://localhost:8000/api/books/currently_reading/add/
 Content-Type: application/json
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODMzNTA4LCJpYXQiOjE3NDU4Mjk5MDgsImp0aSI6ImI0MDY5MmExMGM5NTRkYWE4NjNkOTdkYzZlYzBkMDg5IiwidXNlcl9pZCI6NX0.B-MrXf62jvFqiUMAu5C6rFywzwPmeJ7Slb37J_rtIDo
@@ -162,3 +167,9 @@ Content-Type: application/json
 
 # extensia REST CLIENT nu gestioneaza ok fisiere media | testam cu httpie in terminal cu comanda de mai jos | aici este un exemplu de postare de tip "post" cu 2 fisiere media
 # http -f POST http://localhost:8000/posts/add/ Authorization:"JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTIwNjMxLCJpYXQiOjE3NDYxMTcwMzEsImp0aSI6Ijc0MWRjZjZhYTc1OTRmMjc5ODY5Yjg0OGFhODcxMTRkIiwidXNlcl9pZCI6MX0.67HB6y31jHuBSJrBIKrYWyCSaZcZjvFE8D0qcSEPz68" action="post" description="Mi-a plăcut cum arată coperta!" ISBN="9781234567890" media@D:/GitHubRepo/LectioSphere/mysite/profile_pics/test.png media@D:/GitHubRepo/LectioSphere/mysite/profile_pics/test.png
+
+
+### // your friends are reading
+GET http://localhost:8000/api/books/get_friends_books/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODQyNDk1LCJpYXQiOjE3NDU4Mzg4OTUsImp0aSI6ImE1M2YxZTE5Nzc5MzRiYTZiN2ExYWIzZjM0ZGRiYzZlIiwidXNlcl9pZCI6NX0.LTSo8XJV04JNRm0hQHZD4olxuJxnbG_QpPuO8cawZJI
+

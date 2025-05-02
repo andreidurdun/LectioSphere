@@ -36,5 +36,12 @@ Thumbs.db
 
 *.drawio
 
-*/migrations/*
-!*/migrations/__init__.py
+**/migrations/*.py
+!**/migrations/__init__.py
+mysite/accounts/migrations/0002_rename_name_useraccount_first_name_and_more.py
+mysite/accounts/migrations/0003_profile_embedding.py
+mysite/api/__pycache__/apps.cpython-313.pyc
+mysite/api/__pycache__/serializers.cpython-313.pyc
+mysite/api/__pycache__/urls.cpython-313.pyc
+mysite/accounts/migrations/0002_rename_name_useraccount_first_name_and_more.py
+mysite/accounts/migrations/0002_rename_name_useraccount_first_name_and_more.py

@@ -27,8 +27,7 @@ SECRET_KEY = 'django-insecure-ko^=a9e+t4l57g+#47l@um7cn5k##wseh(!gkqjfr7v!4w-n93
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -68,8 +67,8 @@ AUTHENTICATION_BACKENDS = (
 
 
 
-ACCOUNT_LOGIN_METHOD = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email', 'name', 'password1', 'password2']
+# ACCOUNT_LOGIN_METHOD = {'email'}
+# ACCOUNT_SIGNUP_FIELDS = ['email', 'name', 'password1', 'password2']
 
 
 SOCIAL_AUTH_PIPELINE = (
@@ -98,9 +97,13 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", # aplicatia react va trebui sa fie pe acest port
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173", # aplicatia react va trebui sa fie pe acest port
+#     'http://192.168.1.131:8000',
+#     'exp://192.168.1.131:8081'
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 ROOT_URLCONF = 'mysite.urls'
@@ -199,9 +202,9 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
-    # 'DEFAULT_RENDERER_CLASSES': [
-    #     'rest_framework.renderers.JSONRenderer',
-    # ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
 }
 
 REST_USE_JWT = True
@@ -239,8 +242,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
-    'USERNAME_CHANGE_EMAIL_CONFIRMATION': True,
-    'PASSWORD_CHANGE_EMAIL_CONFIRMATION': True,
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     'SEND_CONFIRMATION_EMAIL': True,
     'SET_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
@@ -252,6 +255,7 @@ DJOSER = {
         'http://localhost:8000',
         'http://127.0.0.1:8000',
         'http://localhost:8000/complete/google-oauth2/',
+        'http://192.168.1.129:8000'
     ],
     'SERIALIZERS': {
         'user_create': 'accounts.serializers.UserCreateSerializer',
@@ -259,10 +263,15 @@ DJOSER = {
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
         'current_user': 'accounts.serializers.UserCreateSerializer',
     },
-    'DOMAIN': 'localhost:5173',  # Domeniul tău
-    'SITE_NAME': 'LectioSphere',  # Numele site-ului tău
+    'DOMAIN': '192.168.1.129:8000',  # Modificat pentru a se potrivi cu domeniul de backend
+    'SITE_NAME': 'LectioSphere',
     'EMAIL': {
         'activation': 'accounts.email.CustomActivationEmail',
+    },
+    'PERMISSIONS': {
+        'user_create': ['rest_framework.permissions.AllowAny'],
+        'user_list': ['rest_framework.permissions.IsAdminUser'],
+        'user': ['rest_framework.permissions.IsAuthenticated'],
     }
 }
 

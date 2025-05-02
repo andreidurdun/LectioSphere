@@ -5,8 +5,11 @@ import json
 
 class UserAccountManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
+        print(extra_fields)
+
         if not email:
             raise ValueError('Users must have an email address')
+            
         
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password) # Hash the password
@@ -29,15 +32,16 @@ class UserAccountManager(BaseUserManager):
 
 class UserAccount(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
+    username = models.CharField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    username = models.CharField(max_length=255, blank=True, null=True)
+    #username = models.CharField(max_length=255, blank=True, null=True)
     objects = UserAccountManager()
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     def get_full_name(self):
         return self.first_name + ' ' + self.last_name

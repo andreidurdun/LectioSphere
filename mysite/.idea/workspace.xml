@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa33d869-8134-4560-8d8b-67514ec2e9d2" name="Changes" comment="" />
+    <list default="true" id="fa33d869-8134-4560-8d8b-67514ec2e9d2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../LectioSphere/components/RegisterMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/../LectioSphere/components/RegisterMenu.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,8 +28,8 @@
     "Python.manage.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/University/An2Sem2/MDS/LectioSphere/mysite"
+    "git-widget-placeholder": "ProfilesSearchFrontend",
+    "last_opened_file_path": "D:/University/BESTem"
   }
 }]]></component>
   <component name="SharedIndexes">

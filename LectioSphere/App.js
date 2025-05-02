@@ -5,44 +5,143 @@ import LoginMenu from './components/LoginMenu';
 import HomePage from './components/HomePage';
 import RegisterMenu from './components/RegisterMenu';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const Stack = createNativeStackNavigator();
+// URL-ul de bază al serverului, utilizat în întreaga aplicație
+const API_BASE_URL = 'http://192.168.1.134:8000';
+
+// Configurare interceptor global pentru axios
+const setupAxiosInterceptors = (refresh) => {
+  axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+      
+      // Verificăm dacă eroarea este 401 (token nevalid/expirat) și nu am încercat deja să reînnoim tokenul
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        
+        try {
+          // Încercăm să obținem un nou token folosind refresh token-ul
+          const refreshToken = await AsyncStorage.getItem('refreshToken');
+          if (!refreshToken) {
+            // Nu avem refresh token, trebuie să ne autentificăm din nou
+            return Promise.reject(error);
+          }
+          
+          const response = await axios.post(`${API_BASE_URL}/auth/jwt/refresh/`, {
+            refresh: refreshToken
+          });
+          
+          const { access } = response.data;
+          
+          // Salvăm noul token de acces
+          await AsyncStorage.setItem('auth_token', access);
+          
+          // Actualizăm header-ul pentru cererea originală și o retrimitem
+          originalRequest.headers['Authorization'] = 'JWT ' + access;
+          return axios(originalRequest);
+        } catch (refreshError) {
+          // Dacă reînnoirea token-ului eșuează, trebuie să ne autentificăm din nou
+          console.error('Token refresh failed', refreshError);
+          if (refresh) {
+            refresh();
+          }
+          return Promise.reject(error);
+        }
+      }
+      
+      return Promise.reject(error);
+    }
+  );
+};
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Verifică dacă există un token salvat
     const checkAuth = async () => {
-      const token = await AsyncStorage.getItem('auth_token');
-      if (token) {
+      try {
+        const token = await AsyncStorage.getItem('auth_token');
+        if (token) {
+          // Configurăm header-ul default pentru toate cererile axios
+          axios.defaults.headers.common['Authorization'] = `JWT ${token}`;
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Error reading auth token from AsyncStorage:", error);
         setIsAuthenticated(false);
-      } else {
-        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     checkAuth();
+    
+    // Configurare interceptor pentru reînnoirea automată a tokenului
+    setupAxiosInterceptors(() => {
+      // Callback când reînnoirea tokenului eșuează complet
+      console.log("Token refresh failed completely, logging out");
+      removeAuthToken();
+    });
   }, []);
+
+  const saveAuthToken = async (token) => {
+    try {
+      await AsyncStorage.setItem('auth_token', token);
+      // Setăm token-ul și pentru cereri viitoare
+      axios.defaults.headers.common['Authorization'] = `JWT ${token}`;
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error("Error saving auth token to AsyncStorage:", error);
+    }
+  };
+
+  const removeAuthToken = async () => {
+    try {
+      await AsyncStorage.removeItem('auth_token');
+      await AsyncStorage.removeItem('refreshToken');
+      // Eliminăm token-ul din header-ul default
+      delete axios.defaults.headers.common['Authorization'];
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error("Error removing auth token from AsyncStorage:", error);
+    }
+  };
+
+  // Așteptăm să se termine verificarea autentificării înainte de a randa aplicația
+  if (isLoading) {
+    return null; // sau poți returna un indicator de încărcare aici
+  }
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={isAuthenticated ? "HomePage" : "LoginMenu"}>
         <Stack.Screen 
           name="LoginMenu" 
-          component={LoginMenu} 
           options={{ headerShown: false }}
-        />
+        >
+          {props => <LoginMenu {...props} saveAuthToken={saveAuthToken} apiBaseUrl={API_BASE_URL} />}
+        </Stack.Screen>
+        
         <Stack.Screen 
           name="HomePage" 
-          component={HomePage} 
           options={{ headerShown: false }}
-        />
+        >
+          {props => <HomePage {...props} removeAuthToken={removeAuthToken} isAuthenticated={isAuthenticated} apiBaseUrl={API_BASE_URL} />}
+        </Stack.Screen>
+        
         <Stack.Screen 
           name="RegisterMenu" 
-          component={RegisterMenu} 
           options={{ headerShown: false }}
-        />
+        >
+          {props => <RegisterMenu {...props} saveAuthToken={saveAuthToken} apiBaseUrl={API_BASE_URL} />}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
