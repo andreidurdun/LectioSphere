@@ -22,13 +22,37 @@ class UserCreateSerializer(UserCreateSerializer):
 # serializator pentru a crea un profil de utilizator
 class ProfileSerializer(serializers.ModelSerializer):
 
+    username = serializers.CharField(source='user.username')
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+
     # acestea de mai sus, vor fi afisate in API, dar nu vor fi salvate in baza de date
     followers_count = serializers.SerializerMethodField() # numarul de urmaritori ai utilizatorului
     following_count = serializers.SerializerMethodField() # numarul de persoane pe care le urmareste utilizatorul
    
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'bio', 'profile_picture', 'followers_count', 'following_count']
+        fields = ['id', 'user', 'username','first_name','last_name', 'bio', 'profile_picture', 'followers_count', 'following_count']
+
+
+
+    def update(self, instance, validated_data):
+        # Extrage user data și profile data
+        user_data = validated_data.pop('user', {})
+        user = instance.user
+
+        # Actualizează datele utilizatorului
+        for attr, value in user_data.items():
+            setattr(user, attr, value)
+        user.save()
+
+        # Actualizează profilul
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
+
 
     def get_followers_count(self, obj):
         # returneaza numarul de urmaritori ai profilului

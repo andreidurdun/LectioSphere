@@ -173,3 +173,25 @@ Content-Type: application/json
 GET http://localhost:8000/api/books/get_friends_books/ HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODQyNDk1LCJpYXQiOjE3NDU4Mzg4OTUsImp0aSI6ImE1M2YxZTE5Nzc5MzRiYTZiN2ExYWIzZjM0ZGRiYzZlIiwidXNlcl9pZCI6NX0.LTSo8XJV04JNRm0hQHZD4olxuJxnbG_QpPuO8cawZJI
 
+
+
+# ----- PROFILE -----
+### GET profil utilizator
+GET http://localhost:8000/api/accounts/profile/read/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzAwODE2LCJpYXQiOjE3NDYyOTcyMTYsImp0aSI6IjliZWZmNTRiMTgzZjQ0ZDE5ZTE3YWVmNTVlZjcyMDZlIiwidXNlcl9pZCI6MX0.rhxS16xrhJttvf-jqFbYG-Kl1fRf2ZkYhwWZ1aWsS_A
+
+###
+
+### PATCH profil utilizator
+PATCH http://localhost:8000/api/accounts/profile/update/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzAwODE2LCJpYXQiOjE3NDYyOTcyMTYsImp0aSI6IjliZWZmNTRiMTgzZjQ0ZDE5ZTE3YWVmNTVlZjcyMDZlIiwidXNlcl9pZCI6MX0.rhxS16xrhJttvf-jqFbYG-Kl1fRf2ZkYhwWZ1aWsS_A
+
+{
+  "bio": "sal!",
+  "first_name": "Dani",
+  "last_name": "Nedelcu",
+  "username": "dani240"
+}
+
+
+
