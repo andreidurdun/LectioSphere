@@ -37,16 +37,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        # Extrage user data și profile data
+    
         user_data = validated_data.pop('user', {})
         user = instance.user
-
-        # Actualizează datele utilizatorului
+        
         for attr, value in user_data.items():
             setattr(user, attr, value)
         user.save()
 
-        # Actualizează profilul
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
