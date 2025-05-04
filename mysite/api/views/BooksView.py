@@ -19,6 +19,7 @@ class BooksView(ViewSet):
         book, created = Book.objects.get_or_create(
             ISBN=book_data.get("ISBN"),
             defaults={
+                "id" : book_data.get("id"),
                 "title": book_data.get("title"),
                 "author": book_data.get("author"),
                 "genre": book_data.get("genre"),
@@ -27,7 +28,7 @@ class BooksView(ViewSet):
                 "publication_year": book_data.get("publication_year"),
                 "series": book_data.get("series"),
                 "description": book_data.get("description"),
-                # "thumbnail": book_data.get("thumbnail"),
+                "cover": book_data.get("thumbnail"),
             },
         )
 
@@ -58,6 +59,7 @@ class BooksView(ViewSet):
         book, created = Book.objects.get_or_create(
             ISBN=book_data.get("ISBN"),
             defaults={
+                "id" : book_data.get("id"),
                 "title": book_data.get("title"),
                 "author": book_data.get("author"),
                 "genre": book_data.get("genre"),
@@ -66,7 +68,7 @@ class BooksView(ViewSet):
                 "publication_year": book_data.get("publication_year"),
                 "series": book_data.get("series"),
                 "description": book_data.get("description"),
-                # "thumbnail": book_data.get("thumbnail"),
+                "cover": book_data.get("thumbnail"),
             },
         )
 
@@ -95,8 +97,9 @@ class BooksView(ViewSet):
 
         # Verificăm dacă cartea există deja în baza de date
         book, created = Book.objects.get_or_create(
-            ISBN=book_data.get("ISBN"),
+            ISBN=book_data.get("ISBN"), #criteriul dupa care se cauta in bd
             defaults={
+                "id" : book_data.get("id"),
                 "title": book_data.get("title"),
                 "author": book_data.get("author"),
                 "genre": book_data.get("genre"),
@@ -105,7 +108,7 @@ class BooksView(ViewSet):
                 "publication_year": book_data.get("publication_year"),
                 "series": book_data.get("series"),
                 "description": book_data.get("description"),
-                # "thumbnail": book_data.get("thumbnail"),
+                "cover": book_data.get("thumbnail"),
             },
         )
 

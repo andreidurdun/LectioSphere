@@ -2,6 +2,13 @@ from django.db import models
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
 
 class Book(models.Model):
+
+    id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="Book ID"
+    )
     
     ISBN = models.CharField(
         primary_key=True,
@@ -27,6 +34,13 @@ class Book(models.Model):
     #     blank=True, 
     #     null=True
     # )
+
+    cover = models.URLField(
+        max_length=255, 
+        blank=True, 
+        null=True, 
+        verbose_name="Cover Image URL"
+    )
 
     description = models.TextField(
         blank=True, 

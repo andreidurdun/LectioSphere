@@ -15,7 +15,7 @@ from .models.ShelfBooks import ShelfBooks
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ["ISBN", "title", "author", "genre", "description", "rating", "nr_pages", "publication_year", "series"]
+        fields = ["ISBN", "id", "title", "author", "genre", "description", "rating", "nr_pages", "publication_year", "series", "cover"]
 
 
 class CommentSerializer(serializers.ModelSerializer):
