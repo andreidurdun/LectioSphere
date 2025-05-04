@@ -73,7 +73,7 @@ class GoogleBooksAPIView(ViewSet):
             query_parts.append(general)
 
         query = "+".join(query_parts)
-        url = f"{self.GOOGLE_API_BASE}{query}&maxResults=20"
+        url = f"{self.GOOGLE_API_BASE}{query}&maxResults=40"
 
         response = requests.get(url)
         if response.status_code != 200:
@@ -90,14 +90,14 @@ class GoogleBooksAPIView(ViewSet):
             return Response({"error": "Category 'name' parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         category_map = {
-            "recent": "q=bestseller&orderBy=newest",
+            "recent": "q=subject:fiction&orderBy=newest",
             "popular": "q=bestseller&orderBy=relevance",
         }
 
         if category in category_map:
-            url = f"https://www.googleapis.com/books/v1/volumes?{category_map[category]}&maxResults=10"
+            url = f"https://www.googleapis.com/books/v1/volumes?{category_map[category]}&maxResults=40"
         else:
-            url = f"https://www.googleapis.com/books/v1/volumes?q=subject:{category}&maxResults=10"
+            url = f"https://www.googleapis.com/books/v1/volumes?q=subject:{category}&maxResults=40"
 
         response = requests.get(url)
 
@@ -113,7 +113,7 @@ class GoogleBooksAPIView(ViewSet):
     def get_recommendated_books(self, user_embedding, category):
         user_embedding = np.array(user_embedding).reshape(1, -1)
         all_books = []
-        books_to_fetch = 400
+        books_to_fetch = 20
         page_size = 40  # Google Books API limit
         for start_index in range(0, books_to_fetch, page_size):
             if category == "bestseller":
@@ -147,7 +147,7 @@ class GoogleBooksAPIView(ViewSet):
             # Poate nu avem destule cărți, folosim tot ce avem
             top_indices = np.argsort(sims)[::-1]
         else:
-            top_indices = np.argsort(sims)[::-1][:20]
+            top_indices = np.argsort(sims)[::-1] #[:80]
         #top_indices = np.argsort(sims)[::-1][:20]  # top 20 similar books
 
         recommended_books = [books_with_desc[i] for i in top_indices]
@@ -175,45 +175,6 @@ class GoogleBooksAPIView(ViewSet):
 
 
 
-        # # 1. Fetch books
-        # all_books = []
-        # books_to_fetch = 400
-        # page_size = 40  # Google Books API limit
-        # for start_index in range(0, books_to_fetch, page_size):
-        #     url = f"https://www.googleapis.com/books/v1/volumes?q=subject:{category}&maxResults={page_size}&startIndex={start_index}"
-        #     response = requests.get(url)
-        #     if response.status_code != 200:
-        #         return Response({"error": "Failed to fetch from Google Books"}, status=500)
-
-        #     books = response.json().get("items", [])
-        #     if not books:
-        #         break  # dacă nu mai sunt cărți, ieși din loop
-
-        #     formatted_books = self._format_books(books)
-        #     #filtered_books = self._filter_books_by_category(formatted_books, category)
-        #     all_books.extend(formatted_books)
-
-        #     # Mică pauză (opțională) ca să eviți limitările API-ului
-        #     #time.sleep(0.1)
-
-        # if not all_books:
-        #     return Response({"error": "No books found"}, status=404)
-
-        # books_with_desc = [b for b in all_books if b["description"]]
-        # if not books_with_desc:
-        #     return Response({"error": "No books with description found"}, status=404)
-
-        # book_descriptions = [b["description"] for b in books_with_desc]
-        # book_embeddings = self.model.encode(book_descriptions)
-
-        # user_embedding = np.array(profile_embedding).reshape(1, -1)
-
-        # # Similaritate
-        # sims = cosine_similarity(user_embedding, book_embeddings)[0]
-        # top_indices = np.argsort(sims)[::-1][:20]  # top 20 similar books
-
-        # recommended_books = [books_with_desc[i] for i in top_indices]
-        # return Response({"recommendations": recommended_books})
 
     
     @action(detail=False, methods=["get"])

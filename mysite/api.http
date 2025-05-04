@@ -6,11 +6,14 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 
 ### //returnare catri dupa categorie
 # category_map = {
-#             "recent": "q=bestseller&orderBy=newest",
+#             "recent": "q=subject:fiction&orderBy=newest",
 #             "popular": "q=bestseller&orderBy=relevance",
 #         } sau orice categorie 
-GET http://localhost:8000/api/books/category/?name=popular HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
+GET http://localhost:8000/books/category/?name=recent HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MjE3NTYwLCJpYXQiOjE3NDYyMTM5NjAsImp0aSI6IjdiN2Q4NzliZTI1NTRkZDg5MTIxZGJmZjY5Yjg0YTk5IiwidXNlcl9pZCI6Mn0.1ulvSXZd4G0W3LLKZezw26DTXWOjxFVLqeAjESxK7S4
+
+###
+GET https://www.googleapis.com/books/v1/volumes?q=subject:fiction&orderBy=newest&maxResults=10
 
 //recent = Recently Published
 //popular = Popular Now
