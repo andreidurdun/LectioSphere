@@ -2,6 +2,10 @@ from django.urls import path, re_path, include
 from .views import views
 from .views import GoogleBooksAPIView
 from .views import BooksView
+from api.views.LibraryPageView import LibraryPageView
+
+from api.views.ReadingSheetsView import ReadingSheetsView
+
 
 urlpatterns = [
    
@@ -28,4 +32,6 @@ urlpatterns = [
     path("books/read_list/get/", BooksView.as_view({"get": "get_read_list"}), name="get-read-list"),
     path("books/get/<str:isbn>/", BooksView.as_view({"get": "get_book"}), name="get-book"),
     path("books/get_friends_books/", BooksView.as_view({"get": "get_friends_books"}), name="get-friends-books"),
+    path("library/", LibraryPageView.as_view(), name="library-page"),
+    path("reading_sheets/user/", ReadingSheetsView.as_view(), name="user-reading-sheets"),
 ]
