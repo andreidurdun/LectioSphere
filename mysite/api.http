@@ -1,12 +1,12 @@
 
 ### //testare API Books
-// /? {author, title, publisher, isbn, q} = 
-GET http://localhost:8000/api/books/search/?author=mihai eminescu HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODMzNTA4LCJpYXQiOjE3NDU4Mjk5MDgsImp0aSI6ImI0MDY5MmExMGM5NTRkYWE4NjNkOTdkYzZlYzBkMDg5IiwidXNlcl9pZCI6NX0.B-MrXf62jvFqiUMAu5C6rFywzwPmeJ7Slb37J_rtIDo
+// /? {author, title, publisher, isbn, id, q} = 
+GET http://localhost:8000/books/search/?id=Jx9atwAACAAJ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzU0NTc4LCJpYXQiOjE3NDYzNTA5NzgsImp0aSI6IjRhMjM2NjIxNzk4YjRhYjhiYjc1YjBkZmJmODljNGIyIiwidXNlcl9pZCI6Mn0.q_V_EY_tgz4O57Sli1eEiZc4gZcK4oVikvDrn3MZjeQ
 
 ### //returnare catri dupa categorie
 # category_map = {
-#             "recent": "q=bestseller&orderBy=newest",
+#             "recent": "q=fiction&orderBy=newest",
 #             "popular": "q=bestseller&orderBy=relevance",
 #         } sau orice categorie 
 GET http://localhost:8000/api/books/category/?name=popular HTTP/1.1
