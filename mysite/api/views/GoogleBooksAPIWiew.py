@@ -96,11 +96,22 @@ class GoogleBooksAPIView(ViewSet):
         query = "+".join(query_parts)
         url = f"{self.GOOGLE_API_BASE}{query}&maxResults=40"
 
+        if id:
+            url = f"https://www.googleapis.com/books/v1/volumes/{id}"
+
         response = requests.get(url)
         if response.status_code != 200:
             return Response({"error": "Google Books API error"}, status=response.status_code)
 
-        items = response.json().get("items", [])
+        data = response.json()
+
+        if id:
+            # când căutăm după id, e un singur obiect, îl punem într-o listă
+            items = [data]
+        else:
+            items = data.get("items", [])
+
+        #items = response.json().get("items", [])
         return Response(self._format_books(items))
     
     @action(detail=False, methods=["get"])
