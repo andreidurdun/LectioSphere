@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { refreshAccessToken } from './refreshAccessToken'; 
 
-//TO DOOO: Pus link-uri catre pagini, modificat toate imaginile in touchable si luat modificari de la Andrei
+//TO DOOO: Pus link-uri catre pagina unei carti, modificat toate imaginile in touchable 
 
 const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
@@ -176,7 +176,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
     
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Popular Now'})}>
                             <View>
                                 <Text style={styles.textContainer}> Popular Now </Text>
                             </View>
@@ -201,7 +201,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Adventure'})}>
                             <View>
                                 <Text style={styles.textContainer}> Adventure </Text>
                             </View>
@@ -218,7 +218,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Fantasy' })}>
                             <View>
                                 <Text style={styles.textContainer}> Fantasy </Text>
                             </View>
@@ -235,7 +235,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Romance' })}>
                             <View>
                                 <Text style={styles.textContainer}> Romance </Text>
                             </View>
@@ -252,7 +252,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Science Fiction' })}>
                             <View>
                                 <Text style={styles.textContainer}> Science Fiction </Text>
                             </View>
@@ -269,7 +269,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Thriller' })}>
                             <View>
                                 <Text style={styles.textContainer}> Thriller </Text>
                             </View>
@@ -295,7 +295,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Biography' })}>
                             <View>
                                 <Text style={styles.textContainer}> Biography </Text>
                             </View>
@@ -312,7 +312,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'History' })}>
                             <View>
                                 <Text style={styles.textContainer}> History </Text>
                             </View>
@@ -329,7 +329,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Psychology' })}>
                             <View>
                                 <Text style={styles.textContainer}> Psychology </Text>
                             </View>
@@ -354,7 +354,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Business' })}>
                             <View>
                                 <Text style={styles.textContainer}> Business </Text>
                             </View>
@@ -371,7 +371,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Economics' })}>
                             <View>
                                 <Text style={styles.textContainer}> Economics </Text>
                             </View>
@@ -388,7 +388,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Technology' })}>
                             <View>
                                 <Text style={styles.textContainer}> Technology </Text>
                             </View>
@@ -413,7 +413,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Health' })}>
                             <View>
                                 <Text style={styles.textContainer}> Health </Text>
                             </View>
@@ -430,7 +430,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Nutrition' })}>
                             <View>
                                 <Text style={styles.textContainer}> Nutrition </Text>
                             </View>
@@ -447,7 +447,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     </View>
 
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Travel' })}>
                             <View>
                                 <Text style={styles.textContainer}> Travel </Text>
                             </View>

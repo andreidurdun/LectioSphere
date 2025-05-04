@@ -6,7 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { refreshAccessToken } from './refreshAccessToken'; 
-//import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+
+//TO DO: completat cu informatii dupa ce termina Dani postarile
 
 const CategoryBooksPage = ({ route, navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
