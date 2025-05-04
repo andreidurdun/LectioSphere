@@ -10,9 +10,10 @@ User = get_user_model()
 
 class GetFriendsBooksTestCase(APITestCase):
     def setUp(self):
-        # Creăm utilizatorul curent
+        # cream utilizatorul curent
         self.user = User.objects.create_user(
             email="testuser@example.com",
+            username="testuser",
             password="testpassword",
             first_name="Test",
             last_name="User"
@@ -21,22 +22,23 @@ class GetFriendsBooksTestCase(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        # Creăm un utilizator prieten
+        # cream un utilizator prieten
         self.friend = User.objects.create_user(
             email="friend@example.com",
+            username="frienduser",
             password="friendpassword",
             first_name="Friend",
             last_name="User"
         )
         self.friend_profile, _ = Profile.objects.get_or_create(user=self.friend)
 
-        # Adăugăm prietenul la lista de urmăriți
+        # adaugam prietenul la lista de urmariti
         self.profile.following.add(self.friend_profile)
 
-        # Creăm raftul "Read" pentru prieten
+        # cream raftul "read" pentru prieten
         self.friend_shelf = Shelf.objects.create(user=self.friend, name="Read")
 
-        # Creăm o carte și o adăugăm în raftul prietenului
+        # cream o carte si o adaugam in raftul prietenului
         self.book = Book.objects.create(
             title="Example Book",
             author="John Doe",
@@ -53,10 +55,10 @@ class GetFriendsBooksTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_get_friends_books(self):
-        # Trimitem cererea GET către endpoint
-        response = self.client.get("/api/books/get_friends_books/")
+        # trimitem cererea get catre endpoint
+        response = self.client.get("/books/get_friends_books/")
 
-        # Verificăm răspunsul
+        # verificam raspunsul
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["title"], "Example Book")
