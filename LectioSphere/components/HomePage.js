@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback } from 'react-native';
+import { View, Text, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback, ScrollView } from 'react-native';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -50,18 +50,22 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
     const fetchContinueReading = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/api/books/read/get/`, {
+            const response = await axios.get(`${apiBaseUrl}/books/read/get/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            setContinueReadingItems(response.data);
+            // Filtrăm cărțile care au un `thumbnail` valid
+            const booksWithThumbnail = response.data.filter(book => book.thumbnail);
+            // Setăm primele 15 de cărți care au thumbnail
+            setContinueReadingItems(booksWithThumbnail.data.slice(0, 15));
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/api/books/read/get/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/books/read/get/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    setContinueReadingItems(retryResponse.data);
+                    const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail);
+                    setContinueReadingItems(booksWithThumbnail.data.slice(0, 15));
                 } else {
                     console.error("Unable to refresh for reading items.");
                 }
@@ -78,18 +82,20 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
     const fetchYouMayLike = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/api/books/recommendation/`, {
+            const response = await axios.get(`${apiBaseUrl}/books/recommendation/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            setYouMayLikeItems(response.data);
+            const booksWithThumbnail = response.data.filter(book => book.thumbnail);
+            setYoyMayLikeItems(booksWithThumbnail.data.slice(0, 15));
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/api/books/recommendation/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/books/recommendation/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    setYouMayLikeItems(retryResponse.data);
+                    const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail);
+                    setYouMayLikeItems(booksWithThumbnail.data.slice(0, 15));
                 } else {
                     console.error("Unable to refresh for reading items.");
                 }
@@ -106,23 +112,33 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
     const fetchFriendsAreReading = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/api/books/get_friends_books/`, {
+            const response = await axios.get(`${apiBaseUrl}/books/get_friends_books/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            setFriendsAreReadingItems(response.data);
+            if (Array.isArray(response.data)) {
+                const booksWithThumbnail = response.data.filter(book => book.thumbnail);
+                setFriendsAreReadingItems(booksWithThumbnail.slice(0, 15));
+            } else {
+                setAreReading(false); 
+            }
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/api/books/get_friends_books/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/books/get_friends_books/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    setFriendsAreReadingItems(retryResponse.data);
+                    if (Array.isArray(response.data)) {
+                        const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail);
+                        setFriendsAreReadingItems(booksWithThumbnail.slice(0, 15));
+                    } else {
+                        setAreReading(false); 
+                    }
                 } else {
                     console.error("Unable to refresh for reading items.");
                 }
             } 
-            else if (error.response?.status === 404) {
+            else if (error.response?.status === HTTP_200_OK) {
                 setAreReading(false);
             }
             else {
@@ -165,52 +181,106 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
 
     return (
         <SafeAreaView style={styles.screen}>
+
             <TopBar pageName="HomePage" />
 
-            <View style={styles.header}>
-                {/* <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
-                    <View style={styles.container}>
-                        <Text style={styles.textContainer}>Continue Reading</Text>
-                        {continueReadingItems.map((item, index) => (
-                            <Text key={index}>{item.titlu}</Text>
-                        ))}
-                    </View>
-                </TouchableNativeFeedback> */}
+            <ScrollView contentContainerStyle={{ paddingBottom: 46 }}>
 
-                {
-                    isReading ? (
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                <View style={styles.header}>
+
+                    {
+                        isReading ? (
                             <View style={styles.container}>
-                                <Text style={styles.textContainer}> Continue Reading</Text>
-                                {continueReadingItems.map((item, index) => (
-                                    <Text key={index}>{item.titlu}</Text>
-                                ))}
+                                <TouchableNativeFeedback onPress={() => console.log("Apasat") /*TO DO: link catre raft*/}>
+                                    <View>
+                                        <Text style={styles.textContainer}> Continue Reading </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
+                                    {continueReadingItems.map((book, index) => (
+                                        <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                            <View>
+                                                <Image
+                                                    source={{ uri: book.thumbnail }}
+                                                    style={styles.covers}
+                                                />
+                                            </View>
+                                        </TouchableNativeFeedback>
+                                    ))}
+                                </ScrollView>
                             </View>
-                        </TouchableNativeFeedback>
-                    ) : null 
-                }
+                        ) : null 
+                    }
 
-                {
-                    Read ? (
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                    {
+                        Read ? (
                             <View style={styles.container}>
-                                <Text style={styles.textContainer}> You May Like</Text>
+                                <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Reccomendations'})}>
+                                    <View>
+                                        <Text style={styles.textContainer}> You May Like </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
+                                    {youMayLikeItems.map((book, index) => (
+                                        <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                            <View>
+                                                <Image
+                                                    source={{ uri: book.thumbnail }}
+                                                    style={styles.covers}
+                                                />
+                                            </View>
+                                        </TouchableNativeFeedback>
+                                    ))}
+                                </ScrollView>
                             </View>
-                        </TouchableNativeFeedback>
-                    ) : null 
-                }
+                        ) : null 
+                    }
 
-                {
-                    areReading ? (
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                    {
+                        ! Read ? (
                             <View style={styles.container}>
-                                <Text style={styles.textContainer}> Your friends are reading</Text>
+                                <Text style={styles.textContainer}>  You May Like </Text>
+                                <Text style={styles.textAdvice}>   Start reading so you can get recommendations! </Text>
                             </View>
-                        </TouchableNativeFeedback>
-                    ) : null
-                }
+                        ) : null
+                    }
 
-            </View>
+                    {
+                        areReading ? (
+                            <View style={styles.container}>
+                                <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Your friends are reading'})}>
+                                    <View>
+                                        <Text style={styles.textContainer}> Your friends are reading </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
+                                    {friendsAreReadingItems.map((book, index) => (
+                                        <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                            <View>
+                                                <Image
+                                                    source={{ uri: book.thumbnail }}
+                                                    style={styles.covers}
+                                                />
+                                            </View>
+                                        </TouchableNativeFeedback>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        ) : null
+                    }
+
+                    {
+                        ! areReading ? (
+                            <View style={styles.container}>
+                                <Text style={styles.textContainer}>  Your friends are reading</Text>
+                                <Text style={styles.textAdvice}>   Start following people to get inspired by their reads! </Text>
+                            </View>
+                        ) : null
+                    }
+
+                </View>
+            
+            </ScrollView>
 
             <NavBar navigation={navigation} page="HomePage" />
         </SafeAreaView>
@@ -246,6 +316,28 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#18101D',
         fontFamily: 'Nunito_600SemiBold',
+    },
+    covers: {
+        height: 148,
+        width: 98,
+        borderRadius: 4,
+        marginRight: 12,
+    },
+    categoryContainer: {
+        backgroundColor: '#FCF8FA',
+        alignItems: 'center',
+        paddingVertical: 10,
+        width: '95%',
+        marginTop: 16,
+    },
+    containerImages: {
+        marginHorizontal: 12,
+    },
+    textAdvice: {
+        fontFamily: 'Nunito_500Medium',
+        color: '#613F75',
+        fontSize: 16,
+        marginHorizontal: 20,
     },
 });
 

@@ -269,10 +269,10 @@ class BooksView(ViewSet):
             return Response({"message": "You are not following anyone."}, status=status.HTTP_200_OK)
         
         # rafturile Read ale persoanelor urmarite
-        shelves = Shelf.objects.filter(user__profile__in=following_profiles, name="Read")
+        shelves = Shelf.objects.filter(user__profile__in=following_profiles, name="Currently Reading")
 
         if not shelves:
-            return Response({"message": "No friends have read books."}, status=status.HTTP_200_OK)
+            return Response({"message": "No friends are reading books."}, status=status.HTTP_200_OK)
         
         # obtinem toate cartile din rafturile Read ale persoanelor urmarite
         shelf_books = ShelfBooks.objects.filter(shelf__in=shelves)
