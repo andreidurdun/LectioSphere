@@ -1,12 +1,12 @@
 
 ### //testare API Books
-// /? {author, title, publisher, isbn, q} = 
-GET http://localhost:8000/api/books/search/?author=mihai eminescu HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODMzNTA4LCJpYXQiOjE3NDU4Mjk5MDgsImp0aSI6ImI0MDY5MmExMGM5NTRkYWE4NjNkOTdkYzZlYzBkMDg5IiwidXNlcl9pZCI6NX0.B-MrXf62jvFqiUMAu5C6rFywzwPmeJ7Slb37J_rtIDo
+// /? {author, title, publisher, isbn, id, q} = 
+GET http://localhost:8000/books/search/?author=a HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzY4NzIwLCJpYXQiOjE3NDYzNjUxMjAsImp0aSI6ImJjOTRlMDM3NjVlMTRjMWI4MjQwZGQxOGI2ZmFhNjJhIiwidXNlcl9pZCI6Mn0.dcFL3pFj4UtQslQ7pHt6FbtG-25OEbWoRxvQF_2fSOA
 
 ### //returnare catri dupa categorie
 # category_map = {
-#             "recent": "q=bestseller&orderBy=newest",
+#             "recent": "q=fiction&orderBy=newest",
 #             "popular": "q=bestseller&orderBy=relevance",
 #         } sau orice categorie 
 GET http://localhost:8000/api/books/category/?name=popular HTTP/1.1
@@ -16,14 +16,15 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 //popular = Popular Now
 
 ### //adaugare o care la read
-POST http://localhost:8000/api/books/read/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODMzNTA4LCJpYXQiOjE3NDU4Mjk5MDgsImp0aSI6ImI0MDY5MmExMGM5NTRkYWE4NjNkOTdkYzZlYzBkMDg5IiwidXNlcl9pZCI6NX0.B-MrXf62jvFqiUMAu5C6rFywzwPmeJ7Slb37J_rtIDo
+POST http://localhost:8000/books/read/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzY4NzIwLCJpYXQiOjE3NDYzNjUxMjAsImp0aSI6ImJjOTRlMDM3NjVlMTRjMWI4MjQwZGQxOGI2ZmFhNjJhIiwidXNlcl9pZCI6Mn0.dcFL3pFj4UtQslQ7pHt6FbtG-25OEbWoRxvQF_2fSOA
 Content-Type: application/json
 
   
   {
       "book": {
-          "ISBN": "9781234567894",
+          "ISBN": "978123456789489",
+          "id" : "Jx9atwAACAAJ",
           "title": "Example Book",
           "author": "John Doe",
           "genre": "Romance",
@@ -68,13 +69,14 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 
 ### 
 
-POST http://localhost:8000/api/books/read_list/add/
+POST http://localhost:8000/books/read_list/add/
 Content-Type: application/json
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODQyNDk1LCJpYXQiOjE3NDU4Mzg4OTUsImp0aSI6ImE1M2YxZTE5Nzc5MzRiYTZiN2ExYWIzZjM0ZGRiYzZlIiwidXNlcl9pZCI6NX0.LTSo8XJV04JNRm0hQHZD4olxuJxnbG_QpPuO8cawZJI
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzY4NzIwLCJpYXQiOjE3NDYzNjUxMjAsImp0aSI6ImJjOTRlMDM3NjVlMTRjMWI4MjQwZGQxOGI2ZmFhNjJhIiwidXNlcl9pZCI6Mn0.dcFL3pFj4UtQslQ7pHt6FbtG-25OEbWoRxvQF_2fSOA
 
 {
     "book": {
-        "ISBN": "9781234567899",
+        "ISBN": "9781234567899999010",
+        "id" : "Jx9atwAACAAJ",
         "title": "Example Book",
         "author": "John Doe",
         "genre": "Romance",
@@ -82,7 +84,8 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
         "nr_pages": 320,
         "publication_year": 2021,
         "series": "Example Series",
-        "description": "This is an example book description."
+        "description": "This is an example book description.",
+        "thumbnail": "http://books.google.com/books/content?id=oh-5AAmboMUC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
     }
 }
 ###
@@ -172,4 +175,26 @@ Content-Type: application/json
 ### // your friends are reading
 GET http://localhost:8000/api/books/get_friends_books/ HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODQyNDk1LCJpYXQiOjE3NDU4Mzg4OTUsImp0aSI6ImE1M2YxZTE5Nzc5MzRiYTZiN2ExYWIzZjM0ZGRiYzZlIiwidXNlcl9pZCI6NX0.LTSo8XJV04JNRm0hQHZD4olxuJxnbG_QpPuO8cawZJI
+
+
+
+# ----- PROFILE -----
+### GET profil utilizator
+GET http://localhost:8000/api/accounts/profile/read/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzAwODE2LCJpYXQiOjE3NDYyOTcyMTYsImp0aSI6IjliZWZmNTRiMTgzZjQ0ZDE5ZTE3YWVmNTVlZjcyMDZlIiwidXNlcl9pZCI6MX0.rhxS16xrhJttvf-jqFbYG-Kl1fRf2ZkYhwWZ1aWsS_A
+
+###
+
+### PATCH profil utilizator
+PATCH http://localhost:8000/api/accounts/profile/update/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzAwODE2LCJpYXQiOjE3NDYyOTcyMTYsImp0aSI6IjliZWZmNTRiMTgzZjQ0ZDE5ZTE3YWVmNTVlZjcyMDZlIiwidXNlcl9pZCI6MX0.rhxS16xrhJttvf-jqFbYG-Kl1fRf2ZkYhwWZ1aWsS_A
+
+{
+  "bio": "sal!",
+  "first_name": "Dani",
+  "last_name": "Nedelcu",
+  "username": "dani240"
+}
+
+
 

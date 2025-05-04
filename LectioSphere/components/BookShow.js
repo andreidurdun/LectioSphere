@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FCF8FA',
     },
     scrollViewStyle: {
+        marginTop: 72,
         flex: 1,
     },
     scrollContainer: {

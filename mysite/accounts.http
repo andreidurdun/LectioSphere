@@ -42,8 +42,18 @@ POST http://localhost:8000/auth/jwt/create/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "email" : "lectiosphere@gmail.com",
+    "email" : "andreidurdun2@gmail.com",
     "password" : "12345678Abc"
+
+}
+
+###
+POST http://localhost:8000/auth/jwt/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "anamariarusu063@gmail.com",
+    "password" : "qwertyuiop0"
 
 }
 
