@@ -55,7 +55,6 @@ class GoogleBooksAPIView(ViewSet):
         publisher = request.query_params.get('publisher')
         isbn = request.query_params.get('isbn')
         general = request.query_params.get('q')
-
         if not any([title, author, publisher, general, isbn]):
             return Response({"error": "Provide at least one parameter: title, author, publisher, isbn or q."},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -73,7 +72,8 @@ class GoogleBooksAPIView(ViewSet):
             query_parts.append(general)
 
         query = "+".join(query_parts)
-        url = f"{self.GOOGLE_API_BASE}{query}&maxResults=20"
+
+        url = f"{self.GOOGLE_API_BASE}{query}&maxResults=20" 
 
         response = requests.get(url)
         if response.status_code != 200:

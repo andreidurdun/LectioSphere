@@ -13,6 +13,7 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
     const [userData, setUserData] = useState(null);
     const [recentlyPublishedItems, setRecentlyPublishedItems] = useState([]);
     const [popularItems, setPopularItems] = useState([]);
+    const [bookTitle, setBookTitle] = useState('');
 
     //Fiction
     const [adventure, setAdventure] = useState([]);
@@ -113,6 +114,12 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
         );
     };
 
+    const handleBookPress = (book) => {
+        navigation.navigate('BookShow', { 
+            bookData: JSON.stringify(book)
+        });
+    };
+    
     useEffect(() => {
         if (isAuthenticated) {
             fetchUserData();
@@ -138,11 +145,6 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
     if (!fontsLoaded) {
         return <Text>Loading fonts...</Text>;
     }
-
-    const handleBookPress = (book) => {
-        navigation.navigate('BookShow', { book, navigation, apiBaseUrl });
-    };
-    
 
     return (
         <SafeAreaView style={styles.screen}>
