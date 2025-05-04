@@ -24,11 +24,30 @@ from accounts.models import Profile
 class GoogleBooksAPIView(ViewSet):
     GOOGLE_API_BASE = "https://www.googleapis.com/books/v1/volumes?q="
 
+    
+
     def _format_books(self, items):
         results = []
+
         for item in items:
             book = item.get("volumeInfo", {})
+        
+            # extrage isbn_13 sau isbn_10
+            industry_ids = book.get("industryIdentifiers", [])
+            isbn_13 = None
+            isbn_10 = None
+            
+            for id_info in industry_ids:
+                if id_info.get("type") == "ISBN_13":
+                    isbn_13 = id_info.get("identifier")
+                elif id_info.get("type") == "ISBN_10":
+                    isbn_10 = id_info.get("identifier")
+            
+            isbn = isbn_13 or isbn_10
+
             results.append({
+                "id": item.get("id"),
+                "isbn" : isbn,
                 "title": book.get("title"),
                 "authors": book.get("authors", []),
                 "publisher": book.get("publisher"),
@@ -55,9 +74,10 @@ class GoogleBooksAPIView(ViewSet):
         publisher = request.query_params.get('publisher')
         isbn = request.query_params.get('isbn')
         general = request.query_params.get('q')
+        id = request.query_params.get('id')
 
-        if not any([title, author, publisher, general, isbn]):
-            return Response({"error": "Provide at least one parameter: title, author, publisher, isbn or q."},
+        if not any([title, author, publisher, general, isbn, id]):
+            return Response({"error": "Provide at least one parameter: title, author, publisher, isbn, id or q."},
                             status=status.HTTP_400_BAD_REQUEST)
 
         query_parts = []
@@ -71,6 +91,7 @@ class GoogleBooksAPIView(ViewSet):
             query_parts.append(f"isbn:{isbn}")
         if general:
             query_parts.append(general)
+        
 
         query = "+".join(query_parts)
         url = f"{self.GOOGLE_API_BASE}{query}&maxResults=40"
