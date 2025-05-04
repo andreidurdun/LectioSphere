@@ -3,12 +3,18 @@ from django.urls import path, re_path, include
 from .views import GoogleBooksAPIView
 from .views import BooksView
 <<<<<<< HEAD
+<<<<<<< HEAD
 from .views import PostsView
 =======
 from api.views.LibraryPageView import LibraryPageView
 
 from api.views.ReadingSheetsView import ReadingSheetsView
 >>>>>>> 60713e2f (Adaugare view fise de lectura si rutare)
+=======
+from api.views.LibraryPageView import LibraryPageView
+
+from api.views.ReadingSheetsView import ReadingSheetsView
+>>>>>>> ReadingSheets
 
 
 urlpatterns = [
@@ -29,6 +35,7 @@ urlpatterns = [
     path("books/get/<str:isbn>/", BooksView.as_view({"get": "get_book"}), name="get-book"),
     path("books/get_friends_books/", BooksView.as_view({"get": "get_friends_books"}), name="get-friends-books"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
     # urls pentru postari
@@ -44,3 +51,8 @@ urlpatterns = [
     path("reading_sheets/user/", ReadingSheetsView.as_view(), name="user-reading-sheets"),
 ]
 >>>>>>> 60713e2f (Adaugare view fise de lectura si rutare)
+=======
+    path("library/", LibraryPageView.as_view(), name="library-page"),
+    path("reading_sheets/user/", ReadingSheetsView.as_view(), name="user-reading-sheets"),
+]
+>>>>>>> ReadingSheets
