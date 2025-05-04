@@ -11,6 +11,7 @@ import axios from 'axios';
 import ProfileEdit from './components/ProfileEdit';
 import CategoryBooksPage from './components/CategoryBooksPage';
 import BookShow from './components/BookShow';
+import LibraryPage from './components/LibraryPage';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -150,6 +151,17 @@ export default function App() {
         <Stack.Screen name="SearchPage" options={{ headerShown: false }}>
           {(props) => (
             <SearchPage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="LibraryPage" options={{ headerShown: false }}>
+          {(props) => (
+            <LibraryPage
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}

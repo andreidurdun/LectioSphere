@@ -164,6 +164,12 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
         );
     };
 
+    const handleBookPress = (book) => {
+        navigation.navigate('BookShow', { 
+            bookData: JSON.stringify(book)
+        });
+    };
+
     useEffect(() => {
         if (isAuthenticated) {
             fetchUserData();
