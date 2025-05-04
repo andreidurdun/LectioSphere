@@ -29,6 +29,8 @@ const CategoryBooksPage = ({ route, navigation, removeAuthToken, isAuthenticated
         'Health': 'health', 
         'Nutrition': 'nutrition', 
         'Travel': 'travel', 
+        'Reccomendations': 'reccomendations',
+        'Your friends are reading': 'your friends are reading',
     };
     const categoryName = categoryMap[category]; 
     const [books, setBooks] = useState([]); 
@@ -66,9 +68,24 @@ const CategoryBooksPage = ({ route, navigation, removeAuthToken, isAuthenticated
     const fetchBooks = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/books/category/?name=${categoryName}`, {
-                headers: { Authorization: `JWT ${token}` }
-            });
+            let response;
+            if ( categoryName === 'reccomendations' ) {
+                response = await axios.get(`${apiBaseUrl}/books/recommendation/`, {
+                    headers: { Authorization: `JWT ${token}` }
+                });
+            }
+            else {
+                if ( categoryName === 'your friends are reading') {
+                    response = await axios.get(`${apiBaseUrl}/books/get_friends_books/`, {
+                        headers: { Authorization: `JWT ${token}` }
+                    });
+                }
+                else {
+                    response = await axios.get(`${apiBaseUrl}/books/category/?name=${categoryName}`, {
+                        headers: { Authorization: `JWT ${token}` }
+                    });
+                }
+            }
             // Filtrăm cărțile care au un `thumbnail` valid
             const booksWithThumbnail = response.data.filter(book => book.thumbnail);
             setBooks(booksWithThumbnail);
@@ -76,9 +93,24 @@ const CategoryBooksPage = ({ route, navigation, removeAuthToken, isAuthenticated
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/books/category/?name=${categoryName}`, {
-                        headers: { Authorization: `JWT ${newToken}` }
-                    });
+                    let retryResponse;
+                    if ( categoryName === 'reccomendations' ) {
+                        retryResponse = await axios.get(`${apiBaseUrl}/books/recommendation/`, {
+                            headers: { Authorization: `JWT ${token}` }
+                        });
+                    }
+                    else {
+                        if ( categoryName === 'your friends are reading') {
+                            retryResponse = await axios.get(`${apiBaseUrl}/books/get_friends_books/`, {
+                                headers: { Authorization: `JWT ${token}` }
+                            });
+                        }
+                        else {
+                            retryResponse = await axios.get(`${apiBaseUrl}/books/category/?name=${categoryName}`, {
+                                headers: { Authorization: `JWT ${token}` }
+                            });
+                        }
+                    }
                     const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail);
                     setBooks(booksWithThumbnail);
                 } else {

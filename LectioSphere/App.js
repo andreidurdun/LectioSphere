@@ -14,7 +14,7 @@ import BookShow from './components/BookShow';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
-const API_BASE_URL = 'http://192.168.50.84:8000';
+const API_BASE_URL = 'http://192.168.1.134:8000';
 
 // Configurare interceptor global pentru axios
 const setupAxiosInterceptors = (refresh) => {
