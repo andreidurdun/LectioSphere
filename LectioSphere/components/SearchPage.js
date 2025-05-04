@@ -13,10 +13,11 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
     const [userData, setUserData] = useState(null);
     const [recentlyPublishedItems, setRecentlyPublishedItems] = useState([]);
     const [popularItems, setPopularItems] = useState([]);
+    const [bookTitle, setBookTitle] = useState('');
 
     //Fiction
-    /*const [adventure, setAdventure] = useState([]);
-    const [fantasy, setFantasy] = useState([]);
+    const [adventure, setAdventure] = useState([]);
+    /*const [fantasy, setFantasy] = useState([]);
     const [romance, setRomance] = useState([]);
     const [thriller, setThriller] = useState([]);
     const [scienceFiction, setScienceFiction] = useState([]);*/
@@ -120,33 +121,37 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
         );
     };
 
+    const handleBookPress = (book) => {
+        navigation.navigate('BookShow', { 
+            bookData: JSON.stringify(book)
+        });
+    };
+    
     useEffect(() => {
         if (isAuthenticated) {
             fetchUserData();
-            fetchCategory('recent', setRecentlyPublishedItems);
-            fetchCategory('popular', setPopularItems);
-            /*fetchCategory('adventure', setAdventure);
-            fetchCategory('fantasy', setFantasy);
-            fetchCategory('romance', setRomance);
-            fetchCategory('thriller', setThriller);
-            fetchCategory('science fiction', setScienceFiction);
-            fetchCategory('biography', setBiography);
-            fetchCategory('history', setHistory);
-            fetchCategory('psychology', setPsychology);
-            fetchCategory('business', setBusiness);
-            fetchCategory('economics', setEconomics);
-            fetchCategory('technology', setTechnology);
-            fetchCategory('health', setHealth);
-            fetchCategory('nutrition', setNutrition);
-            fetchCategory('travel', setTravel);*/
+            // fetchCategory('recent', setRecentlyPublishedItems);
+            // fetchCategory('popular', setPopularItems);
+            fetchCategory('adventure', setAdventure);
+            // fetchCategory('fantasy', setFantasy);
+            // fetchCategory('romance', setRomance);
+            // fetchCategory('thriller', setThriller);
+            // fetchCategory('science fiction', setScienceFiction);
+            // fetchCategory('biography', setBiography);
+            // fetchCategory('history', setHistory);
+            // fetchCategory('psychology', setPsychology);
+            // fetchCategory('business', setBusiness);
+            // fetchCategory('economics', setEconomics);
+            // fetchCategory('technology', setTechnology);
+            // fetchCategory('health', setHealth);
+            // fetchCategory('nutrition', setNutrition);
+            // fetchCategory('travel', setTravel);
         }
     }, [isAuthenticated]);
 
     if (!fontsLoaded) {
         return <Text>Loading fonts...</Text>;
     }
-
-    
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -163,7 +168,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {recentlyPublishedItems.map((book, index) => (
-                                <TouchableNativeFeedback key={index} onPress={() => console.log("Apasat")}>
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
                                     <View>
                                         <Image
                                             source={{ uri: book.thumbnail }}
@@ -183,11 +188,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {popularItems.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -208,11 +216,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {adventure.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -225,11 +236,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {fantasy.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -242,11 +256,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {romance.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -259,11 +276,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {scienceFiction.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -276,11 +296,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {thriller.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -302,11 +325,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {biography.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -319,11 +345,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {history.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -336,11 +365,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {psychology.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -361,11 +393,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {business.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -378,11 +413,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {economics.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -395,11 +433,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {technology.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -420,11 +461,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {health.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -437,11 +481,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {nutrition.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>
@@ -454,11 +501,14 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {travel.map((book, index) => (
-                            <Image
-                                key={index}
-                                source={{ uri: book.thumbnail }}
-                                style={styles.covers}
-                            />
+                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                    <View>
+                                        <Image
+                                            source={{ uri: book.thumbnail }}
+                                            style={styles.covers}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
                     </View>

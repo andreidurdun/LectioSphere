@@ -10,10 +10,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import ProfileEdit from './components/ProfileEdit';
 import CategoryBooksPage from './components/CategoryBooksPage';
+import BookShow from './components/BookShow';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
-const API_BASE_URL = 'http://192.168.1.134:8000';
+const API_BASE_URL = 'http://192.168.50.84:8000';
 
 // Configurare interceptor global pentru axios
 const setupAxiosInterceptors = (refresh) => {
@@ -125,7 +126,8 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={isAuthenticated ? 'HomePage' : 'LoginMenu'}>
+      {/* <Stack.Navigator initialRouteName={isAuthenticated ? 'HomePage' : 'LoginMenu'}> */}
+      <Stack.Navigator initialRouteName={'LoginMenu'}>
         <Stack.Screen name="LoginMenu" options={{ headerShown: false }}>
           {(props) => <LoginMenu {...props} saveAuthToken={saveAuthToken} apiBaseUrl={API_BASE_URL} />}
         </Stack.Screen>
@@ -190,6 +192,17 @@ export default function App() {
           )}
         </Stack.Screen>
         
+        <Stack.Screen name="BookShow" options={{ headerShown: false }}>
+          {(props) => (
+            <BookShow
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
       </Stack.Navigator>
     </NavigationContainer>
   );
