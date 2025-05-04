@@ -1,0 +1,206 @@
+# https://djoser.readthedocs.io/en/latest/base_endpoints.html
+//creare cont 
+
+
+
+###
+POST http://localhost:8000/auth/users/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "vacarumarta@gmail.com",
+    "first_name" : "Marta",
+    "last_name" : "Vacaru",
+    "password" : "NouaParola123!",
+    "re_password" : "NouaParola123!"
+}
+
+
+
+//activare contul
+//uid = in url-ul din email, dupa activate/
+//token = in url dupa uid
+###
+POST http://localhost:8000/auth/users/activation/ HTTP/1.1
+Content-Type: application/json
+
+{
+   
+  "uid": "MQ",
+  "token": "cp89va-a86a8b4c727b2e61e98b8884355b629a"
+  //cp89va-a86a8b4c727b2e61e98b8884355b629a
+}
+
+
+
+###
+POST http://localhost:8000/auth/users/resend_activation/ HTTP/1.1
+Content-Type: application/json
+
+{
+        "email" : "vacarumarta@gmail.com",
+}
+
+//login
+# https://djoser.readthedocs.io/en/latest/jwt_endpoints.html
+
+###
+POST http://localhost:8000/auth/jwt/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+        "email" : "vacarumarta@gmail.com",
+    "password" : "NouaParola123!"
+
+}
+
+###
+POST http://localhost:8000/auth/users/reset_password/
+Content-Type: application/json
+
+{
+  "email": "vacarumarta@gmail.com"
+}
+
+
+
+
+
+###
+//DELETE Account
+DELETE http://localhost:8000/auth/users/me/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NzUzNTk2LCJpYXQiOjE3NDU3NDk5OTYsImp0aSI6ImM1ZjJlMTg3ZDc3ZjQzZjBhMWY3YWI3OTgxMzdlY2Y2IiwidXNlcl9pZCI6Mn0.AqKl1TkwWx3V9p8ToFbb7wAr8QVkD7fqy3qj5d-LnFs
+Content-Type: application/json
+
+{
+    "current_password" : "NouaParola123!"
+}
+
+//autentificarea cu google
+
+###
+//aceasta cerere se realizeaza din frontend  (tutorial part 10, de la min 20)
+//redirect_uri = ulr-ul unde vrei sa te duca dupa autentificare
+GET http://localhost:8000/auth/o/google-oauth2/?redirect_uri=http://localhost:8000 HTTP/1.1
+
+###
+GET http://localhost:8000/auth/o/google-oauth2/?redirect_uri=http://localhost:8000/complete/google-oauth2/ HTTP/1.1
+
+
+
+###
+POST http://localhost:8000/auth/users/reset_password_confirm/
+Content-Type: application/json
+
+{
+  "uid": "MQ",
+  "token": "cp8bjm-a2eaa51ddc790ec689d457d7a954dfea",
+  "new_password": "NouaParola123!"
+}
+
+
+###
+
+GET http://localhost:8000/auth/users/me
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MjkzMzk3LCJpYXQiOjE3NDYyODk3OTcsImp0aSI6IjY1MjhhZjExY2FiNjQzNTA4NzUzN2QzYWZmMzE2MzM4IiwidXNlcl9pZCI6MX0.qNijqpQ-scFvp1LdAj4H-6P-4jDpuaV2j8RKCc9BzQg
+Content-Type: application/json
+
+
+//imi da rafturile
+###
+GET http://localhost:8000/api/library/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDU3LCJpYXQiOjE3NDYzOTY0NTcsImp0aSI6ImYxODJjZTg3M2IzMjQyYjE5OWU4Zjk2M2UxNmZkMjUyIiwidXNlcl9pZCI6MX0.FQcQGPt2lvq_ojdq9jfgwEkVPTSvzRDFALTK43Vy5os
+Content-Type: application/json
+
+
+
+###
+POST http://localhost:8000/api/books/read/add/
+
+
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
+Content-Type: application/json
+
+{
+  "book": {
+    "ISBN": "9780143127741",
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "genre": "Science Fiction",
+    "rating": 4.7,
+    "nr_pages": 384,
+    "publication_year": 2014,
+    "series": "",
+    "description": "A story about survival on Mars."
+  }
+}
+
+###
+POST http://localhost:8000/auth/jwt/create/
+Content-Type: application/json
+
+{
+  "email": "vacarumarta@gmail.com",
+  "password": "NouaParola123!"
+}
+
+
+###
+
+POST http://localhost:8000/api/books/read/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2Mzk0Mjc3LCJpYXQiOjE3NDYzOTA2NzcsImp0aSI6IjE3MDAzMzEzZjkyNDQ0YzE4ZWRlZDVkMzUwZjNmNmZlIiwidXNlcl9pZCI6MX0.Kd_ifgVwsCFDXGBsNZlpx4BDFKrJximKZEWMhwqIP2w
+Content-Type: application/json
+
+{
+  "book": {
+    "ISBN": "9780143127741",
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "genre": "Science Fiction",
+    "rating": 4.7,
+    "nr_pages": 384,
+    "publication_year": 2014,
+    "series": "",
+    "description": "A story about survival on Mars."
+  }
+}
+
+
+
+### Creează un raft nou personalizat
+//var cu user bagat de mn nu automat
+###
+POST http://localhost:8000/api/shelves/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDU3LCJpYXQiOjE3NDYzOTY0NTcsImp0aSI6ImYxODJjZTg3M2IzMjQyYjE5OWU4Zjk2M2UxNmZkMjUyIiwidXNlcl9pZCI6MX0.FQcQGPt2lvq_ojdq9jfgwEkVPTSvzRDFALTK43Vy5os
+Content-Type: application/json
+
+{
+   "user": 1,
+   "name": "asa VREAU"
+}
+
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDEyLCJpYXQiOjE3NDYzOTY0MTIsImp0aSI6IjY3YTRhMTBiZGI1NjQ2OWM5ZDZiYjY0ZDk3ODIyZTA4IiwidXNlcl9pZCI6MX0.UQXyyLqq2lSAm22DIJA4O9O3-bhIdwphyjqYISn0DI
+
+
+//testare fise
+
+###
+POST http://localhost:8000/api/reading_sheets/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDU3LCJpYXQiOjE3NDYzOTY0NTcsImp0aSI6ImYxODJjZTg3M2IzMjQyYjE5OWU4Zjk2M2UxNmZkMjUyIiwidXNlcl9pZCI6MX0.FQcQGPt2lvq_ojdq9jfgwEkVPTSvzRDFALTK43Vy5os
+Content-Type: application/json
+
+{
+  "user": 1,
+  "book": 1,
+  "shelf": 1,
+  "text": " "
+}
+
+
+
+###
+POST http://localhost:8000/api/reading_sheets/user/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDU3LCJpYXQiOjE3NDYzOTY0NTcsImp0aSI6ImYxODJjZTg3M2IzMjQyYjE5OWU4Zjk2M2UxNmZkMjUyIiwidXNlcl9pZCI6MX0.FQcQGPt2lvq_ojdq9jfgwEkVPTSvzRDFALTK43Vy5os
+Content-Type: application/json
