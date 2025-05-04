@@ -9,32 +9,39 @@ import { refreshAccessToken } from './refreshAccessToken';
 
 //TO DOOO: Pus link-uri catre pagini, modificat toate imaginile in touchable si luat modificari de la Andrei
 
-const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
+const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
     const [recentlyPublishedItems, setRecentlyPublishedItems] = useState([]);
     const [popularItems, setPopularItems] = useState([]);
 
     //Fiction
-    const [adventure, setAdventure] = useState([]);
+    /*const [adventure, setAdventure] = useState([]);
     const [fantasy, setFantasy] = useState([]);
     const [romance, setRomance] = useState([]);
     const [thriller, setThriller] = useState([]);
-    const [scienceFiction, setScienceFiction] = useState([]);
+    const [scienceFiction, setScienceFiction] = useState([]);*/
 
     //Non-Fiction
-    const [biography, setBiography] = useState([]);
+    /*const [biography, setBiography] = useState([]);
     const [history, setHistory] = useState([]);
-    const [psychology, setPsychology] = useState([]);
+    const [psychology, setPsychology] = useState([]);*/
 
     //Professional & Technical
-    const [business, setBusiness] = useState([]);
+    /*const [business, setBusiness] = useState([]);
     const [economics, setEconomics] = useState([]);
     const [technology, setTechnology] = useState([]);
     
     //Lifestyle
     const [health, setHealth] = useState([]);
     const [nutrition, setNutrition] = useState([]);
-    const [travel, setTravel] = useState([]);
+    const [travel, setTravel] = useState([]);*/
+
+    const [active, setActive] = useState(page);
+
+    const handleCategoryClick = (page, params = {}) => {
+        setActive(page);
+        navigation.navigate(page, params); 
+    };
 
 
     const [fontsLoaded] = useFonts({
@@ -118,7 +125,7 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
             fetchUserData();
             fetchCategory('recent', setRecentlyPublishedItems);
             fetchCategory('popular', setPopularItems);
-            fetchCategory('adventure', setAdventure);
+            /*fetchCategory('adventure', setAdventure);
             fetchCategory('fantasy', setFantasy);
             fetchCategory('romance', setRomance);
             fetchCategory('thriller', setThriller);
@@ -131,7 +138,7 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
             fetchCategory('technology', setTechnology);
             fetchCategory('health', setHealth);
             fetchCategory('nutrition', setNutrition);
-            fetchCategory('travel', setTravel);
+            fetchCategory('travel', setTravel);*/
         }
     }, [isAuthenticated]);
 
@@ -149,7 +156,7 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
 
                 <View style={styles.header}>
                     <View style={styles.container}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Recently Published' })}>
                             <View>
                                 <Text style={styles.textContainer}> Recently Published </Text>
                             </View>
@@ -187,7 +194,7 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
 
 
                     {/* Fiction */}
-
+                    {/*
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategory}> Fiction </Text>
                         <View style={styles.horizontalBar} />
@@ -277,10 +284,11 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
                             ))}
                         </ScrollView>
                     </View>
+                    */}
                     
 
                     {/* Non-Fiction */}
-
+                    {/*
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategory}> Non-Fiction </Text>
                         <View style={styles.horizontalBar} />
@@ -336,10 +344,10 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
                             ))}
                         </ScrollView>
                     </View>
-
+                    */}
                     
                     {/* Professional & Technology */}
-
+                    {/*
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategory}> Professional & Technology </Text>
                         <View style={styles.horizontalBar} />
@@ -395,10 +403,10 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
                             ))}
                         </ScrollView>
                     </View>
-
+                    */}
 
                     {/* Lifestyle */}
-
+                    {/*
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategory}> Lifestyle </Text>
                         <View style={styles.horizontalBar} />
@@ -454,7 +462,7 @@ const SearchPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
                             ))}
                         </ScrollView>
                     </View>
-
+                    */}
 
                 </View>
 
