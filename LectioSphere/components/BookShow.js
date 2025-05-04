@@ -70,7 +70,8 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
         );
     }
 
-    console.log(bookData);
+
+    // TODO: redirectionare catre o categorie la apasarea ei, completare cu postari
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -156,7 +157,6 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
 
                 <View style={styles.moreInfoContainer}>
                     <Text style={styles.moreInfoTitle}>More Info</Text>
-                    <View style={styles.horizontalLine}></View>
                     {bookData.pageCount && (
                         <View style={styles.detailRow}>
                             <Text style={styles.label}>Pages:</Text>
@@ -177,6 +177,42 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                             <Text style={styles.value}>{bookData.isbn}</Text>
                         </View>
                     )}
+                    {bookData.publishedDate && (
+                        <View style={styles.detailRow}>
+                            <Text style={styles.label}>Publishing Date:</Text>
+                            <Text style={styles.value}>{bookData.publishedDate}</Text>
+                        </View>
+                    )}
+                    {bookData.publisher && (
+                        <View style={styles.detailRow}>
+                            <Text style={styles.label}>Publisher:</Text>
+                            <Text style={styles.value}>{bookData.publisher}</Text>
+                        </View>
+                    )}
+                </View>
+
+                <View style={styles.reviewsContainer}>
+                    <Text style={styles.reviewsTitle}>
+                        Reviews from people you follow
+                    </Text>
+                    {/* Aici o sa vina apelul catre review-urile cartii cand sunt gata postarile */}
+                    <View style={styles.reviews}>
+                        <Text style={styles.reviewsPlaceholder}>
+                            Currently, there are no reviews
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={styles.reviewsContainer}>
+                    <Text style={styles.reviewsTitle}>
+                        All reviews
+                    </Text>
+                    {/* Aici o sa vina apelul catre review-urile cartii cand sunt gata postarile */}
+                    <View style={styles.reviews}>
+                        <Text style={styles.reviewsPlaceholder}>
+                            Currently, there are no reviews
+                        </Text>
+                    </View>
                 </View>
 
             </ScrollView>
@@ -324,8 +360,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#613F75',
         alignSelf: 'center',
+        textAlign: 'center',
         justifyContent: 'center',
         padding: 6,
+        width: 236,
+        borderBottomColor: '#E5C3D1',
+        borderBottomWidth: 1,
+        marginBottom: 16
     },
     label: {
         fontFamily: 'Nunito_600SemiBold',
@@ -341,6 +382,37 @@ const styles = StyleSheet.create({
         flex: 1,
         flexWrap: 'wrap',
     },
+    reviewsContainer: {
+        marginVertical: 8,
+        padding: 12,
+        marginHorizontal: 6,
+        borderRadius: 8,
+    },
+    reviewsTitle: {
+        fontFamily: 'Nunito_600SemiBold',
+        fontSize: 20,
+        color: '#613F75',
+        alignSelf: 'center',
+        textAlign: 'center',
+        justifyContent: 'center',
+        padding: 6,
+        width: 340,
+        borderBottomColor: '#E5C3D1',
+        borderBottomWidth: 1,
+        marginBottom: 16
+    },
+    reviews: {
+        
+    },
+    reviewsPlaceholder: {
+        fontFamily: 'Nunito_600SemiBold',
+        fontSize: 20,
+        color: '#E5C3D1',
+        alignSelf: 'center',
+        textAlign: 'center',
+        justifyContent: 'center',
+    },
+
 
 
     loadingText: {
