@@ -2,14 +2,13 @@ from django.db import models
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
 
 class Book(models.Model):
-
-    id = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        verbose_name="Book ID"
-    )
     
+    id = models.CharField(
+     max_length=255,
+     blank=True,
+     null=True,
+     verbose_name="Book ID"
+ )
     ISBN = models.CharField(
         primary_key=True,
     )

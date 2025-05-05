@@ -7,6 +7,10 @@ from rest_framework.viewsets import ViewSet
 import json 
 import requests
 from rest_framework.decorators import action
+from api.models import PostLike
+
+from api.models import Comment
+from api.serializers import CommentSerializer
 
 
 class PostsView(ViewSet):
@@ -132,3 +136,53 @@ class PostsView(ViewSet):
         posts = Post.objects.filter(user=request.user)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+    
+    from api.models import PostLike
+
+    @action(detail=True, methods=['post'])
+    def toggle_like(self, request, pk=None):
+        try:
+            post = Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+        like, created = PostLike.objects.get_or_create(user=user, post=post)
+
+        if not created:
+           like.delete()
+           liked = False
+        else:
+           liked = True
+
+        like_count = PostLike.objects.filter(post=post).count()
+        return Response({
+        "liked": liked,
+        "like_count": like_count
+    }, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def add_comment(self, request, pk=None):
+            try:
+                post = Post.objects.get(pk=pk)
+            except Post.DoesNotExist:
+                  return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = CommentSerializer(data=request.data)
+            if serializer.is_valid():
+             # Setăm user și post direct, fără ca ele să vină în request
+              serializer.save(user=request.user, post=post)
+              return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'])
+    def list_comments(self, request, pk=None):
+            try:
+             post = Post.objects.get(pk=pk)
+            except Post.DoesNotExist:
+             return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            comments = Comment.objects.filter(post=post).order_by("-date")
+            serializer = CommentSerializer(comments, many=True)
+            return Response(serializer.data)
