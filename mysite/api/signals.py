@@ -9,32 +9,40 @@ from django.utils.timezone import now
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-@receiver(post_save, sender=ShelfBooks)
+@receiver(post_save, sender=Post)
 def update_user_embedding(sender, instance, created, **kwargs):
+
     if not created:
-        return  # doar când adăugăm un ShelfBook nou
+        return  "Nu a fost facuta o postare"# daca nu s a facut o postare: return 
   
-    shelf = instance.shelf
-    if shelf.name != "Read":
-        return  # doar pentru raftul "Read"
+     # instance = modelul Post care tocmai a fost salvat in BD
+    if instance.rating == 0:
+        return  # 0 = nu a lasat rating
 
-    user = shelf.user
+    user = instance.user
 
-    # Găsim toate cărțile citite de user
-    shelf_books = ShelfBooks.objects.filter(shelf=shelf)
+    # luam cartile despre care a postat userul
+    posts = Post.objects.filter(user=user).exclude(rating=0)
+    
+    descriptions_ratings = [(post.book.description, post.rating) for post in posts if post.book.description] # lista de tuplu (descriere, rating)
 
-    descriptions = [shelf_book.book.description for shelf_book in shelf_books if shelf_book.book.description]
-
-    if not descriptions:
+    if not descriptions_ratings:
         return  # nu avem ce recalcula
 
-    # Encode toate descrierile
-    embeddings = model.encode(descriptions)
-    mean_embedding = np.mean(embeddings, axis=0).tolist()  # face media și transformă în listă de floats
+    descriptions, ratings = zip(*descriptions_ratings)
 
-    # Actualizăm profilul userului
+    # normalizam ratingurile intre [0,1]
+    ratings = np.array(ratings)
+    weights = ratings / np.sum(ratings)
+
+    # encode toate descrierile
+    embeddings = model.encode(descriptions)
+    weighted_embeddings = np.average(embeddings, axis=0, weights=weights).tolist()  # media ponderata a embedding urilor (lista de floats)
+    
+
+    # actualizam profilul userului
     profile, created = Profile.objects.get_or_create(user=user)
-    profile.set_embedding(mean_embedding)
+    profile.set_embedding(weighted_embeddings)
 
 
 

@@ -106,7 +106,7 @@ class GoogleBooksAPIView(ViewSet):
         data = response.json()
 
         if id:
-            # când căutăm după id, e un singur obiect, îl punem într-o listă
+            # cand cautam dupa id, e un singur obiect, il punem intr-o lista
             items = [data]
         else:
             items = data.get("items", [])
@@ -158,7 +158,7 @@ class GoogleBooksAPIView(ViewSet):
 
             books = response.json().get("items", [])
             if not books:
-                break  # dacă nu mai sunt cărți, ieși din loop
+                break  # daca nu mai sunt carti, iesi din loop
 
             formatted_books = self._format_books(books)
             all_books.extend(formatted_books)
@@ -176,7 +176,7 @@ class GoogleBooksAPIView(ViewSet):
         sims = cosine_similarity(user_embedding, book_embeddings)[0]
 
         if len(books_with_desc) < 20:
-            # Poate nu avem destule cărți, folosim tot ce avem
+            # Poate nu avem destule carti, folosim tot ce avem
             top_indices = np.argsort(sims)[::-1]
         else:
             top_indices = np.argsort(sims)[::-1] #[:80]
@@ -220,35 +220,35 @@ class GoogleBooksAPIView(ViewSet):
 
         profile_embedding = profile.get_embedding()
         if not profile_embedding:
-            return Response({"error": "User has no embedding yet"}, status=404)
+            profile_embedding = np.zeros(384).tolist()  # daca nu are embedding, folosim un vector zero care este neutru
 
         read_books = ShelfBooks.objects.filter(shelf__user=user, shelf__name="Read")
         categories = {shelf_book.book.genre for shelf_book in read_books if shelf_book.book.genre}
         recommendations = []
 
         if not read_books.exists() or not categories:
-            # Dacă NU are cărți citite sau genuri, recomandăm din bestseller
+            # daca NU are carti citite sau genuri, recomandam din bestseller
             try:
                 recommended_books = self.get_recommendated_books(profile_embedding, "bestseller")
                 return Response({"recommendations": recommended_books})
             except Exception as e:
                 return Response({"error": str(e)}, status=500)
 
-        # Dacă are cărți citite, facem recomandări pe fiecare gen
+        # Daca are carti citite, facem recomandari pe fiecare gen
         num_categories = len(categories)
         for category in categories:
             try:
                 recommended_books = self.get_recommendated_books(profile_embedding, category)
             except Exception as e:
-                # Dacă eșuează un gen, continuăm cu următoarele, nu oprim tot
+                # Daca esueaza un gen, continuam cu urmatoarele, nu oprim tot
                 continue
             
             if num_categories > 5:
-                recommendations.extend(recommended_books[:5])  # primele 5 recomandări
+                recommendations.extend(recommended_books[:5])  # primele 5 recomandari
             else:
-                recommendations.extend(recommended_books[:10])  # primele 10 recomandări
+                recommendations.extend(recommended_books[:10])  # primele 10 recomandari
 
-        # Dacă nu am găsit nicio carte validă, fallback pe "bestseller"
+        # Daca nu am gasit nicio carte valida, fallback pe "bestseller"
         if not recommendations:
             try:
                 recommended_books = self.get_recommendated_books(profile_embedding, "bestseller")
@@ -256,7 +256,7 @@ class GoogleBooksAPIView(ViewSet):
             except Exception as e:
                 return Response({"error": str(e)}, status=500)
 
-        # Filtrăm doar cărțile care au "publishedDate"
+        # Filtram doar cartile care au "publishedDate"
         recommendations = [book for book in recommendations if "publishedDate" in book]
         recommendations.sort(key=lambda x: x["publishedDate"], reverse=True)
 

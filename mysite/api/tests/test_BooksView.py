@@ -36,7 +36,7 @@ class GetFriendsBooksTestCase(APITestCase):
         self.profile.following.add(self.friend_profile)
 
         # cream raftul "read" pentru prieten
-        self.friend_shelf = Shelf.objects.create(user=self.friend, name="Read")
+        self.friend_shelf = Shelf.objects.create(user=self.friend, name="Currently Reading")
 
         # cream o carte si o adaugam in raftul prietenului
         self.book = Book.objects.create(

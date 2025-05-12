@@ -44,8 +44,8 @@ GET http://localhost:8000/api/books/recommendation/history/ HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
 
 ### // recomandari generalizate
-GET http://localhost:8000/api/books/recommendation/ HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
+GET http://localhost:8000/books/recommendation/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MDYyMTAwLCJpYXQiOjE3NDcwNTg1MDAsImp0aSI6IjgzMjU1ZmNjN2IwZjQzY2I4YTA2NzYxNThhMGZkZjhlIiwidXNlcl9pZCI6Mn0.Py_J4zcBvmw43HJXtEdQsBAlqanTIjd4Jvz_w1EQgik
 
 ### // Continue Reading add
 POST http://localhost:8000/api/books/currently_reading/add/
@@ -157,13 +157,13 @@ Content-Type: application/json
 ### 
 # facem o postare de tip "review" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg1MjQ4LCJpYXQiOjE3NDYxODE2NDgsImp0aSI6ImI5NGM3NGZkYmQyNDQyMjliYTE3ODg4MDQ3MGQzMTc0IiwidXNlcl9pZCI6MX0.06CKxQGN9tDnqCQeKbe1zO8Op8MSn8NszxAhPHsTRB8
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MDY0NTQwLCJpYXQiOjE3NDcwNjA5NDAsImp0aSI6IjhmNzhkMjBhZjhiZTQxYjFiY2M5MDQ5ZmFlZmYwNmZhIiwidXNlcl9pZCI6Mn0.5XA_PCXAAad4kv1XhX6wO4H8FHlYXHA4m4JgEpPzwl4
 Content-Type: application/json
 
 {
   "action": "review",
-  "rating": 5,
-  "description": "SUPERRRRRRRR!",
+  "rating": 3,
+  "description": "SUPERR!",
   "ISBN": "9781234567890"
 }
 
