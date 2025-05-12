@@ -286,3 +286,35 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 ### 👀 VEZI TOATE COMENTARIILE
 GET http://localhost:8000/api/posts/1/list_comments/
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+<<<<<<< HEAD
+=======
+
+
+
+//pt noile rafturi si challangee
+
+
+//pt challange
+###
+GET http://localhost:8000/library/reading_challenge/?goal_books=10&goal_pages=3000
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
+Content-Type: application/json
+
+
+
+### rafturile standard + custom
+GET http://localhost:8000/library/shelves/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
+Content-Type: application/json
+
+### 5 carti și 1200 pagini
+GET http://localhost:8000/library/reading_challenge/?goal_books=5&goal_pages=1200
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
+
+
+
+###  daca o carte este în vreun raft (exemplu ISBN)
+GET http://localhost:8000/library/book_status/?isbn=9780316769488
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
+
+>>>>>>> library-challenge
