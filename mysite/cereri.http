@@ -286,8 +286,6 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 ### 👀 VEZI TOATE COMENTARIILE
 GET http://localhost:8000/api/posts/1/list_comments/
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
-<<<<<<< HEAD
-=======
 
 
 
@@ -317,4 +315,11 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 GET http://localhost:8000/library/book_status/?isbn=9780316769488
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
 
->>>>>>> library-challenge
+#pt events
+### Scrape evenimente literare de pe carturesti.ro
+GET http://localhost:8000/scrape-events/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MjU2OTc2LCJpYXQiOjE3NDcyNTMzNzYsImp0aSI6ImFkMGEyNTNlMzc3YzQ3ZTg5Mjk0YTM2NWRkZDZkZmQyIiwidXNlcl9pZCI6MX0.q_XgLFavK8lY7jmZdXkNegg2gOcJJkmCMhR63Z8B_nk
+Accept: application/json
+
+
+#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MjEyMjA4LCJpYXQiOjE3NDcyMDg2MDgsImp0aSI6IjVkZTk0NGU4ZWVmYzQ2Y2E4YzkwNmE4NTJlYjlhODQzIiwidXNlcl9pZCI6MX0.pu2_tp9_TzH0pbcJZ9mXkz989XpKUfXuBTg90XdbP6w
