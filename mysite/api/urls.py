@@ -3,6 +3,7 @@ from django.urls import path, re_path, include
 from .views import GoogleBooksAPIView
 from .views import BooksView
 from .views import PostsView
+from .views import EventsScapperView
 
 from api.views.LibraryPageView import LibraryPageView
 
@@ -51,16 +52,9 @@ urlpatterns = [
    # path("posts/<int:pk>/update/", PostsView.as_view({"put": "update_post", "patch": "update_post"}), name="update-post"),
    # path("posts/", PostsView.as_view({"get": "list_posts"}), name="list-posts"),
     
-
-    path("library/", LibraryPageView.as_view(), name="library-page"),
-    path("reading_sheets/user/", ReadingSheetsView.as_view(), name="user-reading-sheets"),
-
-    path("library/", LibraryPageView.as_view(), name="library-page"),
-   # path("library/", LibraryPageView.as_view(), name="library-page"),
-    path("reading_sheets/user/", ReadingSheetsView.as_view(), name="user-reading-sheets"),
-
-   # path("library/", LibraryPageView.as_view(), name="library-page"),
-    path("reading_sheets/user/", ReadingSheetsView.as_view(), name="user-reading-sheets"),
+    
+    
+   path("library/", LibraryPageView.as_view({'get': 'list'}), name="library-page"),
 
    path("api/", include(router.urls)),
 
@@ -75,6 +69,11 @@ urlpatterns = [
    path("library/reading_challenge/", LibraryPageView.as_view({"get": "reading_challenge"})),
    path("library/shelves/", LibraryPageView.as_view({"get": "shelves"})),
    path("library/book_status/", LibraryPageView.as_view({"get": "book_status"})),
+
+#pt even
+
+
+    path('scrape-events/', EventsScapperView.scrape_events),
 
 ]
 
