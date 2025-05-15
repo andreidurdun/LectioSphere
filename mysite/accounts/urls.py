@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.conf import settings
 from rest_framework.routers import DefaultRouter
-from .views import ProfileUpdateView, ProfileReadView, DeleteAccountView, AddFollowerView, ActivateAccountView
+from .views import ProfileUpdateView, ProfileReadView, DeleteAccountView, AddFollowerView, ActivateAccountView, ProfileSearchView
 
 
 # Router pentru ViewSet
@@ -15,5 +15,6 @@ urlpatterns = [
     path('profile/read/', ProfileReadView.as_view(), name='profile-read'),
     path('profile/delete/', DeleteAccountView.as_view(), name='profile-delete'),
     path('profile/<int:pk>/follow/', AddFollowerView.as_view(), name='add-follower'),
+    path('profiles/search/', ProfileSearchView.as_view(), name='search-users'),
 
 ]

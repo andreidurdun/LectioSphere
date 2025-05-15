@@ -45,12 +45,12 @@ urlpatterns = [
     path("books/get_friends_books/", BooksView.as_view({"get": "get_friends_books"}), name="get-friends-books"),
 
 
-    # urls pentru postari
-  #  path("posts/add/", PostsView.as_view({"post": "add_post"}), name="add-post"),
-  #  path("posts/<int:pk>/", PostsView.as_view({"get": "read_post"}), name="read-post"),
-   # path("posts/<int:pk>/delete/", PostsView.as_view({"delete": "delete_post"}), name="delete-post"),
-   # path("posts/<int:pk>/update/", PostsView.as_view({"put": "update_post", "patch": "update_post"}), name="update-post"),
-   # path("posts/", PostsView.as_view({"get": "list_posts"}), name="list-posts"),
+   #urls pentru postari
+   path("posts/add/", PostsView.as_view({"post": "add_post"}), name="add-post"),
+   path("posts/<int:pk>/", PostsView.as_view({"get": "read_post"}), name="read-post"),
+   path("posts/<int:pk>/delete/", PostsView.as_view({"delete": "delete_post"}), name="delete-post"),
+   path("posts/<int:pk>/update/", PostsView.as_view({"put": "update_post", "patch": "update_post"}), name="update-post"),
+   path("posts/", PostsView.as_view({"get": "list_posts"}), name="list-posts"),
     
     
     
