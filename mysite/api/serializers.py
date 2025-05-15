@@ -13,9 +13,15 @@ from .models.ShelfBooks import ShelfBooks
 
 
 class BookSerializer(serializers.ModelSerializer):
+
+    average_rating = serializers.SerializerMethodField()
+
     class Meta:
         model = Book
-        fields = ["ISBN", "id", "title", "author", "genre", "description", "rating", "nr_pages", "publication_year", "series", "cover"]
+        fields = ["ISBN", "id", "title", "author", "genre", "description", "average_rating", "nr_pages", "publication_year", "series", "cover"]
+
+    def get_average_rating(self, obj):
+        return obj.average_rating
 
 
 class CommentSerializer(serializers.ModelSerializer):

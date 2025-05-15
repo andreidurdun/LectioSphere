@@ -1,14 +1,15 @@
 
 ### //testare API Books
 // /? {author, title, publisher, isbn, id, q} = 
-GET http://localhost:8000/books/search/?author=a HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzY4NzIwLCJpYXQiOjE3NDYzNjUxMjAsImp0aSI6ImJjOTRlMDM3NjVlMTRjMWI4MjQwZGQxOGI2ZmFhNjJhIiwidXNlcl9pZCI6Mn0.dcFL3pFj4UtQslQ7pHt6FbtG-25OEbWoRxvQF_2fSOA
+GET http://localhost:8000/books/search/?title=Risk HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzMzNDEyLCJpYXQiOjE3NDczMjk4MTIsImp0aSI6ImM1ZGRiODA0ZjdlNDQ2M2E5NmYwOTIwNTcyNjZiMzY2IiwidXNlcl9pZCI6MX0.VYjPdgLEE89AZhgvAiI49Yu7unjRBVKhnE78g0AdbMg
+
 
 ### //returnare catri dupa categorie
 # category_map = {
 #             "recent": "q=fiction&orderBy=newest",
 #             "popular": "q=bestseller&orderBy=relevance",
-#         } sau orice categorie 
+#         } sau orice categorie W
 GET http://localhost:8000/api/books/category/?name=popular HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
 
@@ -44,8 +45,8 @@ GET http://localhost:8000/api/books/recommendation/history/ HTTP/1.1
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
 
 ### // recomandari generalizate
-GET http://localhost:8000/api/books/recommendation/ HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1ODM4Mjk5LCJpYXQiOjE3NDU4MzQ2OTksImp0aSI6IjZmZDhkNjFlYzBkOTRkMzdiNjFmOTAyMDUxZWQ2ODhjIiwidXNlcl9pZCI6NX0.r0ni4RZ6oMRQyTobj5wS9Cx59dcECqPo0aFa0ry9UxE
+GET http://localhost:8000/books/recommendation/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MDYyMTAwLCJpYXQiOjE3NDcwNTg1MDAsImp0aSI6IjgzMjU1ZmNjN2IwZjQzY2I4YTA2NzYxNThhMGZkZjhlIiwidXNlcl9pZCI6Mn0.Py_J4zcBvmw43HJXtEdQsBAlqanTIjd4Jvz_w1EQgik
 
 ### // Continue Reading add
 POST http://localhost:8000/api/books/currently_reading/add/
@@ -112,10 +113,13 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 
 
 # --- POSTS ---
+
+
 # vedem toate postarile unui user -OK
 GET http://localhost:8000/posts/ 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NDUzLCJpYXQiOjE3NDYxODA4NTMsImp0aSI6IjFmZTZmMTUzYzIyYjQ1ZTE5NDI0YmY0NzMzOWIxMTg3IiwidXNlcl9pZCI6MX0.c6nlkQ1cwfYKxQWOJ6iAuQ-Z2h3qmMA3yuAwNKJiZA8
-### 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzMzMDA0LCJpYXQiOjE3NDczMjk0MDQsImp0aSI6IjcwMjA0OTBjODZjZTQyNzI5ODlhN2E1NWM4ZjEzYmU5IiwidXNlcl9pZCI6MX0.togRRG1zFM0H67f1JR0jOSILmcjvOb7iSE5q0rk0XAE
+
+###
 # vedem postrea cu id 22 -OK
 GET http://localhost:8000/posts/22/ 
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM
@@ -135,7 +139,7 @@ Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWN
 ### 
 # facem o postarea de tip "want_to_read" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg1MjQ4LCJpYXQiOjE3NDYxODE2NDgsImp0aSI6ImI5NGM3NGZkYmQyNDQyMjliYTE3ODg4MDQ3MGQzMTc0IiwidXNlcl9pZCI6MX0.06CKxQGN9tDnqCQeKbe1zO8Op8MSn8NszxAhPHsTRB8
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzIwNzQ4LCJpYXQiOjE3NDczMTcxNDgsImp0aSI6IjdjNmQ0NzA4ZDkzYTRiODQ5YmMyNTQ5ZjJlYTEyYjhlIiwidXNlcl9pZCI6MX0.0jA6waAxp3sWlDCiiCmbrDQD5evTnovuucWRY8ESNO0
 Content-Type: application/json
 
 {
@@ -157,14 +161,14 @@ Content-Type: application/json
 ### 
 # facem o postare de tip "review" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg1MjQ4LCJpYXQiOjE3NDYxODE2NDgsImp0aSI6ImI5NGM3NGZkYmQyNDQyMjliYTE3ODg4MDQ3MGQzMTc0IiwidXNlcl9pZCI6MX0.06CKxQGN9tDnqCQeKbe1zO8Op8MSn8NszxAhPHsTRB8
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzMzNDEyLCJpYXQiOjE3NDczMjk4MTIsImp0aSI6ImM1ZGRiODA0ZjdlNDQ2M2E5NmYwOTIwNTcyNjZiMzY2IiwidXNlcl9pZCI6MX0.VYjPdgLEE89AZhgvAiI49Yu7unjRBVKhnE78g0AdbMg
 Content-Type: application/json
 
 {
   "action": "review",
-  "rating": 5,
-  "description": "SUPERRRRRRRR!",
-  "ISBN": "9781234567890"
+  "rating": 4,
+  "description": "SUPERR!",
+  "ISBN": "9780521520447"
 }
 
 
@@ -178,7 +182,7 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 
 
 
-# ----- PROFILE -----
+# ----- PROFIL -----
 ### GET profil utilizator
 GET http://localhost:8000/api/accounts/profile/read/
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MzAwODE2LCJpYXQiOjE3NDYyOTcyMTYsImp0aSI6IjliZWZmNTRiMTgzZjQ0ZDE5ZTE3YWVmNTVlZjcyMDZlIiwidXNlcl9pZCI6MX0.rhxS16xrhJttvf-jqFbYG-Kl1fRf2ZkYhwWZ1aWsS_A
@@ -196,5 +200,32 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
   "username": "dani240"
 }
 
+
+
+
+
+# - - - CAUTARE USERI - - -
+
+###
+
+GET http://localhost:8000/api/accounts/profiles/search/?username=anarusu
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzM2NjM2LCJpYXQiOjE3NDczMzMwMzYsImp0aSI6ImI1YjJjZTYyZmY2ZTRkNWZiZjQ5YTI4ZTZhMzk3Mjk0IiwidXNlcl9pZCI6MX0.DAVI2JaO16U5c1S13-vxVxQYyL3Dulm_8KdkXahTdNc
+###
+
+GET http://localhost:8000/api/accounts/profiles/search/?first_name=ana
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzM2NjM2LCJpYXQiOjE3NDczMzMwMzYsImp0aSI6ImI1YjJjZTYyZmY2ZTRkNWZiZjQ5YTI4ZTZhMzk3Mjk0IiwidXNlcl9pZCI6MX0.DAVI2JaO16U5c1S13-vxVxQYyL3Dulm_8KdkXahTdNc
+###
+
+GET http://localhost:8000/api/accounts/profiles/search/?last_name=rus
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzM2NjM2LCJpYXQiOjE3NDczMzMwMzYsImp0aSI6ImI1YjJjZTYyZmY2ZTRkNWZiZjQ5YTI4ZTZhMzk3Mjk0IiwidXNlcl9pZCI6MX0.DAVI2JaO16U5c1S13-vxVxQYyL3Dulm_8KdkXahTdNc
+###
+
+GET http://localhost:8000/api/accounts/profiles/search/?first_name=ana&last_name=ru
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzM2NjM2LCJpYXQiOjE3NDczMzMwMzYsImp0aSI6ImI1YjJjZTYyZmY2ZTRkNWZiZjQ5YTI4ZTZhMzk3Mjk0IiwidXNlcl9pZCI6MX0.DAVI2JaO16U5c1S13-vxVxQYyL3Dulm_8KdkXahTdNc
+###
+
+GET http://localhost:8000/api/accounts/profiles/search/?q=ana
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzM2NjM2LCJpYXQiOjE3NDczMzMwMzYsImp0aSI6ImI1YjJjZTYyZmY2ZTRkNWZiZjQ5YTI4ZTZhMzk3Mjk0IiwidXNlcl9pZCI6MX0.DAVI2JaO16U5c1S13-vxVxQYyL3Dulm_8KdkXahTdNc
+###
 
 
