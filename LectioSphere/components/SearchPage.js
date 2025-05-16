@@ -202,7 +202,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
 
                     {/* Fiction */}
-                    {/*
+                    
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategory}> Fiction </Text>
                         <View style={styles.horizontalBar} />
@@ -228,7 +228,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </ScrollView>
                     </View>
 
-                    <View style={styles.container}>
+                    {/* <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Fantasy' })}>
                             <View>
                                 <Text style={styles.textContainer}> Fantasy </Text>

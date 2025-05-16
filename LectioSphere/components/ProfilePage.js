@@ -147,6 +147,8 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         navigation.navigate('ProfileEdit');
     }
 
+    console.log("Profile Data:", profileData);
+
     return (
         <SafeAreaView style={styles.screen}>
             <TopBar pageName="ProfilePage" />
@@ -198,7 +200,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                     </View>
                     <View style={styles.description}>
                         <Text style={styles.bioText}>
-                            {profileData?.bio || "No bio available"}
+                            {profileData?.profile.bio || "No bio available"}
                         </Text>
                     </View>
                 </View>
