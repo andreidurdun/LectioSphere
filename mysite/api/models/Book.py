@@ -9,7 +9,8 @@ class Book(models.Model):
      blank=True,
      null=True,
      verbose_name="Book ID"
- )
+    )
+    
     ISBN = models.CharField(
         primary_key=True,
     )
@@ -43,14 +44,14 @@ class Book(models.Model):
         verbose_name="Book Description"
     )
 
-    # rating = models.IntegerField(
-    #     default=0,
-    #     validators=[MinValueValidator(1), MaxValueValidator(5)],
-    #     choices=[(i, i) for i in range(1, 6)],
-    #     null=False,
-    #     blank=False,
-    #     verbose_name="Rating"
-    # )
+    rating = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        choices=[(i, i) for i in range(1, 6)],
+        null=False,
+        blank=False,
+        verbose_name="Rating"
+    )
 
     nr_pages = models.IntegerField(
         validators=[MinValueValidator(1)],
