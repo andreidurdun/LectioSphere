@@ -17,14 +17,20 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
     const [active, setActive] = useState(page);
 
     //BookChallenge
-    const currentBooks = 50;
-    const totalBooks = 100;
-    const progressBooks = currentBooks / totalBooks;
+    const [currentBooks, setCurrentBooks] = useState(0);
+    const [totalBooks, setTotalBooks] = useState(0);
+    const [progressBooks, setProgressBooks] = useState(0);
 
     //PagesChallenge
-    const currentPages = 157832;
-    const totalPages = 157832;
-    const progressPages = currentPages / totalPages;
+    const [currentPages, setCurrentPages] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [progressPages, setProgressPages] = useState(0);
+
+    //Shelves
+    const [read, setRead] = useState([]); 
+    const [reading, setReading] = useState([]); 
+    const [readlist, setReadlist] = useState([]); 
+    const [favourites, setFavourites] = useState([]); 
 
     //ReadingSheets
     const [sheets, setSheets] = useState([]); 
@@ -82,6 +88,68 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
         );
     };
 
+    const fetchReadingChallenge = async () => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/library/reading_challenge/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const data = response.data;
+            setCurrentBooks(data.books_read);
+            setTotalBooks(data.goal_books);
+            setProgressBooks(data.progress_books_percent);
+            setCurrentPages(data.pages_read);
+            setTotalPages(data.goal_pages);
+            setProgressPages(data.progress_pages_percent);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/reading_challenge/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const data = response.data;
+                    setCurrentBooks(data.books_read);
+                    setTotalBooks(data.goal_books);
+                    setProgressBooks(data.progress_books_percent);
+                    setCurrentPages(data.pages_read);
+                    setTotalPages(data.goal_pages);
+                    setProgressPages(data.progress_pages_percent);
+                } else {
+                    console.error(`Unable to refresh token for reading sheets items.`);
+                }
+            } else {
+                console.error("Error fetching reading challenge:", error.message);
+            }
+        }
+    };
+
+    const fetchShelf = async (shelfName, setShelf, numberOfBooks) => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/library/shelves/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const books = response.data.standard_shelves[shelfName];
+            setShelf(books.slice(0, numberOfBooks));
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelves/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const books = retryResponse.data.standard_shelves[shelfName];
+                    setShelf(books.slice(0, numberOfBooks));
+                } else {
+                    console.error(`Unable to refresh token for ${shelfName}.`);
+                }
+            } else {
+                console.error(`Error loading ${shelfName}:`, error.message);
+            }
+        }
+    };
+
     const fetchSheets = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
@@ -121,6 +189,11 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
     useEffect(() => {
         if (isAuthenticated) {
             fetchUserData();
+            fetchReadingChallenge();
+            fetchShelf("read", setRead, 6);
+            fetchShelf("reading", setReading, 4);
+            fetchShelf("readlist", setReadlist, 4);
+            fetchShelf("favourites", setFavourites, 4);
             fetchSheets();
         }
     }, [isAuthenticated]);
@@ -193,25 +266,79 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                     <View style={styles.shelvesContainer}>
                         <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                             <View style={styles.shelf}>
+                                {read[0] && read[1] && (
+                                    <Image source={{ uri: read[0].thumbnail }} style={styles.coversBig} />
+                                )}
+                                {read[2] && read[3] && (
+                                    <Image source={{ uri: read[2].thumbnail }} style={styles.coversMedium} />
+                                )}
+                                {read[4] && read[5] && (
+                                    <Image source={{ uri: read[4].thumbnail }} style={styles.coversSmall} />
+                                )}
                                 <Text style={styles.textShelf}>Read</Text>
+                                {read[5] && (
+                                    <Image source={{ uri: read[5].thumbnail }} style={styles.coversSmall} />
+                                )}
+                                {read[3] && (
+                                    <Image source={{ uri: read[3].thumbnail }} style={styles.coversMedium} />
+                                )}
+                                {read[1] && (
+                                    <Image source={{ uri: read[1].thumbnail }} style={styles.coversBig} />
+                                )}
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
                         <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                             <View style={styles.shelf}>
+                                {reading[0] && reading[1] && (
+                                    <Image source={{ uri: reading[0].thumbnail }} style={styles.coversBig} />
+                                )}
+                                {reading[2] && reading[3] && (
+                                    <Image source={{ uri: reading[2].thumbnail }} style={styles.coversMedium} />
+                                )}
                                 <Text style={styles.textShelf}>Reading</Text>
+                                {reading[3] && (
+                                    <Image source={{ uri: reading[3].thumbnail }} style={styles.coversMedium} />
+                                )}
+                                {reading[1] && (
+                                    <Image source={{ uri: reading[1].thumbnail }} style={styles.coversBig} />
+                                )}
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
                         <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                             <View style={styles.shelf}>
+                                {readlist[0] && readlist[1] && (
+                                    <Image source={{ uri: readlist[0].thumbnail }} style={styles.coversBig} />
+                                )}
+                                {readlist[2] && readlist[3] && (
+                                    <Image source={{ uri: readlist[2].thumbnail }} style={styles.coversMedium} />
+                                )}
                                 <Text style={styles.textShelf}>Readlist</Text>
+                                {readlist[3] && (
+                                    <Image source={{ uri: readlist[3].thumbnail }} style={styles.coversMedium} />
+                                )}
+                                {readlist[1] && (
+                                    <Image source={{ uri: readlist[1].thumbnail }} style={styles.coversBig} />
+                                )}
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
                         <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
                             <View style={styles.shelf}>
+                                {favourites[0] && favourites[1] && (
+                                    <Image source={{ uri: favourites[0].thumbnail }} style={styles.coversBig} />
+                                )}
+                                {favourites[2] && favourites[3] && (
+                                    <Image source={{ uri: favourites[2].thumbnail }} style={styles.coversMedium} />
+                                )}
                                 <Text style={styles.textShelf}>Favourites</Text>
+                                {favourites[3] && (
+                                    <Image source={{ uri: favourites[3].thumbnail }} style={styles.coversMedium} />
+                                )}
+                                {favourites[1] && (
+                                    <Image source={{ uri: favourites[1].thumbnail }} style={styles.coversBig} />
+                                )}
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
