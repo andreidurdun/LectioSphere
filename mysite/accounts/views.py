@@ -13,6 +13,8 @@ from .models import Profile
 from .models import UserAccount  
 from .serializers import ProfileSerializer 
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from django.db.models import Q
 
 
 def get_object(self):
@@ -102,3 +104,52 @@ class AddFollowerView(APIView):
 
         user_to_follow.followers.add(current_user_profile)
         return Response({"detail": "You are now following this user."}, status=status.HTTP_200_OK)
+
+
+
+
+# Motor de cautare pentru puseri 
+class ProfileSearchView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('q', '').strip().lower()
+        username = request.query_params.get('username', '').strip().lower()
+        first_name = request.query_params.get('first_name', '').strip().lower()
+        last_name = request.query_params.get('last_name', '').strip().lower()
+
+        if not any([query, username, first_name, last_name]):
+            return Response({"error": "Provide at least one search parameter (?q=..., ?username=..., ?first_name=..., ?last_name=...)"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        current_profile = request.user.profile
+
+        filters = Q()
+        if query:
+            filters |= Q(user__username__icontains=query)
+            filters |= Q(user__first_name__icontains=query)
+            filters |= Q(user__last_name__icontains=query)
+        if username:
+            filters |= Q(user__username__icontains=username)
+        if first_name:
+            filters |= Q(user__first_name__icontains=first_name)
+        if last_name:
+            filters |= Q(user__last_name__icontains=last_name)
+
+        matching_profiles = Profile.objects.filter(filters).exclude(user=request.user).distinct()
+
+        mutuals = []
+        following_only = []
+        others = []
+
+        for profile in matching_profiles:
+            if profile in current_profile.followers.all() and profile in current_profile.following.all():
+                mutuals.append(profile)
+            elif profile in current_profile.following.all():
+                following_only.append(profile)
+            else:
+                others.append(profile)
+
+        ordered_profiles = mutuals + following_only + others
+        serializer = ProfileSerializer(ordered_profiles, many=True)
+        return Response({"results": serializer.data}, status=status.HTTP_200_OK)

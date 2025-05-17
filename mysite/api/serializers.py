@@ -13,17 +13,26 @@ from .models.ShelfBooks import ShelfBooks
 
 
 class BookSerializer(serializers.ModelSerializer):
+
+    average_rating = serializers.SerializerMethodField()
+
     class Meta:
         model = Book
-        fields = ["ISBN", "id", "title", "author", "genre", "description", "rating", "nr_pages", "publication_year", "series", "cover"]
+        fields = ["ISBN", "id", "title", "author", "genre", "description", "average_rating", "nr_pages", "publication_year", "series", "cover"]
+
+    def get_average_rating(self, obj):
+        return obj.average_rating
+
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
-    book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
+    user_username = serializers.CharField(source='user.username', read_only=True)
+
     class Meta:
         model = Comment
-        fields = ["text", "date", "user", "post"]
+        fields = ["id", "text", "date", "user", "user_username", "post"]
+        read_only_fields = ["date", "user", "post"]
+
 
 
 
@@ -45,9 +54,15 @@ class PostSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
     book = BookSerializer(read_only=True)  
     media = MediaSerializer(many=True, read_only=True) # media = iamgini / poze
+    like_count = serializers.SerializerMethodField()
+    comment_count = serializers.SerializerMethodField()
+    comments = CommentSerializer(many=True, read_only=True, source='comment_set')  # sau 'comments' dc ai related_name
+
     class Meta:
         model = Post
-        fields = ["id", "description", "date", "user", "book", "action", "rating","media"]
+        #fields = ["id", "description", "date", "user", "book", "action", "rating","media"]
+        fields = ["id", "description", "date", "user", "book", "action", "rating","media", "like_count", "comment_count", "comments"]
+
 
 
     # validari in functie de tiprul de actiune pe care dorim sa o executam 
@@ -121,6 +136,13 @@ class PostSerializer(serializers.ModelSerializer):
         validated_data['user'] = self.context['request'].user
         validated_data['book'] = self.context['book']  
         return super().create(validated_data)
+    #met noi
+    def get_like_count(self, obj):
+        return PostLike.objects.filter(post=obj).count()
+
+    def get_comment_count(self, obj):
+        return Comment.objects.filter(post=obj).count()
+
 
 
 

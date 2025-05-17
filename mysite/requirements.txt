@@ -21,3 +21,16 @@ requests
 sentence-transformers 
 scikit-learn
 
+
+
+
+requests
+
+sentence-transformers
+scikit-learn
+
+#pentru scraping:
+selenium
+webdriver-manager
+beautifulsoup4
+
