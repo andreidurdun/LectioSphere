@@ -127,8 +127,8 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {/* <Stack.Navigator initialRouteName={isAuthenticated ? 'HomePage' : 'LoginMenu'}> */}
-      <Stack.Navigator initialRouteName={'LoginMenu'}>
+      <Stack.Navigator initialRouteName={isAuthenticated ? 'HomePage' : 'LoginMenu'}> 
+      {/*<Stack.Navigator initialRouteName={'LoginMenu'}>*/}
         <Stack.Screen name="LoginMenu" options={{ headerShown: false }}>
           {(props) => <LoginMenu {...props} saveAuthToken={saveAuthToken} apiBaseUrl={API_BASE_URL} />}
         </Stack.Screen>
