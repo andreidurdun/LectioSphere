@@ -45,6 +45,16 @@ class GoogleBooksAPIView(ViewSet):
             
             isbn = isbn_13 or isbn_10
 
+
+            # obtinere rating pentru carte 
+            local_rating = None
+            if isbn:
+                try:
+                   local_book = Book.objects.get(ISBN=isbn)
+                   local_rating = local_book.average_rating  
+                except Book.DoesNotExist:
+                   local_rating = None
+
             results.append({
                 "id": item.get("id"),
                 "isbn" : isbn,
@@ -55,7 +65,8 @@ class GoogleBooksAPIView(ViewSet):
                 "description": book.get("description"),
                 "pageCount": book.get("pageCount"),
                 "categories": book.get("categories", []),
-                "thumbnail": book.get("imageLinks", {}).get("thumbnail")
+                "thumbnail": book.get("imageLinks", {}).get("thumbnail"),
+                "average_rating": local_rating 
             })
         return results
     
