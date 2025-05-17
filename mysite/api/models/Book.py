@@ -3,12 +3,12 @@ from django.db.models import Avg
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
 
 class Book(models.Model):
-
+    
     id = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        verbose_name="Book ID"
+     max_length=255,
+     blank=True,
+     null=True,
+     verbose_name="Book ID"
     )
     
     ISBN = models.CharField(
@@ -44,14 +44,14 @@ class Book(models.Model):
         verbose_name="Book Description"
     )
 
-    # rating = models.IntegerField(
-    #     default=0,
-    #     validators=[MinValueValidator(1), MaxValueValidator(5)],
-    #     choices=[(i, i) for i in range(1, 6)],
-    #     null=False,
-    #     blank=False,
-    #     verbose_name="Rating"
-    # )
+    rating = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        choices=[(i, i) for i in range(1, 6)],
+        null=False,
+        blank=False,
+        verbose_name="Rating"
+    )
 
     nr_pages = models.IntegerField(
         validators=[MinValueValidator(1)],

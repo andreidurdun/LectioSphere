@@ -2,7 +2,7 @@
 ### //testare API Books
 // /? {author, title, publisher, isbn, id, q} = 
 GET http://localhost:8000/books/search/?title=Risk HTTP/1.1
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzMzNDEyLCJpYXQiOjE3NDczMjk4MTIsImp0aSI6ImM1ZGRiODA0ZjdlNDQ2M2E5NmYwOTIwNTcyNjZiMzY2IiwidXNlcl9pZCI6MX0.VYjPdgLEE89AZhgvAiI49Yu7unjRBVKhnE78g0AdbMg
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc2MDQ3LCJpYXQiOjE3NDc0NzI0NDcsImp0aSI6IjU3NzZkZGE1MTA4NDRkOGI5MjVhMGQ5M2ZkOWE1NjEyIiwidXNlcl9pZCI6MX0.iis3CDZXcJECGqVHspFcivUFTaeEoW77-yKSBIMhhTM
 
 
 ### //returnare catri dupa categorie
@@ -112,21 +112,73 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 
 
 
+
+
 # --- POSTS ---
 
 
-# vedem toate postarile unui user -OK
-GET http://localhost:8000/posts/ 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzMzMDA0LCJpYXQiOjE3NDczMjk0MDQsImp0aSI6IjcwMjA0OTBjODZjZTQyNzI5ODlhN2E1NWM4ZjEzYmU5IiwidXNlcl9pZCI6MX0.togRRG1zFM0H67f1JR0jOSILmcjvOb7iSE5q0rk0XAE
+###
+
+POST http://localhost:8000/auth/jwt/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "anamariarusu063@gmail.com",
+    "password" : "12345678Abc"
+
+}
+###
+
+POST http://localhost:8000/auth/jwt/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "anamaria2934r@gmail.com",
+    "password" : "12345678Abc"
+
+}
+###
+
+### Follow 
+PATCH http://localhost:8000/api/accounts/profile/2/follow/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
+
+{}
+### Follow 
+PATCH http://localhost:8000/api/accounts/profile/1/follow/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4Nzg1LCJpYXQiOjE3NDc0NzUxODUsImp0aSI6IjRkZjgwNjhlMDcwYTRlMjc4MWE1MDllZjRmMGYyZDU5IiwidXNlcl9pZCI6Mn0.ADLOfjPAtYF-AV_a7yDoHq5r6tYEXZItjtzgaRphs6A
+Content-Type: application/json
+
+{}
 
 ###
+
+GET http://localhost:8000/api/accounts/profile/read/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc5MjMxLCJpYXQiOjE3NDc0NzU2MzEsImp0aSI6ImRiZGIwYTc5MTMxYjQ0ODRiZmI0YzYyZWYwYzJkN2EwIiwidXNlcl9pZCI6MX0.ecl08pu0qgqTKnbG7vCQhb_Ama_AZitKqUkO3uhx5k4
+
+###
+
+GET http://localhost:8000/api/accounts/profile/read/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4Nzg1LCJpYXQiOjE3NDc0NzUxODUsImp0aSI6IjRkZjgwNjhlMDcwYTRlMjc4MWE1MDllZjRmMGYyZDU5IiwidXNlcl9pZCI6Mn0.ADLOfjPAtYF-AV_a7yDoHq5r6tYEXZItjtzgaRphs6A
+
+
+
+###
+GET http://localhost:8000/posts/feed/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4Nzg1LCJpYXQiOjE3NDc0NzUxODUsImp0aSI6IjRkZjgwNjhlMDcwYTRlMjc4MWE1MDllZjRmMGYyZDU5IiwidXNlcl9pZCI6Mn0.ADLOfjPAtYF-AV_a7yDoHq5r6tYEXZItjtzgaRphs6A
+
+###
+# vedem toate postarile unui user -OK
+GET http://localhost:8000/posts/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc5MjMxLCJpYXQiOjE3NDc0NzU2MzEsImp0aSI6ImRiZGIwYTc5MTMxYjQ0ODRiZmI0YzYyZWYwYzJkN2EwIiwidXNlcl9pZCI6MX0.ecl08pu0qgqTKnbG7vCQhb_Ama_AZitKqUkO3uhx5k4
+###
 # vedem postrea cu id 22 -OK
-GET http://localhost:8000/posts/22/ 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM
+GET http://localhost:8000/posts/9/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
 ### 
 # modificam postreacu id 22 -OK
-PATCH http://localhost:8000/posts/22/update/ 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM
+PATCH http://localhost:8000/posts/9/update/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
 Content-Type: application/json
 
 {
@@ -134,42 +186,56 @@ Content-Type: application/json
 }
 ### 
 # stergem postrea cu id 22 -OK
-DELETE http://localhost:8000/posts/22/delete/ 
-Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM
+DELETE http://localhost:8000/posts/10/delete/ 
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
 ### 
 # facem o postarea de tip "want_to_read" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzIwNzQ4LCJpYXQiOjE3NDczMTcxNDgsImp0aSI6IjdjNmQ0NzA4ZDkzYTRiODQ5YmMyNTQ5ZjJlYTEyYjhlIiwidXNlcl9pZCI6MX0.0jA6waAxp3sWlDCiiCmbrDQD5evTnovuucWRY8ESNO0
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
 Content-Type: application/json
 
 {
   "action": "want_to_read",
-  "ISBN": "9781234567890"
+  "id": "yow0EAAAQBAJ"
 }
 ### 
 # facem o postare de tip "post" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MTg0NTkxLCJpYXQiOjE3NDYxODA5OTEsImp0aSI6IjY3NjhkMmYwZTYwMTRmYThhYTEyZjM2ZTQxMGJmZWFkIiwidXNlcl9pZCI6MX0.hkwIxmRCV-TPbXzier_S52kFKDbNx_v9_SPeRK3oXnM
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
 Content-Type: application/json
 
 {
   "action": "post",
   "description": "Mi-a plăcut cum arată coperta!",
-  "ISBN": "9781234567890"
+  "id": "yow0EAAAQBAJ"
+  
 }
 
 ### 
 # facem o postare de tip "review" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzMzNDEyLCJpYXQiOjE3NDczMjk4MTIsImp0aSI6ImM1ZGRiODA0ZjdlNDQ2M2E5NmYwOTIwNTcyNjZiMzY2IiwidXNlcl9pZCI6MX0.VYjPdgLEE89AZhgvAiI49Yu7unjRBVKhnE78g0AdbMg
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
 Content-Type: application/json
 
 {
   "action": "review",
   "rating": 4,
   "description": "SUPERR!",
-  "ISBN": "9780521520447"
+  "id": "yow0EAAAQBAJ"
 }
+
+
+
+
+
+
+
+
+
+
+###
+
+
 
 
 # extensia REST CLIENT nu gestioneaza ok fisiere media | testam cu httpie in terminal cu comanda de mai jos | aici este un exemplu de postare de tip "post" cu 2 fisiere media -OK
