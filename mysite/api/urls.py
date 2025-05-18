@@ -26,6 +26,11 @@ router = DefaultRouter()
 router.register(r"posts", PostsView, basename="posts")
 
 
+
+router2 = DefaultRouter()
+
+router2.register(r"reading-sheets", ReadingSheetsView, basename="reading-sheets")
+
 urlpatterns = [
    
     path("books/search/", GoogleBooksAPIView.as_view({"get": "search"}), name="google-books-search"),
@@ -66,11 +71,18 @@ urlpatterns = [
 
 # Like / Unlike la postări
   #  path("posts/<int:pk>/toggle_like/", PostsView.as_view({"post": "toggle_like"}), name="toggle-like"),
-
-
+ path(
+        "library/shelf/<str:name>/", 
+        LibraryPageView.as_view({"get": "get_shelf_by_name"}), 
+        name="library-shelf"),
    path("library/reading_challenge/", LibraryPageView.as_view({"get": "reading_challenge"})),
    path("library/shelves/", LibraryPageView.as_view({"get": "shelves"})),
    path("library/book_status/", LibraryPageView.as_view({"get": "book_status"})),
+   
+     
+     
+    path("api/", include(router2.urls)),  #pt rafturi
+
 
 #pt even
 

@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from api.models import Shelf, ShelfBooks
 from api.serializers import BookSerializer
+from urllib.parse import unquote  # pentru a decoda URL-uri cu spații, %20 etc.
+
 
 class LibraryPageView(ViewSet):
     permission_classes = [IsAuthenticated]
@@ -91,3 +93,31 @@ class LibraryPageView(ViewSet):
         for name, books in standard_shelves.items():
             result[f"in_{name.lower()}"] = any(b.get("ISBN") == isbn for b in books)
         return result
+    
+    
+    #un raft singur dupa nume
+
+    @action(detail=False, methods=["get"], url_path=r"shelf/(?P<name>[^/]+)")
+    def get_shelf_by_name(self, request, name=None):
+        user = request.user
+
+        if not name:
+            return Response({"error": "Shelf name is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Decodare în caz că numele e URL-encoded
+        decoded_name = unquote(name)
+
+        shelf = Shelf.objects.filter(user=user, name=decoded_name).first()
+
+        if not shelf:
+            return Response({"error": f"Shelf '{decoded_name}' not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        shelf_books = ShelfBooks.objects.filter(shelf=shelf).select_related("book")
+        books_data = [BookSerializer(sb.book).data for sb in shelf_books]
+
+        return Response({
+            "shelf_name": shelf.name,
+        "books": books_data
+    })
+
+
