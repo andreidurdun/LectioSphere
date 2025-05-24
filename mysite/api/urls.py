@@ -27,6 +27,7 @@ router.register(r"posts", PostsView, basename="posts")
 
 
 
+
 router2 = DefaultRouter()
 
 router2.register(r"reading-sheets", ReadingSheetsView, basename="reading-sheets")
@@ -71,7 +72,7 @@ urlpatterns = [
 
 # Like / Unlike la postări
   #  path("posts/<int:pk>/toggle_like/", PostsView.as_view({"post": "toggle_like"}), name="toggle-like"),
-   path(
+  path(
         "library/shelf/<str:name>/", 
         LibraryPageView.as_view({"get": "get_shelf_by_name"}), 
         name="library-shelf"),

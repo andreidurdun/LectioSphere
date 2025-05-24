@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback, ScrollView, Image, FlatList } from 'react-native';
-import { ProgressBar } from 'react-native-paper';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback, ScrollView, Image } from 'react-native';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';

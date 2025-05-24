@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback, ScrollView, Image, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback, ScrollView, Image } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
@@ -15,7 +15,12 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
     const [currentBooks, setCurrentBooks] = useState(0);
     const [totalBooks, setTotalBooks] = useState(0);
     const [progressBooks, setProgressBooks] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
+    const handlePageClick = (page, params = {}) => {
+        setActive(page);
+        navigation.navigate(page, params); 
+    };
 
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -74,6 +79,7 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
             setCurrentBooks(data.books_read);
             setTotalBooks(data.goal_books);
             setProgressBooks(data.progress_books_percent);
+            setTotalPages(data.goal_pages);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
@@ -85,6 +91,7 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
                     setCurrentBooks(data.books_read);
                     setTotalBooks(data.goal_books);
                     setProgressBooks(data.progress_books_percent);
+                    setTotalPages(data.goal_pages);
                 } else {
                     console.error(`Unable to refresh token for reading challenge items.`);
                 }
@@ -93,6 +100,16 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
             }
         }
     };
+
+    const getDaysUntilEndOfYear = () => {
+        const today = new Date();
+        const endOfYear = new Date(today.getFullYear(), 11, 31); // 11 = decembrie
+        const diffTime = endOfYear - today;
+        const leftDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return leftDays;
+    };
+
+    const leftDays = getDaysUntilEndOfYear();
 
     
     useEffect(() => {
@@ -119,9 +136,29 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
                         <View style={styles.horizontalBar} />
                     </View>
 
-                    
-                        
+                    <View style={styles.container}>
+                        <Text style={styles.messageText}>   You have read <Text style={styles.numberText}>{currentBooks}</Text> out of <Text style={styles.numberText}>{totalBooks}</Text> books</Text> 
+                        { progressBooks < 100 ? (
+                            <View style={styles.daysLeftContainer}>
+                                <Text style={styles.daysLeftText}> {leftDays} days left to complete </Text>
+                                <Text style={styles.daysLeftMessageText}> You can do it! </Text>
+                            </View>
+                        ) : (
+                            <View style={styles.daysLeftContainer}>
+                                <Text style={styles.daysLeftMessageText}> You did it! Congrats! </Text>
+                            </View>
+                        )
+                        }
+                        <View style={styles.progressContainer}>
+                            <ProgressBar progress={progressBooks} color="#613F75" style={styles.progressBarChallenge} />
+                            <Text style={styles.percentage}> {progressBooks}%</Text>
+                        </View>
+                    </View>
 
+                    <Text style={styles.changeText} onPress={() => handlePageClick('ChangeGoalBooks', {totalBooks, totalPages})}> Change goal </Text>
+
+                    <Text style={styles.booksReadText}> The books you read: </Text>
+                        
                 </View>
 
             </ScrollView>
@@ -169,7 +206,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         marginTop: 16,
         paddingBottom: 8,
-        height: 62,
+        height: 86,
     },
     textCategory: {
         fontFamily: 'Nunito_600SemiBold',
@@ -191,6 +228,62 @@ const styles = StyleSheet.create({
         fontFamily: 'Nunito_500Medium',
         fontSize: 32,
         color: '#18101D',
+    },
+    progressBarChallenge: {
+        height: 8,
+        backgroundColor: '#E5C3D1',
+        borderRadius: 5,
+        width: 200,
+    },
+    progressContainer: {
+        marginTop: 10,
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    percentage: {
+        fontSize: 16,
+        color: '#18101D',
+        fontFamily: 'Nunito_400Regular',
+    },
+    messageText: {
+        fontFamily: 'Nunito_500Medium',
+        fontSize: 18,
+        color: '#18101D',
+        paddingHorizontal: 10,
+    },
+    numberText: {
+        fontFamily: 'Nunito_600SemiBold',
+        fontSize: 20,
+        color: '#613F75',
+    },
+    daysLeftContainer: {
+        alignItems: 'center',
+    },
+    daysLeftText: {
+        marginTop: 5,
+        fontFamily: 'Nunito_400Regular',
+        fontSize: 14,
+        color: '#18101D',
+    },
+    daysLeftMessageText: {
+        fontFamily: 'Nunito_500Medium',
+        fontSize: 14,
+        color: '#613F75',
+    },
+    changeText: {
+        fontFamily: 'Nunito_500Medium',
+        fontSize: 16,
+        color: '#613F75',
+        marginTop: 16,
+    },
+    booksReadText: {
+        fontFamily: 'Nunito_600SemiBold',
+        fontSize: 20,
+        color: '#18101D',
+        marginTop: 16,
     },
 });
 

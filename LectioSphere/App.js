@@ -16,6 +16,8 @@ import AllShelves from './components/AllShelves';
 import ShelfPage from './components/ShelfPage';
 import BooksChallenge from './components/BooksChallenge';
 import PagesChallenge from './components/PagesChallenge';
+import ChangeGoalBooks from './components/ChangeGoalBooks';
+import ChangeGoalPages from './components/ChangeGoalPages';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -255,6 +257,28 @@ export default function App() {
         <Stack.Screen name="PagesChallenge" options={{ headerShown: false }}>
           {(props) => (
             <PagesChallenge
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="ChangeGoalPages" options={{ headerShown: false }}>
+          {(props) => (
+            <ChangeGoalPages
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="ChangeGoalBooks" options={{ headerShown: false }}>
+          {(props) => (
+            <ChangeGoalBooks
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}
