@@ -21,7 +21,7 @@ class Post(models.Model):
         blank=True,
     )
 
-    date = models.DateField(
+    date =models.DateTimeField(
         auto_now_add=True, 
         null=False, 
         blank=False,
@@ -61,6 +61,8 @@ class Post(models.Model):
         null=True,
         blank=True,
     )
+
+    progress = models.IntegerField(null=True, blank=True,default=0)
 
     def __str__(self):
         return f"Post for '{self.book.title}' by {self.user.username} on {self.date} - Rating: {self.rating}"
