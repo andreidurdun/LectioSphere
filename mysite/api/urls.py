@@ -4,8 +4,8 @@ from .views import GoogleBooksAPIView
 from .views import BooksView
 from .views import PostsView
 from .views import EventsScapperView
+from api.views.ShelfByNameView import ShelfByNameView  # ✅ corect
 
-from api.views.LibraryPageView import LibraryPageView
 
 from api.views.ReadingSheetsView import ReadingSheetsView
 from api.views.LibraryPageView import LibraryPageView
@@ -24,6 +24,7 @@ from rest_framework.routers import DefaultRouter
 from .views import PostsView  # asigură-te că importul e corect
 router = DefaultRouter()
 router.register(r"posts", PostsView, basename="posts")
+router.register(r"library", LibraryPageView, basename="library")
 
 
 
@@ -81,6 +82,11 @@ urlpatterns = [
    path("library/book_status/", LibraryPageView.as_view({"get": "book_status"})),
    
      
+     
+     
+     
+  path("library/shelf/<str:name>/", ShelfByNameView.as_view(), name="shelf-by-name"),
+
      
     path("api/", include(router2.urls)),  #pt rafturi
 

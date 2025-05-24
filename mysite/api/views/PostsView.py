@@ -75,6 +75,7 @@ class PostsView(ViewSet):
         post_data = request.data.copy()
         post_data.update({"user": user.id, "book": book.id})
 
+
         serializer = PostSerializer(data=post_data, context={"request": request, "book": book})
         if serializer.is_valid():
             post = serializer.save()

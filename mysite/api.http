@@ -186,8 +186,8 @@ Content-Type: application/json
 }
 ### 
 # stergem postrea cu id 22 -OK
-DELETE http://localhost:8000/posts/10/delete/ 
-Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
+DELETE http://localhost:8000/posts/29/delete/ 
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTA5MDgxLCJpYXQiOjE3NDgxMDU0ODEsImp0aSI6IjNkNWU3MjE4ZThjMTQ2ZmY5NjU1OWZjYWMxZTFkYjM1IiwidXNlcl9pZCI6MX0.ycTy6Z2YuiUV6jghPP4boqFiBuGy08rh2RwRZxz6R6Q
 ### 
 # facem o postarea de tip "want_to_read" -OK
 POST http://localhost:8000/posts/add/
@@ -230,10 +230,42 @@ Content-Type: application/json
 
 
 
+###
+#postari de tip made_progress
+
+POST http://localhost:8000/auth/jwt/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "anamariarusu063@gmail.com",
+    "password" : "12345678Abc"
+
+}
+
+###
+
+
+POST http://localhost:8000/posts/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTA5NzMwLCJpYXQiOjE3NDgxMDYxMzAsImp0aSI6IjhiM2Q3YzNiYzVhODRhNGM5NjA1MDhkMGI4YTM0ZTNmIiwidXNlcl9pZCI6MX0._QYLvh_YDcIzZOEXJn-DRfi1voBJbVHoByxxGzTJ4RU
+Content-Type: application/json
+
+{
+  "action": "made_progress",
+  "pages_read": 10,
+  "id": "yow0EAAAQBAJ"
+}
 
 
 
 ###
+
+GET http://localhost:8000/posts/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTA5NzMwLCJpYXQiOjE3NDgxMDYxMzAsImp0aSI6IjhiM2Q3YzNiYzVhODRhNGM5NjA1MDhkMGI4YTM0ZTNmIiwidXNlcl9pZCI6MX0._QYLvh_YDcIzZOEXJn-DRfi1voBJbVHoByxxGzTJ4RU
+
+
+
+
+
 
 
 
