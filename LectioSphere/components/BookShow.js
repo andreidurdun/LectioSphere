@@ -9,6 +9,8 @@ import TopBar from './Partials/TopBar';
 
 const purpleStarFull = require('../assets/purpleStarFull.png');
 const purpleStarEmpty = require('../assets/purpleStarEmpty.png');
+import { ActionSheetIOS, Platform } from 'react-native';
+import { Alert } from 'react-native';
 
 const BookShow = ({ navigation, route, apiBaseUrl }) => {
 
@@ -70,8 +72,56 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
         );
     }
 
+    const handleAddToLibrary = async (bookId) => {
+        // Android only: show menu with Alert
+        Alert.alert(
+            'Choose an action',
+            '',
+            [
+            { text: 'Start/Update Reading', onPress: () => handleUpdateReading(bookId) },
+            { text: 'Finish Reading', onPress: () => console.log('Want to Read') },
+            { text: 'Want to Read', onPress: () => console.log('Want to Read') },
+            { text: 'Add to Shelf', onPress: () => console.log('Add to Shelf') },
+            { text: 'Create Post', onPress: () => console.log('Create Post') },
+            { text: 'Add Review', onPress: () => console.log('Create Post') },
+            { text: 'Cancel', style: 'cancel' }
+            ],
+            { cancelable: true }
+        );
+    };
 
-    // TODO: redirectionare catre o categorie la apasarea ei, completare cu postari
+    const handleUpdateReading = async (bookId) => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                console.error('No token found');
+                return;
+            }
+
+            // Try to refresh the token if needed (optional, based on your auth flow)
+            // const refreshedToken = await refreshAccessToken(token);
+
+            // Check what your backend expects for the payload!
+            // Try sending only the bookId, or check if the endpoint is correct.
+            const response = await axios.post(
+                `${apiBaseUrl}/posts/add/`,
+                {   
+                    action: 'made_progress', // Adjust this based on your API
+                    book: bookId // Try without action, or adjust as needed
+                },
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            console.log('Book updated successfully:', response.data);
+        } catch (error) {
+            console.error('Error updating book:', error);
+        }
+    }
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -106,10 +156,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                             )}
 
                             <TouchableNativeFeedback 
-                                onPress={() => {
-                                    // Logic to add the book to the library
-                                    console.log(`${bookData.title} added to library`);
-                                }}
+                                onPress={() => handleAddToLibrary(bookData.id)}
                             >
                                 <View style={styles.addButtonTouchable}>
                                     <Text style={styles.addButtonText}>
