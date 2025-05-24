@@ -57,11 +57,13 @@ class PostSerializer(serializers.ModelSerializer):
     like_count = serializers.SerializerMethodField()
     comment_count = serializers.SerializerMethodField()
     comments = CommentSerializer(many=True, read_only=True, source='comment_set')  # sau 'comments' dc ai related_name
+    pages_read = serializers.IntegerField(required=False, write_only=True)
+
 
     class Meta:
         model = Post
         #fields = ["id", "description", "date", "user", "book", "action", "rating","media"]
-        fields = ["id", "description", "date", "user", "book", "action", "rating","media", "like_count", "comment_count", "comments"]
+        fields = ["id", "description", "date", "user", "book", "action", "rating","media", "like_count", "comment_count", "comments", "pages_read", "progress"]
 
 
 
@@ -92,13 +94,18 @@ class PostSerializer(serializers.ModelSerializer):
             self.fields['media'].required = False
 
         elif action in [
-            Post.ActionChoices.WANT_TO_READ,
-            Post.ActionChoices.MADE_PROGRESS,
-            Post.ActionChoices.FINISHED_READING,
+        Post.ActionChoices.WANT_TO_READ,
+        Post.ActionChoices.FINISHED_READING,
         ]:
             self.fields['rating'].required = False
             self.fields['description'].required = False
             self.fields['media'].required = False
+
+        elif action == Post.ActionChoices.MADE_PROGRESS:
+            self.fields['rating'].required = False
+            self.fields['description'].required = False
+            self.fields['media'].required = False
+            self.fields['pages_read'] = serializers.IntegerField(required=True, write_only=True)
 
 
     # validari in functie de actiunea pe care dorim sa o facem
@@ -132,10 +139,53 @@ class PostSerializer(serializers.ModelSerializer):
         return data
 
 
+    # def create(self, validated_data):
+    #     validated_data['user'] = self.context['request'].user
+    #     validated_data['book'] = self.context['book']  
+    #     validated_data.pop('pages_read', None)
+    #     return super().create(validated_data)
+
+
     def create(self, validated_data):
-        validated_data['user'] = self.context['request'].user
-        validated_data['book'] = self.context['book']  
+        user = self.context['request'].user
+        book = self.context['book']
+        action = validated_data.get('action')
+
+        validated_data['user'] = user
+        validated_data['book'] = book
+
+        if action == Post.ActionChoices.MADE_PROGRESS:
+            pages_read = self.initial_data.get('pages_read')
+
+            try:
+                pages_read = int(pages_read)
+            except (TypeError, ValueError):
+                raise serializers.ValidationError({"pages_read": "A valid integer is required for made_progress."})
+
+            # Căutăm ultima postare de progres
+            last_post = Post.objects.filter(
+                user=user, book=book,
+                action=Post.ActionChoices.MADE_PROGRESS
+            ).order_by('-date').first()
+
+        
+            last_progress = last_post.progress if last_post and last_post.progress is not None else 0
+
+            new_progress = last_progress + pages_read
+            validated_data['progress'] = min(new_progress, book.nr_pages)
+
+        # Curățăm pages_read pentru că nu e în model
+        validated_data.pop('pages_read', None)
+
         return super().create(validated_data)
+
+
+    
+   
+
+
+
+
     #met noi
     def get_like_count(self, obj):
         return PostLike.objects.filter(post=obj).count()
