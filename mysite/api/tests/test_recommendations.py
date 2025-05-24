@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from unittest.mock import patch
 from api.models import Book, Shelf, ShelfBooks
 from accounts.models import Profile
+from api.models import Post
 import numpy as np
 from rest_framework.test import force_authenticate
 from rest_framework.test import APIClient
@@ -16,14 +17,15 @@ class RecommendationGeneralizedTestCase(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        # facem un profil cu embedding random
+        # facem un profil
         self.profile = self.user.profile
-        self.profile.embedding = np.random.rand(384).tolist()
 
-        # adaugam o carte citita
-        self.book = Book.objects.create(title="Read Book", genre="fiction", ISBN="123", rating=4.5, description="A great book.", nr_pages=300)
-        shelf = Shelf.objects.create(user=self.user, name="Read")
-        ShelfBooks.objects.create(shelf=shelf, book=self.book)
+        self.book1 = Book.objects.create(title='Book 1', description='About machine learning and AI.', rating=5, nr_pages=200, ISBN='1234567890001')
+        self.book2 = Book.objects.create(title='Book 2', description='A romantic drama set in Paris.', rating=3, nr_pages=150, ISBN='1234567890002')
+        self.book3 = Book.objects.create(title='Book 3', description='Exploring the depths of the ocean.', rating=3, nr_pages=150, ISBN='1234567890003')
+
+        Post.objects.create(user=self.user, book=self.book1, rating=5, description='Loved it!')
+        Post.objects.create(user=self.user, book=self.book2, rating=3, description='Pretty good!')
 
     @patch("requests.get")
     def test_recommendation_generalized(self, mock_get):
@@ -51,7 +53,7 @@ class RecommendationGeneralizedTestCase(APITestCase):
         }
 
         # apelam endpointul
-        url = reverse("books-recommendation_generalized")  # în funcție de router
+        url = reverse("books-recommendation_generalized")  # in functie de router
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)

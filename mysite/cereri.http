@@ -1,0 +1,356 @@
+# https://djoser.readthedocs.io/en/latest/base_endpoints.html
+//creare cont 
+
+
+
+###
+POST http://localhost:8000/auth/users/ HTTP/1.1
+Content-Type: application/json
+
+{
+      "username" : "vacarumarta@gmail.com",
+
+    "email" : "vacarumarta@gmail.com",
+    "first_name" : "Marta",
+    "last_name" : "Vacaru",
+    "password" : "NouaParola123!",
+    "re_password" : "NouaParola123!"
+}
+
+
+
+//activare contul
+//uid = in url-ul din email, dupa activate/
+//token = in url dupa uid
+
+//http://192.168.1.134:8000/activate/MQ/cpc38i-6feaad66c8877ac2b0bfef95321c296e
+###
+POST http://localhost:8000/auth/users/activation/ HTTP/1.1
+Content-Type: application/json
+
+{
+   
+  "uid": "MQ",
+  "token": "cpc38i-6feaad66c8877ac2b0bfef95321c296e"
+  //cp89va-a86a8b4c727b2e61e98b8884355b629a
+}
+
+
+
+###
+POST http://localhost:8000/auth/users/resend_activation/ HTTP/1.1
+Content-Type: application/json
+
+{
+        "email" : "vacarumarta@gmail.com",
+}
+
+//login
+# https://djoser.readthedocs.io/en/latest/jwt_endpoints.html
+
+###
+POST http://localhost:8000/auth/jwt/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+
+        "email" : "vacarumarta@gmail.com",
+    "password" : "NouaParola123!"
+
+}
+
+###
+POST http://localhost:8000/auth/users/reset_password/
+Content-Type: application/json
+
+{
+  "email": "vacarumarta@gmail.com"
+}
+
+
+
+
+
+###
+//DELETE Account
+DELETE http://localhost:8000/auth/users/me/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NzUzNTk2LCJpYXQiOjE3NDU3NDk5OTYsImp0aSI6ImM1ZjJlMTg3ZDc3ZjQzZjBhMWY3YWI3OTgxMzdlY2Y2IiwidXNlcl9pZCI6Mn0.AqKl1TkwWx3V9p8ToFbb7wAr8QVkD7fqy3qj5d-LnFs
+Content-Type: application/json
+
+{
+    "current_password" : "NouaParola123!"
+}
+
+//autentificarea cu google
+
+###
+//aceasta cerere se realizeaza din frontend  (tutorial part 10, de la min 20)
+//redirect_uri = ulr-ul unde vrei sa te duca dupa autentificare
+GET http://localhost:8000/auth/o/google-oauth2/?redirect_uri=http://localhost:8000 HTTP/1.1
+
+###
+GET http://localhost:8000/auth/o/google-oauth2/?redirect_uri=http://localhost:8000/complete/google-oauth2/ HTTP/1.1
+
+
+
+###
+POST http://localhost:8000/auth/users/reset_password_confirm/
+Content-Type: application/json
+
+{
+  "uid": "MQ",
+  "token": "cp8bjm-a2eaa51ddc790ec689d457d7a954dfea",
+  "new_password": "NouaParola123!"
+}
+
+
+###
+
+GET http://localhost:8000/auth/users/me
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2MjkzMzk3LCJpYXQiOjE3NDYyODk3OTcsImp0aSI6IjY1MjhhZjExY2FiNjQzNTA4NzUzN2QzYWZmMzE2MzM4IiwidXNlcl9pZCI6MX0.qNijqpQ-scFvp1LdAj4H-6P-4jDpuaV2j8RKCc9BzQg
+Content-Type: application/json
+
+
+//imi da rafturile
+###
+GET http://localhost:8000/api/library/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDU3LCJpYXQiOjE3NDYzOTY0NTcsImp0aSI6ImYxODJjZTg3M2IzMjQyYjE5OWU4Zjk2M2UxNmZkMjUyIiwidXNlcl9pZCI6MX0.FQcQGPt2lvq_ojdq9jfgwEkVPTSvzRDFALTK43Vy5os
+Content-Type: application/json
+
+
+
+###
+POST http://localhost:8000/api/books/read/add/
+
+
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
+Content-Type: application/json
+
+{
+  "book": {
+    "ISBN": "9780143127741",
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "genre": "Science Fiction",
+    "rating": 4.7,
+    "nr_pages": 384,
+    "publication_year": 2014,
+    "series": "",
+    "description": "A story about survival on Mars."
+  }
+}
+
+###
+POST http://localhost:8000/auth/jwt/create/
+Content-Type: application/json
+
+{
+  "email": "vacarumarta@gmail.com",
+  "password": "NouaParola123!"
+}
+
+
+###
+
+POST http://localhost:8000/api/books/read/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2Mzk0Mjc3LCJpYXQiOjE3NDYzOTA2NzcsImp0aSI6IjE3MDAzMzEzZjkyNDQ0YzE4ZWRlZDVkMzUwZjNmNmZlIiwidXNlcl9pZCI6MX0.Kd_ifgVwsCFDXGBsNZlpx4BDFKrJximKZEWMhwqIP2w
+Content-Type: application/json
+
+{
+  "book": {
+    "ISBN": "9780143127741",
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "genre": "Science Fiction",
+    "rating": 4.7,
+    "nr_pages": 384,
+    "publication_year": 2014,
+    "series": "",
+    "description": "A story about survival on Mars."
+  }
+}
+
+
+
+### Creează un raft nou personalizat
+//var cu user bagat de mn nu automat
+###
+POST http://localhost:8000/api/shelves/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDU3LCJpYXQiOjE3NDYzOTY0NTcsImp0aSI6ImYxODJjZTg3M2IzMjQyYjE5OWU4Zjk2M2UxNmZkMjUyIiwidXNlcl9pZCI6MX0.FQcQGPt2lvq_ojdq9jfgwEkVPTSvzRDFALTK43Vy5os
+Content-Type: application/json
+
+{
+   "user": 1,
+   "name": "asa VREAU"
+}
+
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDEyLCJpYXQiOjE3NDYzOTY0MTIsImp0aSI6IjY3YTRhMTBiZGI1NjQ2OWM5ZDZiYjY0ZDk3ODIyZTA4IiwidXNlcl9pZCI6MX0.UQXyyLqq2lSAm22DIJA4O9O3-bhIdwphyjqYISn0DI
+
+
+//testare fise
+
+###
+POST http://localhost:8000/api/reading_sheets/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDU3LCJpYXQiOjE3NDYzOTY0NTcsImp0aSI6ImYxODJjZTg3M2IzMjQyYjE5OWU4Zjk2M2UxNmZkMjUyIiwidXNlcl9pZCI6MX0.FQcQGPt2lvq_ojdq9jfgwEkVPTSvzRDFALTK43Vy5os
+Content-Type: application/json
+
+{
+  "user": 1,
+  "book": 1,
+  "shelf": 1,
+  "text": " "
+}
+
+
+
+###
+POST http://localhost:8000/api/reading_sheets/user/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDU3LCJpYXQiOjE3NDYzOTY0NTcsImp0aSI6ImYxODJjZTg3M2IzMjQyYjE5OWU4Zjk2M2UxNmZkMjUyIiwidXNlcl9pZCI6MX0.FQcQGPt2lvq_ojdq9jfgwEkVPTSvzRDFALTK43Vy5os
+Content-Type: application/json
+
+
+
+
+
+//teste like uri si postari
+###
+//toate postarile
+GET http://localhost:8000/posts/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+Content-Type: application/json
+
+
+
+
+
+###
+
+
+
+# facem o postare de tip "post" -OK
+POST http://localhost:8000/posts/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+Content-Type: application/json
+
+{
+  "action": "post",
+  "description": "post test!",
+  "ISBN": "9781234567890"
+}
+
+
+###
+POST http://localhost:8000/posts/add/
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQzOTU4LCJpYXQiOjE3NDY0NDAzNTgsImp0aSI6IjBkMDYyNDdmY2FhNjRmOGFiYmZjNjY1MzY3MTA5Y2JhIiwidXNlcl9pZCI6MX0.R_37wPlB1rmmi3YBmm2kHzjTFJO6k_jUjMpVgJdG8Qs
+
+{
+  "ISBN": "9780140449266",
+  "action": "review",
+  "rating": 5,
+  "description": "O capodoperă a literaturii clasice. Recomand 100%!"
+}
+
+
+
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQzOTU4LCJpYXQiOjE3NDY0NDAzNTgsImp0aSI6IjBkMDYyNDdmY2FhNjRmOGFiYmZjNjY1MzY3MTA5Y2JhIiwidXNlcl9pZCI6MX0.R_37wPlB1rmmi3YBmm2kHzjTFJO6k_jUjMpVgJdG8Qs
+### Vezi comentariile pentru o postare
+GET http://localhost:8000/posts/1/list_comments/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQzOTU4LCJpYXQiOjE3NDY0NDAzNTgsImp0aSI6IjBkMDYyNDdmY2FhNjRmOGFiYmZjNjY1MzY3MTA5Y2JhIiwidXNlcl9pZCI6MX0.R_37wPlB1rmmi3YBmm2kHzjTFJO6k_jUjMpVgJdG8Qs
+
+
+
+
+
+###LIKE la o postare
+POST http://localhost:8000/api/posts/3/toggle_like/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+Content-Type: application/json
+
+
+### 💬 ADAUGĂ COMENTARIU la postare
+POST http://localhost:8000/api/posts/1/add_comment/
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+
+{
+  "user": 1,
+  "post": 1,
+  "text": " Foarte bine scris!"
+}
+
+
+### 👀 VEZI TOATE COMENTARIILE
+GET http://localhost:8000/api/posts/1/list_comments/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+
+
+
+//pt noile rafturi si challangee
+
+
+//pt challange
+###
+GET http://localhost:8000/library/reading_challenge/?goal_books=10&goal_pages=3000
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
+Content-Type: application/json
+
+
+
+### rafturile standard + custom
+GET http://localhost:8000/library/shelves/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
+Content-Type: application/json
+
+### 5 carti și 1200 pagini
+GET http://localhost:8000/library/reading_challenge/?goal_books=5&goal_pages=1200
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
+
+
+
+###  daca o carte este în vreun raft (exemplu ISBN)
+GET http://localhost:8000/library/book_status/?isbn=9780316769488
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
+
+//pt un raft anume,dat ca parametru
+###
+GET /library/shelf/Read/ HTTP/1.1
+Host: localhost:8000
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
+Content-Type: application/json
+
+
+
+
+##pt fisele de lectura
+###
+GET http://localhost:8000/api/reading-sheets/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
+Accept: application/json
+
+
+
+##ultimele 5 fise
+###
+GET http://localhost:8000/api/reading-sheets/latest/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
+Accept: application/json
+
+##toate fisle doar titlu si autor
+###
+GET http://localhost:8000/api/reading-sheets/simple/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
+Accept: application/json
+
+
+#pt events
+### Scrape evenimente literare de pe carturesti.ro
+GET http://localhost:8000/scrape-events/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MjU2OTc2LCJpYXQiOjE3NDcyNTMzNzYsImp0aSI6ImFkMGEyNTNlMzc3YzQ3ZTg5Mjk0YTM2NWRkZDZkZmQyIiwidXNlcl9pZCI6MX0.q_XgLFavK8lY7jmZdXkNegg2gOcJJkmCMhR63Z8B_nk
+Accept: application/json
+
+
+#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MjEyMjA4LCJpYXQiOjE3NDcyMDg2MDgsImp0aSI6IjVkZTk0NGU4ZWVmYzQ2Y2E4YzkwNmE4NTJlYjlhODQzIiwidXNlcl9pZCI6MX0.pu2_tp9_TzH0pbcJZ9mXkz989XpKUfXuBTg90XdbP6w

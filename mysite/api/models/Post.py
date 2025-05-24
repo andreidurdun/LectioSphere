@@ -55,7 +55,8 @@ class Post(models.Model):
     )
     
     rating = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(5)],
         choices=[(i, i) for i in range(1, 6)],
         verbose_name="Rating",
         null=True,

@@ -3,6 +3,11 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import Profile
 from djoser.serializers import UserSerializer
+from api.models import Comment
+from api.models import PostLike
+from api.models import Post
+
+
 
 User = get_user_model()
 
@@ -59,3 +64,5 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_following_count(self, obj):
         # returneaza numarul de persoane pe care le urmareste utilizatorul
         return obj.following.count()
+
+

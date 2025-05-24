@@ -63,12 +63,12 @@ class Profile(models.Model):
     embedding = models.TextField(null=True, blank=True)  # salvat ca text JSON
 
     def set_embedding(self, embedding_list):
-        """Primește o listă de floats și o salvează în format text JSON."""
+        """primeste o lista de floats si o salveaza in format text JSON."""
         self.embedding = json.dumps(embedding_list)
         self.save()
 
     def get_embedding(self):
-        """Returnează embedding-ul ca listă de floats (sau None dacă nu există)."""
+        """returneaza embedding-ul ca lista de floats (sau None daca nu exista)."""
         if self.embedding:
             return json.loads(self.embedding)
         return None
