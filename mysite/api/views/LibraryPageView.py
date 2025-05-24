@@ -14,9 +14,12 @@ class LibraryPageView(ViewSet):
     @action(detail=False, methods=["get"])
     def reading_challenge(self, request):
         user = request.user
-        goal_books = int(request.query_params.get("goal_books", 0))
-        goal_pages = int(request.query_params.get("goal_pages", 0))
+       # goal_books = int(request.query_params.get("goal_books", 0))
+       # goal_pages = int(request.query_params.get("goal_pages", 0))
         
+        goal_books = int(request.query_params.get("goal_books", user.goal_books))
+        goal_pages = int(request.query_params.get("goal_pages", user.goal_pages))
+
 
         books_read, pages_read = self.get_reading_progress(user)
         book_data = self.get_book_challenge_progress(books_read, goal_books)
@@ -30,6 +33,25 @@ class LibraryPageView(ViewSet):
             "goal_pages": page_data["goal"],
             "progress_pages_percent": page_data["percent"]
         })
+        
+    @action(detail=False, methods=["post"])
+    def update_reading_goals(self, request):
+        user = request.user
+        goal_books = request.data.get("goal_books")
+        goal_pages = request.data.get("goal_pages")
+
+        if goal_books is not None:
+            user.goal_books = goal_books
+        if goal_pages is not None:
+            user.goal_pages = goal_pages
+
+        user.save()
+        return Response({
+            "message": "Reading goals updated successfully.",
+            "goal_books": user.goal_books,
+            "goal_pages": user.goal_pages,
+        })
+
 
     @action(detail=False, methods=["get"])
     def shelves(self, request):

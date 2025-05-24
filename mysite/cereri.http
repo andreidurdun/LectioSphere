@@ -378,3 +378,29 @@ Accept: application/json
 
 
 #eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MjEyMjA4LCJpYXQiOjE3NDcyMDg2MDgsImp0aSI6IjVkZTk0NGU4ZWVmYzQ2Y2E4YzkwNmE4NTJlYjlhODQzIiwidXNlcl9pZCI6MX0.pu2_tp9_TzH0pbcJZ9mXkz989XpKUfXuBTg90XdbP6w
+
+
+
+#update 24mai
+###
+GET http://localhost:8000/library/reading_challenge/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTIyOTExLCJpYXQiOjE3NDgxMTkzMTEsImp0aSI6IjNmMDUwOWM1NmZmZTRkZWZhOTc4MGI5MDBjNTMyYzMwIiwidXNlcl9pZCI6MX0.yjHp_7tiyTa6EYQz3ZZeX4doaB3GQ_N58Az1QjlTZzA
+Accept: application/json
+
+
+
+### parametri personalizat  URL (override temporar)
+GET http://localhost:8000/library/reading_challenge/?goal_books=10&goal_pages=2500
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTIyOTExLCJpYXQiOjE3NDgxMTkzMTEsImp0aSI6IjNmMDUwOWM1NmZmZTRkZWZhOTc4MGI5MDBjNTMyYzMwIiwidXNlcl9pZCI6MX0.yjHp_7tiyTa6EYQz3ZZeX4doaB3GQ_N58Az1QjlTZzA
+
+
+
+### Act biectivele permanente pentru utilizator
+POST http://localhost:8000/api/library/update_reading_goals/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTIyOTExLCJpYXQiOjE3NDgxMTkzMTEsImp0aSI6IjNmMDUwOWM1NmZmZTRkZWZhOTc4MGI5MDBjNTMyYzMwIiwidXNlcl9pZCI6MX0.yjHp_7tiyTa6EYQz3ZZeX4doaB3GQ_N58Az1QjlTZzA
+Content-Type: application/json
+
+{
+  "goal_books": 20,
+  "goal_pages": 5000
+}
