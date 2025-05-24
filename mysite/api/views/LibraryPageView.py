@@ -16,6 +16,7 @@ class LibraryPageView(ViewSet):
         user = request.user
         goal_books = int(request.query_params.get("goal_books", 0))
         goal_pages = int(request.query_params.get("goal_pages", 0))
+        
 
         books_read, pages_read = self.get_reading_progress(user)
         book_data = self.get_book_challenge_progress(books_read, goal_books)
@@ -104,7 +105,7 @@ class LibraryPageView(ViewSet):
         if not name:
             return Response({"error": "Shelf name is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Decodare în caz că numele e URL-encoded
+        # Decodare in caz că numele e URL-encoded
         decoded_name = unquote(name)
 
         shelf = Shelf.objects.filter(user=user, name=decoded_name).first()
@@ -119,5 +120,26 @@ class LibraryPageView(ViewSet):
             "shelf_name": shelf.name,
         "books": books_data
     })
+        
+    @action(detail=False, methods=["post"])
+    def create_shelf(self, request):
+        user = request.user
+        name = request.data.get("name")
+
+        if not name:
+            return Response({"error": "Shelf name is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # verifică dacă raftul cu același nume există deja
+        if Shelf.objects.filter(user=user, name=name).exists():
+           return Response({"error": "A shelf with this name already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
+        shelf = Shelf.objects.create(user=user, name=name)
+        return Response({"message": "Shelf created successfully.", "shelf": {"id": shelf.id, "name": shelf.name}}, status=status.HTTP_201_CREATED)
+
+    
+     
+        
+       
+
 
 

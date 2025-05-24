@@ -9,3 +9,13 @@ from django.conf import settings
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+        
+#cand un user e creat,se fac automat rafturile standard
+from api.models import Shelf
+
+@receiver(post_save, sender=UserAccount)
+def create_default_shelves(sender, instance, created, **kwargs):
+    if created:
+        default_names = ["Read", "Reading", "ReadList", "Favourites"]
+        for name in default_names:
+            Shelf.objects.get_or_create(user=instance, name=name)
