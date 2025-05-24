@@ -1,19 +1,17 @@
-from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from api.models import ReadingSheet, Shelf
+from api.models import ReadingSheet
 from api.serializers import ReadingSheetSerializer
 
-class ReadingSheetsView(APIView):
+class ReadingSheetsView(ViewSet):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def list(self, request):
         user = request.user
 
-        # toate fișele de lectur ale utilz
         sheets = ReadingSheet.objects.filter(user=user).select_related("book", "shelf")
-
-        #  fisele de lectura pe rafturi
         grouped_by_shelf = {}
 
         for sheet in sheets:
@@ -22,3 +20,42 @@ class ReadingSheetsView(APIView):
             grouped_by_shelf.setdefault(shelf_name, []).append(sheet_data)
 
         return Response(grouped_by_shelf)
+
+    @action(detail=False, methods=["get"], url_path="latest")
+    def get_latest_titles_authors(self, request):
+        user = request.user
+
+        latest_sheets = (
+            ReadingSheet.objects
+            .filter(user=user)
+            .select_related("book")
+            .order_by("-id")[:5]
+        )
+
+        data = [
+            {
+                "title": sheet.book.title,
+                "author": sheet.book.author
+            }
+            for sheet in latest_sheets
+            if sheet.book
+        ]
+
+        return Response(data)
+
+    @action(detail=False, methods=["get"], url_path="simple")
+    def get_all_titles_authors(self, request):
+        user = request.user
+
+        all_sheets = ReadingSheet.objects.filter(user=user).select_related("book")
+
+        data = [
+            {
+                "title": sheet.book.title,
+                "author": sheet.book.author
+            }
+            for sheet in all_sheets
+            if sheet.book
+        ]
+
+        return Response(data)

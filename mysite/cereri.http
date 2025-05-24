@@ -315,6 +315,37 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 GET http://localhost:8000/library/book_status/?isbn=9780316769488
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
 
+//pt un raft anume,dat ca parametru
+###
+GET /library/shelf/Read/ HTTP/1.1
+Host: localhost:8000
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
+Content-Type: application/json
+
+
+
+
+##pt fisele de lectura
+###
+GET http://localhost:8000/api/reading-sheets/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
+Accept: application/json
+
+
+
+##ultimele 5 fise
+###
+GET http://localhost:8000/api/reading-sheets/latest/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
+Accept: application/json
+
+##toate fisle doar titlu si autor
+###
+GET http://localhost:8000/api/reading-sheets/simple/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
+Accept: application/json
+
+
 #pt events
 ### Scrape evenimente literare de pe carturesti.ro
 GET http://localhost:8000/scrape-events/
