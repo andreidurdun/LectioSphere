@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { refreshAccessToken } from './refreshAccessToken'; 
+import AllShelves from './AllShelves';
 
 const calendarItem = require('../assets/calendarIcon.png');
 const shelfItem = require('../assets/shelf.png');
@@ -190,10 +191,10 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
         if (isAuthenticated) {
             fetchUserData();
             fetchReadingChallenge();
-            fetchShelf("read", setRead, 6);
-            fetchShelf("reading", setReading, 4);
-            fetchShelf("readlist", setReadlist, 4);
-            fetchShelf("favourites", setFavourites, 4);
+            fetchShelf("Read", setRead, 6);
+            fetchShelf("Reading", setReading, 4);
+            fetchShelf("Readlist", setReadlist, 4);
+            fetchShelf("Favourites", setFavourites, 4);
             fetchSheets();
         }
     }, [isAuthenticated]);
@@ -213,7 +214,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                         <Text style={styles.textTitleChallenges}> Reading Challenges </Text>
                         <View style={styles.challengeContainer}>
                             <View style={{ width: '47.5%' }}>
-                                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                                <TouchableNativeFeedback onPress={() => handleShelfClick('BooksChallenge')}>
                                     <View style={styles.challengeBooks}>
                                         <Text style={styles.textChallenge}>Number of Books </Text>
                                         <View style={styles.counterBox}>
@@ -230,18 +231,16 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             </View>
                             <View style={styles.verticalBar} />
                             <View style={{ width: '47.5%' }}>
-                                <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                                <TouchableNativeFeedback onPress={() => handleShelfClick('PagesChallenge')}>
                                     <View style={styles.challengePages}>
                                         <Text style={styles.textChallenge}>  Number of Pages </Text>
-                                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
-                                            <View style={styles.counterBoxPages}>
-                                                <Image
-                                                    source={calendarItem}
-                                                    style={{ width: 30, height: 34 }}
-                                                />
-                                                <Text style={styles.currentB}>{currentPages}</Text>
-                                            </View>
-                                        </TouchableNativeFeedback>
+                                        <View style={styles.counterBoxPages}>
+                                            <Image
+                                                source={calendarItem}
+                                                style={{ width: 30, height: 34 }}
+                                            />
+                                            <Text style={styles.currentB}>{currentPages}</Text>
+                                        </View>
                                         <View style={styles.progressContainer}>
                                             <ProgressBar progress={progressPages} color="#613F75" style={styles.progressBarChallenge} />
                                             <Text style={styles.percentage}>{Math.round(progressPages * 100)}%</Text>
@@ -264,7 +263,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                     </View>
 
                     <View style={styles.shelvesContainer}>
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Read'})}>
                             <View style={styles.shelf}>
                                 {read[0] && read[1] && (
                                     <Image source={{ uri: read[0].thumbnail }} style={styles.coversBig} />
@@ -288,7 +287,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Reading'})}>
                             <View style={styles.shelf}>
                                 {reading[0] && reading[1] && (
                                     <Image source={{ uri: reading[0].thumbnail }} style={styles.coversBig} />
@@ -306,7 +305,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Readlist'})}>
                             <View style={styles.shelf}>
                                 {readlist[0] && readlist[1] && (
                                     <Image source={{ uri: readlist[0].thumbnail }} style={styles.coversBig} />
@@ -324,7 +323,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', {shelfName: 'Favourites'})}>
                             <View style={styles.shelf}>
                                 {favourites[0] && favourites[1] && (
                                     <Image source={{ uri: favourites[0].thumbnail }} style={styles.coversBig} />
@@ -342,7 +341,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
+                        <TouchableNativeFeedback onPress={() => handleShelfClick('AllShelves')}>
                             <View style={styles.sheet}>
                                 <Text style={styles.textShelfMore}>See More</Text>
                             </View>

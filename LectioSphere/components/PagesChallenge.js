@@ -8,18 +8,14 @@ import axios from 'axios';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { refreshAccessToken } from './refreshAccessToken'; 
 
-const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
+const PagesChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
     const [active, setActive] = useState(page);
 
-    const { shelfName } = route.params;
-    const [shelfBooks, setShelfBooks] = useState([]);
+    const [currentBooks, setCurrentBooks] = useState(0);
+    const [totalBooks, setTotalBooks] = useState(0);
+    const [progressBooks, setProgressBooks] = useState(0);
 
-    const handleBookPress = (book) => {
-        navigation.navigate('BookShow', { 
-            bookData: JSON.stringify(book)
-        });
-    };
 
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -68,36 +64,41 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
         );
     };
 
-    const fetchShelf = async (shelfName) => {
+    const fetchBooksChallenge = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/library/shelf/${shelfName}/`, {
+            const response = await axios.get(`${apiBaseUrl}/library/reading_challenge/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const {shelf_name, books} = response.data;
-            setShelfBooks(books);
+            const data = response.data;
+            setCurrentBooks(data.books_read);
+            setTotalBooks(data.goal_books);
+            setProgressBooks(data.progress_books_percent);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/${shelfName}/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/reading_challenge/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const {shelf_name, books} = retryResponse.data;
-                    setShelfBooks(books);
+                    const data = response.data;
+                    setCurrentBooks(data.books_read);
+                    setTotalBooks(data.goal_books);
+                    setProgressBooks(data.progress_books_percent);
                 } else {
-                    console.error(`Unable to refresh token for shelf.`);
+                    console.error(`Unable to refresh token for reading challenge items.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                console.error("Error fetching reading challenge:", error.message);
             }
         }
     };
+
     
     useEffect(() => {
         if (isAuthenticated) {
             fetchUserData();
-            fetchShelf(shelfName);
+            fetchBooksChallenge();
         }
     }, [isAuthenticated]);
 
@@ -113,16 +114,12 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
 
                 <View style={styles.header}>
                     <View style={styles.categoryContainer}>
-                        <Text style={styles.textCategory}> {shelfName} </Text>
+                        <Text style={styles.textCategory}> Number of Pages </Text>
+                        <Text style={styles.textCategory}> Challenge </Text>
                         <View style={styles.horizontalBar} />
                     </View>
 
-                    {shelfBooks.length === 0 ? (
-                        <View style={styles.noBooksContainer}>
-                            <Text style={styles.noBooksText}>No books yet</Text>
-                        </View>
-                            ) : null }
-                    {/*de completat dupa ce primesc formatul*/}
+                    
                         
 
                 </View>
@@ -181,26 +178,20 @@ const styles = StyleSheet.create({
     },
     horizontalBar: {
         height: 2,
-        width: 240,
+        width: 280,
         alignItems: 'center',
         backgroundColor: '#613F75', 
         marginTop: 4, 
       },
-    covers: {
-        height: 148,
-        width: 98,
-        borderRadius: 4,
-        marginRight: 12,
+    shelf: {
+        height: 106,
+        justifyContent: 'center',
     },
-    noBooksContainer: {
-        alignItems: 'center',
-        marginTop: 30,
-    },
-    noBooksText: {
+    textShelf: {
         fontFamily: 'Nunito_500Medium',
-        color: '#613F75',
-        fontSize: 20, 
+        fontSize: 32,
+        color: '#18101D',
     },
 });
 
-export default ShelfPage;
+export default PagesChallenge;

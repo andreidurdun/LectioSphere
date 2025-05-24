@@ -71,7 +71,7 @@ urlpatterns = [
 
 # Like / Unlike la postări
   #  path("posts/<int:pk>/toggle_like/", PostsView.as_view({"post": "toggle_like"}), name="toggle-like"),
- path(
+   path(
         "library/shelf/<str:name>/", 
         LibraryPageView.as_view({"get": "get_shelf_by_name"}), 
         name="library-shelf"),

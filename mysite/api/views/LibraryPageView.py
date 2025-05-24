@@ -117,7 +117,7 @@ class LibraryPageView(ViewSet):
 
         return Response({
             "shelf_name": shelf.name,
-        "books": books_data
-    })
+            "books": books_data
+        })
 
 
