@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, SafeAreaView, ScrollView } from 'react-native';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -147,98 +147,105 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         navigation.navigate('ProfileEdit');
     }
 
-    console.log("Profile Data:", profileData);
-
+    // console.log("Profile Data:", profileData);    
     return (
         <SafeAreaView style={styles.screen}>
             <TopBar pageName="ProfilePage" />
-
-            <View style={styles.body}>
-                <View style={styles.profileCard}>
-                    <View style={styles.generalInfo}>
-                        <Image 
-                            source={
-                                profileData?.profile_pic 
-                                ? { uri: profileData.profile_pic } 
-                                : defaultPicture
-                            }
-                            style={styles.profilePic}
-                        />
-                        <View style={styles.textInfo}>
-                            <View style={styles.followersInfo}>
-                                <Text style={styles.followers}>
-                                    {profileData?.follower_count || 0} {'\n'}followers
-                                </Text>
-                                <View style={styles.verticalLine}></View>
-                                <Text style={styles.followers}>
-                                    {profileData?.following_count || 0} {'\n'}following
-                                </Text>
-                            </View>
-                            <View style={styles.nameAndEdit}>
-                                <View style={styles.nameInfo}>
-                                    <View style={styles.fullname}>
-                                        <Text style={styles.nameText}>
-                                            {userData?.first_name} {userData?.last_name}
-                                        </Text>
-                                    </View>
-                                    <View style={styles.username}>
-                                        <Text style={styles.usernameText}>
-                                            @{userData?.username}
-                                        </Text>
-                                        
-                                    </View>
+            
+            <ScrollView 
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={true}
+            >
+                <View style={styles.body}>
+                    <View style={styles.profileCard}>
+                        <View style={styles.generalInfo}>
+                            <Image 
+                                source={
+                                    profileData?.profile_pic 
+                                    ? { uri: profileData.profile_pic } 
+                                    : defaultPicture
+                                }
+                                style={styles.profilePic}
+                            />
+                            <View style={styles.textInfo}>
+                                <View style={styles.followersInfo}>
+                                    <Text style={styles.followers}>
+                                        {profileData?.follower_count || 0} {'\n'}followers
+                                    </Text>
+                                    <View style={styles.verticalLine}></View>
+                                    <Text style={styles.followers}>
+                                        {profileData?.following_count || 0} {'\n'}following
+                                    </Text>
                                 </View>
-                                <TouchableOpacity onPress={handlePressEdit}>
-                                    <Image 
-                                        source={editPen} 
-                                        style={styles.editPen} 
-                                    />
-                                </TouchableOpacity>
+                                <View style={styles.nameAndEdit}>
+                                    <View style={styles.nameInfo}>
+                                        <View style={styles.fullname}>
+                                            <Text style={styles.nameText}>
+                                                {userData?.first_name} {userData?.last_name}
+                                            </Text>
+                                        </View>
+                                        <View style={styles.username}>
+                                            <Text style={styles.usernameText}>
+                                                @{userData?.username}
+                                            </Text>
+                                            
+                                        </View>
+                                    </View>
+                                    <TouchableOpacity onPress={handlePressEdit}>
+                                        <Image 
+                                            source={editPen} 
+                                            style={styles.editPen} 
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                
                             </View>
-                            
+                        </View>
+                        <View style={styles.description}>
+                            <Text style={styles.bioText}>
+                                {profileData?.profile.bio || "No bio available"}
+                            </Text>
                         </View>
                     </View>
-                    <View style={styles.description}>
-                        <Text style={styles.bioText}>
-                            {profileData?.profile.bio || "No bio available"}
-                        </Text>
+
+                    <View style={styles.selection}>
+                        <TouchableOpacity 
+                            onPress={() => setSelected('photo')} 
+                            style={selected === 'photo' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
+                        >
+                            <Image 
+                                source={selected === 'photo' ? photoPurple : photoBlack} 
+                                style={styles.photoIcon} 
+                            />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            onPress={() => setSelected('glasses')} 
+                            style={selected === 'glasses' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
+                        >
+                            <Image 
+                                source={selected === 'glasses' ? glassesPurple : glassesBlack} 
+                                style={styles.glassesIcon} 
+                            />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            onPress={() => setSelected('closedBook')} 
+                            style={selected === 'closedBook' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
+                        >
+                            <Image 
+                                source={selected === 'closedBook' ? closedBookPurple : closedBookBlack} 
+                                style={styles.closedBookIcon} 
+                            />
+                        </TouchableOpacity>
                     </View>
                 </View>
 
-                <View style={styles.selection}>
-                    <TouchableOpacity 
-                        onPress={() => setSelected('photo')} 
-                        style={selected === 'photo' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
-                    >
-                        <Image 
-                            source={selected === 'photo' ? photoPurple : photoBlack} 
-                            style={styles.photoIcon} 
-                        />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={() => setSelected('glasses')} 
-                        style={selected === 'glasses' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
-                    >
-                        <Image 
-                            source={selected === 'glasses' ? glassesPurple : glassesBlack} 
-                            style={styles.glassesIcon} 
-                        />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={() => setSelected('closedBook')} 
-                        style={selected === 'closedBook' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
-                    >
-                        <Image 
-                            source={selected === 'closedBook' ? closedBookPurple : closedBookBlack} 
-                            style={styles.closedBookIcon} 
-                        />
-                    </TouchableOpacity>
+                <View style={styles.postingsContainer}>
+                    <Postings selection={selected} apiBaseUrl={apiBaseUrl}/>
                 </View>
-            </View>
-
-            <Postings selection={selected}/>
+            </ScrollView>
 
             <NavBar navigation={navigation} page="ProfilePage" />
         </SafeAreaView>
@@ -252,6 +259,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 0,
         backgroundColor: '#FCF8FA',
+    },
+    scrollView: {
+        width: '100%',
+        flex: 1,
+    },
+    scrollContent: {
+        alignItems: 'center',
+        paddingBottom: 80, // Provide space at the bottom so content isn't hidden by NavBar
+    },
+    postingsContainer: {
+        width: '95%',
+        marginTop: 10,
     },
     body: {
         marginTop: 100,
@@ -352,7 +371,6 @@ const styles = StyleSheet.create({
     },
     selection: {
         marginTop: 16,
-        marginBottom: 16,
         backgroundColor: '#F7EDF1',
         borderRadius: 8,
         borderWidth: 1,

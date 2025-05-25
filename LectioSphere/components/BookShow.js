@@ -91,37 +91,62 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
     };
 
     const handleUpdateReading = async (bookId) => {
-        try {
-            const token = await AsyncStorage.getItem('auth_token');
-            if (!token) {
-                console.error('No token found');
-                return;
-            }
+    try {
+        const token = await AsyncStorage.getItem('auth_token');
+        if (!token) {
+            console.error('No token found');
+            return;
+        }
 
-            // Try to refresh the token if needed (optional, based on your auth flow)
-            // const refreshedToken = await refreshAccessToken(token);
+        console.log(bookId, ' bookId');
 
-            // Check what your backend expects for the payload!
-            // Try sending only the bookId, or check if the endpoint is correct.
-            const response = await axios.post(
-                `${apiBaseUrl}/posts/add/`,
-                {   
-                    action: 'made_progress', // Adjust this based on your API
-                    book: bookId // Try without action, or adjust as needed
+        // Modified request payload to match the expected format
+        const response = await axios.post(
+            `${apiBaseUrl}/posts/add/`,
+            {
+                action: 'made_progress',
+                pages_read: 10, // Changed from 0 to 10 as minimum pages
+                id: bookId // Changed from 'book_id' to 'id' as expected by the server
+            },
+            {
+                headers: {
+                    Authorization: `JWT ${token}`,
+                    'Content-Type': 'application/json',
                 },
-                {
-                    headers: {
-                        Authorization: `JWT ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            }
+        );
 
-            console.log('Book updated successfully:', response.data);
+        console.log('Book updated successfully:', response.data);
+        Alert.alert(
+            'Success',
+            'Your reading progress has been updated!',
+            [{ text: 'OK' }]
+        );
         } catch (error) {
             console.error('Error updating book:', error);
+            
+            // Enhanced error handling
+            let errorMessage = 'Failed to update reading progress.';
+            if (error.response) {
+                if (error.response.data) {
+                    // Try to extract error details from response
+                    errorMessage = typeof error.response.data === 'string' 
+                        ? error.response.data 
+                        : JSON.stringify(error.response.data);
+                }
+                console.log('Error status:', error.response.status);
+                console.log('Error data:', error.response.data);
+            }
+            
+            Alert.alert(
+                'Update Failed',
+                errorMessage,
+                [{ text: 'OK' }]
+            );
         }
-    }
+    };
+
+    // console.log('Book data:', bookData);
 
     return (
         <SafeAreaView style={styles.screen}>

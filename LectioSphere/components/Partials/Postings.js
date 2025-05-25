@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from "react-native";
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
+import axios from 'axios';
+import PostPartial from './PostPartial'; // Adjust the import path as necessary
 
 
-export default function Postings ({ selection }) {
+export default function Postings ({ apiBaseUrl, selection }) {
 
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -11,18 +13,44 @@ export default function Postings ({ selection }) {
         Nunito_600SemiBold
     });
 
+    const defaultPicture = require('../../assets/defaultProfilePic.jpg');
+
     if(selection === 'photo')
     {
+        const [posts, setPosts] = useState([]);
+
+        React.useEffect(() => {
+            axios.get(`${apiBaseUrl}/posts/`)
+                .then(res => setPosts(res.data))
+                .catch(err => console.error(err));
+        }, []);
+
+        // console.log(posts);
+
+
+        if (posts.length === 0) {
+            return (
+                <View style={styles.card}>
+                    <View style={styles.notFoundContainer}>
+                        <Text style={styles.notFoundText}>
+                            This user didn't post anything yet
+                        </Text>
+                    </View>
+                </View>
+            );
+        }
+        
         return (
             <View style={styles.card}>
-                <View style={styles.notFoundContainer}>
-                    <Text style={styles.notFoundText}>
-                        This user didn't post anything yet
-                    </Text>
-                </View>
+            {posts.map((post, index) => (
+                <PostPartial postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={index} />
+            ))}
             </View>
-            
         );
+
+
+
+
     }
     else if (selection === 'glasses')
     {
@@ -60,7 +88,6 @@ const styles = StyleSheet.create({
         marginLeft: 6,
         marginRight: 6,
         alignSelf: 'center'
-
     },
     notFoundContainer: {
         minHeight: 100,
