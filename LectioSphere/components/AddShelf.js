@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert, SafeAreaView, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback, ScrollView, Image, TextInput } from 'react-native';
+import { ProgressBar } from 'react-native-paper';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,14 +8,13 @@ import axios from 'axios';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { refreshAccessToken } from './refreshAccessToken'; 
 
-const ChangeGoalPages = ({ route, navigation, page, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
+const AddShelf = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
     const [active, setActive] = useState(page);
 
-    const { lastGoalPages } = route.params;
+    const [shelfName, setShelfName] = useState('');
 
-    const [newGoal, setNewGoal] = useState(lastGoalPages?.toString());
-
+    
     const handlePageClick = (page, params = {}) => {
         setActive(page);
         navigation.navigate(page, params); 
@@ -50,46 +50,33 @@ const ChangeGoalPages = ({ route, navigation, page, removeAuthToken, isAuthentic
         }
     };
 
-    const updateReadingGoal = async (goal_books, goal_pages, apiBaseUrl) => {
+    const createNewShelf = async (apiBaseUrl) => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
-            const data = {};
+            const data = { name: shelfName };  
 
-            if (goal_books !== null) {
-                data.goal_books = goal_books;
-            }
-            if (goal_pages !== null) {
-                data.goal_pages = goal_pages;
-            }
-        
-            const response = await axios.post(`${apiBaseUrl}/api/library/update_reading_goals/`, data, {
+            const response = await axios.post(`${apiBaseUrl}/api/library/create_shelf/`, data, {
                 headers: { Authorization: `JWT ${token}` }
             });
-        
-            console.log('Updated:', response.data);
+
+            console.log('Shelf created:', response.data);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const data = {};
+                    const data = { name: shelfName };
 
-                    if (goal_books !== null) {
-                        data.goal_books = goal_books;
-                    }
-                    if (goal_pages !== null) {
-                        data.goal_pages = goal_pages;
-                    }
-                
-                    const response = await axios.post(`${apiBaseUrl}/api/library/update_reading_goals/`, data, {
-                        headers: { Authorization: `JWT ${token}` }
+                    const response = await axios.post(`${apiBaseUrl}/api/library/create_shelf/`, data, {
+                        headers: { Authorization: `JWT ${newToken}` }
                     });
-                
-                    console.log('Updated:', response.data);
+                    
+                    console.log('Shelf created:', response.data);
                 } else {
-                    console.error("Error fetching reading challenge:", error.message);
+                    handleLogout();
                 }
             } else {
-                console.error('Error updating reading goal:', error.response?.data || error.message);
+                Alert.alert('Error', error.response?.data?.error || 'Failed to create shelf');
+                console.error('Error creating shelf:', error.response?.data || error.message);
             }
         }
     };
@@ -128,35 +115,39 @@ const ChangeGoalPages = ({ route, navigation, page, removeAuthToken, isAuthentic
             <View style={styles.header}>
 
                 <View style={styles.container}>
-                    <Text style={styles.messageText}>Set the number of pages you would like to read this year:</Text>
+                    <Text style={styles.messageText}>Enter the name of your new shelf:</Text>
                 </View>
 
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
-                        value={newGoal}
-                        onChangeText={setNewGoal}
-                        keyboardType="numeric"
-                        placeholder="Enter your goal"
+                        value={shelfName}
+                        onChangeText={setShelfName}
+                        placeholder="Shelf name"
                         placeholderTextColor="#A79CA8"
+                        autoFocus
                     />
                 </View>
 
                 <Text
                     style={styles.changeText}
-                    onPress={() => {
-                        const parsedGoal = parseInt(newGoal);
-                        if (isNaN(parsedGoal)) {
-                        Alert.alert('Invalid input', 'Please enter a valid number.');
-                        return;
+                    onPress={async () => {
+                        if (!shelfName.trim()) {
+                            Alert.alert('Invalid input', 'Please enter a valid shelf name.');
+                            return;
                         }
 
-                        updateReadingGoal(null, parsedGoal, apiBaseUrl);
-                        Alert.alert('Success', 'Your reading goal has been updated!');
-                        handlePageClick('LibraryPage'); 
+                        try {
+                            await createNewShelf(apiBaseUrl);
+                            Alert.alert('Success', 'Shelf created successfully!');
+                            handlePageClick('LibraryPage');
+                        } catch (error) {
+                            Alert.alert('Error', 'Failed to create shelf.');
+                            console.error(error);
+                        }
                     }}
-                    >
-                    Save
+                >
+                    Create Shelf
                 </Text>
                         
             </View>
@@ -222,4 +213,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ChangeGoalPages;
+export default AddShelf;

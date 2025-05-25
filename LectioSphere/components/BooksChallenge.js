@@ -15,7 +15,6 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
     const [currentBooks, setCurrentBooks] = useState(0);
     const [totalBooks, setTotalBooks] = useState(0);
     const [progressBooks, setProgressBooks] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
 
     const handlePageClick = (page, params = {}) => {
         setActive(page);
@@ -79,7 +78,6 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
             setCurrentBooks(data.books_read);
             setTotalBooks(data.goal_books);
             setProgressBooks(data.progress_books_percent);
-            setTotalPages(data.goal_pages);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
@@ -91,7 +89,6 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
                     setCurrentBooks(data.books_read);
                     setTotalBooks(data.goal_books);
                     setProgressBooks(data.progress_books_percent);
-                    setTotalPages(data.goal_pages);
                 } else {
                     console.error(`Unable to refresh token for reading challenge items.`);
                 }
@@ -155,7 +152,7 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
                         </View>
                     </View>
 
-                    <Text style={styles.changeText} onPress={() => handlePageClick('ChangeGoalBooks', {totalBooks, totalPages})}> Change goal </Text>
+                    <Text style={styles.changeText} onPress={() => handlePageClick('ChangeGoalBooks', {totalBooks})}> Change goal </Text>
 
                     <Text style={styles.booksReadText}> The books you read: </Text>
                         

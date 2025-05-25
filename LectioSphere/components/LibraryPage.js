@@ -11,7 +11,6 @@ import AllShelves from './AllShelves';
 
 const calendarItem = require('../assets/calendarIcon.png');
 const shelfItem = require('../assets/shelf.png');
-const readingSheetsItem = require('../assets/readingSheets.png');
 
 const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
@@ -32,9 +31,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
     const [reading, setReading] = useState([]); 
     const [readlist, setReadlist] = useState([]); 
     const [favourites, setFavourites] = useState([]); 
-
-    //ReadingSheets
-    const [sheets, setSheets] = useState([]); 
+ 
 
 
     const handleShelfClick = (page, params = {}) => {
@@ -151,53 +148,40 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
         }
     };
 
-    const fetchSheets = async () => {
-        try {
-            let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/decompletat`, {
-                headers: { Authorization: `JWT ${token}` }
-            });
-            setSheets(response);
-        } catch (error) {
-            if (error.response?.status === 401) {
-                const newToken = await refreshAccessToken(apiBaseUrl);
-                if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/decompletat`, {
-                        headers: { Authorization: `JWT ${newToken}` }
-                    });
-                    setSheets(retryResponse);
-                } else {
-                    console.error(`Unable to refresh token for reading sheets items.`);
-                }
-            } else {
-                console.error(`Error loading reading sheets:`, error.message);
-            }
-        }
+    const [loading, setLoading] = useState(true);
+
+    const fetchData = async () => {
+        setLoading(true);
+        await fetchUserData();
+        await fetchReadingChallenge();
+        await fetchShelf("Read", setRead, 6);
+        await fetchShelf("Reading", setReading, 4);
+        await fetchShelf("Readlist", setReadlist, 4);
+        await fetchShelf("Favourites", setFavourites, 4);
+        setLoading(false);
     };
 
-    const renderSheet = ({ item }) => (
-        <TouchableWithoutFeedback onPress={() => console.log("Apasat")}>
-            <View style={styles.bookContainer}>
-                <Image source={{ uri: item.thumbnail }} style={styles.covers} />
-                <View style={styles.infoContainer}>
-                    <Text onPress={() => console.log("Apasat")} style={styles.textInfoTitle}>{item.title}</Text>
-                    <Text onPress={() => console.log("Apasat")} style={styles.textInfoAuthor}>{item.author}</Text>
-                </View>
-            </View>
-        </TouchableWithoutFeedback>
-      );
-    
     useEffect(() => {
         if (isAuthenticated) {
-            fetchUserData();
-            fetchReadingChallenge();
-            fetchShelf("Read", setRead, 6);
-            fetchShelf("Reading", setReading, 4);
-            fetchShelf("Readlist", setReadlist, 4);
-            fetchShelf("Favourites", setFavourites, 4);
-            fetchSheets();
+            fetchData();
         }
     }, [isAuthenticated]);
+      
+      
+    if (loading) {
+        return <Text>Loading data...</Text>;
+    }
+    
+    // useEffect(() => {
+    //     if (isAuthenticated) {
+    //         fetchUserData();
+    //         fetchReadingChallenge();
+    //         fetchShelf("Read", setRead, 6);
+    //         fetchShelf("Reading", setReading, 4);
+    //         fetchShelf("Readlist", setReadlist, 4);
+    //         fetchShelf("Favourites", setFavourites, 4);
+    //     }
+    // }, [isAuthenticated]);
 
     if (!fontsLoaded) {
         return <Text>Loading fonts...</Text>;
@@ -217,9 +201,16 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                                 <TouchableNativeFeedback onPress={() => handleShelfClick('BooksChallenge')}>
                                     <View style={styles.challengeBooks}>
                                         <Text style={styles.textChallenge}>Number of Books </Text>
-                                        <View style={styles.counterBox}>
+                                        {/* <View style={styles.counterBox}>
                                             <Text style={styles.currentB}>{currentBooks}</Text>
                                             <Text style={styles.separator}>/</Text>
+                                            <Text style={styles.totalB}>{totalBooks}</Text>
+                                        </View> */}
+                                        <View style={styles.counterBoxPages}>
+                                            <View style={styles.numbersPages}>
+                                                <Text style={styles.currentB}>{currentBooks}</Text>
+                                                <Text style={styles.separator}> /</Text>
+                                            </View>
                                             <Text style={styles.totalB}>{totalBooks}</Text>
                                         </View>
                                         <View style={styles.progressContainer}>
@@ -235,11 +226,11 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                                     <View style={styles.challengePages}>
                                         <Text style={styles.textChallenge}>  Number of Pages </Text>
                                         <View style={styles.counterBoxPages}>
-                                            <Image
-                                                source={calendarItem}
-                                                style={{ width: 30, height: 34 }}
-                                            />
-                                            <Text style={styles.currentB}>{currentPages}</Text>
+                                            <View style={styles.numbersPages}>
+                                                <Text style={styles.currentB}>{currentPages}</Text>
+                                                <Text style={styles.separator}> /</Text>
+                                            </View>
+                                            <Text style={styles.totalB}>{totalPages}</Text>
                                         </View>
                                         <View style={styles.progressContainer}>
                                             <ProgressBar progress={progressPages} color="#613F75" style={styles.progressBarChallenge} />
@@ -343,31 +334,6 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                         <View style={styles.shelfBar} />
                         <TouchableNativeFeedback onPress={() => handleShelfClick('AllShelves')}>
                             <View style={styles.sheet}>
-                                <Text style={styles.textShelfMore}>See More</Text>
-                            </View>
-                        </TouchableNativeFeedback>
-                    </View>
-
-                    <View style={styles.shelvesTitleContainer}>
-                        <Image
-                            source={readingSheetsItem}
-                            style={{ width: 80, height: 80, }}
-                        />
-                        <View style={styles.categoryContainer}>
-                            <Text style={styles.textCategory}> Reading Sheets </Text>
-                            <View style={styles.horizontalBar} />
-                        </View>
-                    </View>
-
-                    <View style={styles.shelvesContainer}>
-                        {sheets.slice(0, 5).map((item) => (
-                        <View key={item.id}>
-                            {renderSheet({ item })}
-                            <View style={styles.shelfBar} />
-                        </View>
-                        ))}
-                        <TouchableNativeFeedback onPress={() => console.log("Apasat")}>
-                            <View style={styles.shelf}>
                                 <Text style={styles.textShelfMore}>See More</Text>
                             </View>
                         </TouchableNativeFeedback>
@@ -483,13 +449,13 @@ const styles = StyleSheet.create({
         borderColor: '#E5C3D1',
         borderRadius: 10,
         paddingBottom: 10,
-        paddingTop: 14,
+        paddingTop: 10,
         paddingHorizontal: 10,
         marginBottom: 10,
         marginTop: 8,
-        marginLeft: 8,
+        //marginLeft: 8,
         width: '85%',
-        height: 88,
+        height: 90,
     },
     verticalBar: {
         width: 1,
@@ -618,6 +584,10 @@ const styles = StyleSheet.create({
         fontFamily: 'Nunito_500Medium',
         color: '#613F75',
         fontSize: 16,
+    },
+    numbersPages: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 });
 

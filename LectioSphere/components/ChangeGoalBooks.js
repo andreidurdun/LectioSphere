@@ -12,9 +12,9 @@ const ChangeGoalBooks = ({ route, navigation, page, removeAuthToken, isAuthentic
     const [userData, setUserData] = useState(null);
     const [active, setActive] = useState(page);
 
-    const { lastGoalBooks, lastGoalPages } = route.params;
+    const { lastGoalBooks } = route.params;
 
-    const [newGoal, setNewGoal] = useState(lastGoalBooks?.toString() || '0');
+    const [newGoal, setNewGoal] = useState(lastGoalBooks?.toString());
 
     const handlePageClick = (page, params = {}) => {
         setActive(page);
@@ -47,6 +47,50 @@ const ChangeGoalBooks = ({ route, navigation, page, removeAuthToken, isAuthentic
                 }
             } else {
                 console.error("User fetch error:", error.message);
+            }
+        }
+    };
+
+    const updateReadingGoal = async (goal_books, goal_pages, apiBaseUrl) => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            const data = {};
+
+            if (goal_books !== null) {
+                data.goal_books = goal_books;
+            }
+            if (goal_pages !== null) {
+                data.goal_pages = goal_pages;
+            }
+        
+            const response = await axios.post(`${apiBaseUrl}/api/library/update_reading_goals/`, data, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+        
+            console.log('Updated:', response.data);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const data = {};
+
+                    if (goal_books !== null) {
+                        data.goal_books = goal_books;
+                    }
+                    if (goal_pages !== null) {
+                        data.goal_pages = goal_pages;
+                    }
+                
+                    const response = await axios.post(`${apiBaseUrl}/api/library/update_reading_goals/`, data, {
+                        headers: { Authorization: `JWT ${token}` }
+                    });
+                
+                    console.log('Updated:', response.data);
+                } else {
+                    console.error("Error fetching reading challenge:", error.message);
+                }
+            } else {
+                console.error('Error updating reading goal:', error.response?.data || error.message);
             }
         }
     };
@@ -99,7 +143,22 @@ const ChangeGoalBooks = ({ route, navigation, page, removeAuthToken, isAuthentic
                     />
                 </View>
 
-                <Text style={styles.changeText} onPress={() => handlePageClick('ChangeGoalBooks')}> Save </Text>
+                <Text
+                    style={styles.changeText}
+                    onPress={() => {
+                        const parsedGoal = parseInt(newGoal);
+                        if (isNaN(parsedGoal)) {
+                        Alert.alert('Invalid input', 'Please enter a valid number.');
+                        return;
+                        }
+
+                        updateReadingGoal(parsedGoal, null, apiBaseUrl);
+                        Alert.alert('Success', 'Your reading goal has been updated!');
+                        handlePageClick('LibraryPage'); 
+                    }}
+                    >
+                    Save
+                </Text>
                         
             </View>
 
