@@ -6,6 +6,7 @@ from djoser.serializers import UserSerializer
 from api.models import Comment
 from api.models import PostLike
 from api.models import Post
+from accounts.models import UserAccount
 
 
 
@@ -22,7 +23,14 @@ class UserCreateSerializer(UserCreateSerializer):
         context['site_name'] = 'LectioSphere'
         print("Email context:", context)
         return context
-    
+
+
+# serializator pentru a afisa datele utilizatorului in API
+class UserAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAccount
+        fields = ['id', 'email', 'first_name', 'last_name', 'username']
+
     
 # serializator pentru a crea un profil de utilizator
 class ProfileSerializer(serializers.ModelSerializer):
