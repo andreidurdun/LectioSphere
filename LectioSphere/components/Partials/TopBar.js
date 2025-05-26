@@ -1,5 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, Text, TextInput, StyleSheet, Image, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const icon = require('../../assets/favicon.png');
 const searchPurpleIcon = require('../../assets/searchPurple.png');
@@ -8,9 +9,10 @@ const addReadingSheetIcon = require('../../assets/addReadingSheet.png');
 const envelope = require('../../assets/envelope.png');
 const threeDots = require('../../assets/threeDots.png');
 
-const TopBar = ({pageName}) => {
+const TopBar = ({pageName, page}) => {
     const [followSearchVal, setFollowSearchVal] = React.useState('');
     const [searchSearchVal, setSearchSearchVal] = React.useState('');
+    const navigation = useNavigation();
 
     const handleFollowSearchInput = (text) => {
         //console.log("Search input:", text);
@@ -25,8 +27,8 @@ const TopBar = ({pageName}) => {
         Alert.alert('Add reading sheet');
     }
 
-    const handleLibraryAddShelf = () => {
-        Alert.alert('Add shelf');
+    const handleLibraryAddShelf = (page) => {
+        navigation.navigate(page); 
     }
 
     const handleNotificationsButton = () => {
@@ -119,15 +121,15 @@ const TopBar = ({pageName}) => {
                 />
 
                 <View style={styles.libraryButtonsContainer}>
-                    <Image 
+                    {/* <Image 
                         source={addReadingSheetIcon} // Replace with your search icon path
                         style={styles.addReadingSheetIcon}
                         onTouchEnd={() => handleLibraryAddReadingSheet()} // Trigger search on image press
-                    />
+                    /> */}
                     <Image 
                         source={addShelfIcon} // Replace with your search icon path
                         style={styles.addShelfIcon}
-                        onTouchEnd={() => handleLibraryAddShelf()} // Trigger search on image press
+                        onTouchEnd={() => handleLibraryAddShelf('AddShelf')} // Trigger search on image press
                     />
                 </View>
             </SafeAreaView>
@@ -250,7 +252,7 @@ const styles = StyleSheet.create({
     },
     libraryButtonsContainer: {
         flexDirection: 'row',
-        width: 120,
+        width: 70,
         justifyContent: 'space-around',
         alignItems: 'center'
     },

@@ -12,6 +12,13 @@ import ProfileEdit from './components/ProfileEdit';
 import CategoryBooksPage from './components/CategoryBooksPage';
 import BookShow from './components/BookShow';
 import LibraryPage from './components/LibraryPage';
+import AllShelves from './components/AllShelves';
+import ShelfPage from './components/ShelfPage';
+import BooksChallenge from './components/BooksChallenge';
+import PagesChallenge from './components/PagesChallenge';
+import ChangeGoalBooks from './components/ChangeGoalBooks';
+import ChangeGoalPages from './components/ChangeGoalPages';
+import AddShelf from './components/AddShelf';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -127,8 +134,8 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {/* <Stack.Navigator initialRouteName={isAuthenticated ? 'HomePage' : 'LoginMenu'}> */}
-      <Stack.Navigator initialRouteName={'LoginMenu'}>
+      <Stack.Navigator initialRouteName={isAuthenticated ? 'HomePage' : 'LoginMenu'}> 
+      {/*<Stack.Navigator initialRouteName={'LoginMenu'}>*/}
         <Stack.Screen name="LoginMenu" options={{ headerShown: false }}>
           {(props) => <LoginMenu {...props} saveAuthToken={saveAuthToken} apiBaseUrl={API_BASE_URL} />}
         </Stack.Screen>
@@ -207,6 +214,83 @@ export default function App() {
         <Stack.Screen name="BookShow" options={{ headerShown: false }}>
           {(props) => (
             <BookShow
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="AllShelves" options={{ headerShown: false }}>
+          {(props) => (
+            <AllShelves
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="ShelfPage" options={{ headerShown: false }}>
+          {(props) => (
+            <ShelfPage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="BooksChallenge" options={{ headerShown: false }}>
+          {(props) => (
+            <BooksChallenge
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="PagesChallenge" options={{ headerShown: false }}>
+          {(props) => (
+            <PagesChallenge
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="ChangeGoalPages" options={{ headerShown: false }}>
+          {(props) => (
+            <ChangeGoalPages
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="ChangeGoalBooks" options={{ headerShown: false }}>
+          {(props) => (
+            <ChangeGoalBooks
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="AddShelf" options={{ headerShown: false }}>
+          {(props) => (
+            <AddShelf
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}
