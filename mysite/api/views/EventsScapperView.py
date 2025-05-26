@@ -19,44 +19,9 @@ def extract_date(text):
 def extract_location(text):
     match = re.search(r"(la|în)\s+[A-ZĂÂÎȘȚ][\w\s,\-.]{2,50}", text)
     return match.group(0).strip() if match else "Necunoscută"
-def scrape_carturesti(driver, list_url):
-    driver.get(list_url)
-    time.sleep(3)
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    events = []
-
-    articles = soup.select("article.article--grid")
-    for article in articles:
-        try:
-            content_div = article.select_one("div.article__content")
-            descriere = content_div.get_text(" ", strip=True) if content_div else ""
-            title = descriere.split(".")[0] if descriere else "Fără titlu"
-
-            if len(descriere) > 1000:
-                descriere = descriere[:1000].rsplit(".", 1)[0] + "..."
-                descriere = descriere.replace("Read more", "").replace("Citește mai mult", "").strip()
 
 
-            events.append({
-                "title": title,
-                "link": list_url,  # Linkul articolului complet nu apare aici
-                "data": extract_date(descriere),
-                "locatie": extract_location(descriere),
-                "descriere": descriere,
-                "source": urlparse(list_url).netloc
-            })
-
-        except Exception as e:
-            events.append({
-                "title": "Eroare articol",
-                "link": list_url,
-                "data": "Eroare",
-                "locatie": "Eroare",
-                "descriere": str(e),
-                "source": urlparse(list_url).netloc
-            })
-
-    return events
+         
 
 def extract_article_data(driver, url):
     driver.get(url)
@@ -94,9 +59,11 @@ def extract_article_data(driver, url):
 
 def scrape_events(request):
     urls_to_scrape = [
-        "https://blog.carturesti.ro/category/evenimente/",
-         "https://bookhub.ro/tag/evenimente-literare/",
-    "https://humanitas.ro/",
+            "https://exclusivebooks.co.za/pages/events",
+           "https://www.barnesandnobleinc.com/our-stores-communities/events/",
+            "https://bookscouter.com/blog/book-conventions-and-festivals/"
+
+
 
     ]
 
@@ -113,9 +80,35 @@ def scrape_events(request):
 
     try:
         for list_url in urls_to_scrape:
-                if "humanitas.ro" in list_url:
+                
+               
+                
+                if "exclusivebooks.co.za" in list_url:
                     try:
-                        all_events.extend(scrape_humanitas(driver, list_url))
+                        all_events.extend(scrape_exclusivebooks(driver, list_url))
+                    except Exception as e:
+                        all_events.append({
+                            "title": "Eroare pagină",
+                            "link": list_url,
+                            "data": "Eroare",
+                            "descriere": str(e),
+                            "source": urlparse(list_url).netloc
+                        })
+                elif "barnesandnobleinc.com" in list_url:
+                    try:
+                        all_events.extend(scrape_bn_events(driver, list_url))
+                    except Exception as e:
+                        all_events.append({
+                            "title": "Eroare pagină",
+                            "link": list_url,
+                            "data": "Eroare",
+                            "locatie": "Eroare",
+                            "descriere": str(e),
+                            "source": urlparse(list_url).netloc
+                        })
+                elif "bookscouter.com" in list_url:
+                    try:
+                        all_events.extend(scrape_bookscouter_events(driver, list_url))
                     except Exception as e:
                         all_events.append({
                             "title": "Eroare pagină",
@@ -126,102 +119,89 @@ def scrape_events(request):
                             "source": urlparse(list_url).netloc
                         })
 
-                elif "bookhub.ro" in list_url:
-                    try:
-                        all_events.extend(scrape_bookhub(driver, list_url))
-                    except Exception as e:
-                        all_events.append({
-                            "title": "Eroare pagină",
-                            "link": list_url,
-                            "data": "Eroare",
-                            "locatie": "Eroare",
-                            "descriere": str(e),
-                            "source": urlparse(list_url).netloc
-                        })
-                
-                elif "carturesti.ro" in list_url:
-                    try:
-                        all_events.extend(scrape_carturesti(driver, list_url))
-                    except Exception as e:
-                        all_events.append({
-                            "title": "Eroare pagină",
-                            "link": list_url,
-                            "data": "Eroare",
-                            "locatie": "Eroare",
-                            "descriere": str(e),
-                            "source": urlparse(list_url).netloc
-                        })
+
+
 
         return JsonResponse(all_events, safe=False, json_dumps_params={"ensure_ascii": False, "indent": 2})
 
     finally:
         driver.quit()
 
-def scrape_bookhub(driver, list_url):
+
+def scrape_exclusivebooks(driver, list_url="https://exclusivebooks.co.za/pages/events"):
     driver.get(list_url)
     time.sleep(3)
     soup = BeautifulSoup(driver.page_source, "html.parser")
     events = []
 
-    articles = soup.select("article.post")
-    for article in articles:
+    event_blocks = soup.select("div.ma-event")
+
+    for block in event_blocks:
         try:
-            # Extragere link și titlu din <a.image-link>
-            link_tag = article.select_one("a.image-link")
-            link = link_tag["href"] if link_tag else None
-            title = link_tag.get_text(strip=True) if link_tag else "Fără titlu"
+            title = block.select_one("h3.ma-title").get_text(strip=True)
 
-            # Descriere din <div class="content">
-            content_div = article.select_one("div.content")
-            descriere = content_div.get_text(" ", strip=True) if content_div else ""
-            descriere = descriere.replace("Read more", "").replace("Citește mai mult", "").strip()
+            # Data din atributul div-ului părinte
+            data = block.find_parent("div", attrs={"data-ma-date": True})["data-ma-date"]
 
+            # Orar și locație
+            time_tag = block.select_one("div.ma-time")
+            location_tag = block.select_one("div.ma-location")
 
-            if len(descriere) > 1000:
-                descriere = descriere[:1000].rsplit(".", 1)[0] + "..."
-                descriere = descriere.replace("Read more", "").replace("Citește mai mult", "").strip()
+            ora = time_tag.get_text(strip=True) if time_tag else ""
+            locatie = location_tag["title"] if location_tag and location_tag.has_attr("title") else location_tag.get_text(strip=True) if location_tag else "Necunoscută"
 
+            # Poză din stilul inline
+            image_div = block.select_one("div.ma-image")
+            image_url = None
+            if image_div and "style" in image_div.attrs:
+                style = image_div["style"]
+                match = re.search(r"url\(['\"]?(.*?)['\"]?\)", style)
+                if match:
+                    image_url = match.group(1)
+
+            descriere = f"{ora} la {locatie}" if ora else locatie
 
             events.append({
                 "title": title,
-                "link": link or list_url,
-                "data": extract_date(descriere),
-                "locatie": extract_location(descriere),
+                "link": list_url,
+                "data": data.split("T")[0],  # doar data fără timp
                 "descriere": descriere,
-                "source": urlparse(link or list_url).netloc
+                "imagine": image_url,
+                "source": urlparse(list_url).netloc
             })
 
         except Exception as e:
             events.append({
-                "title": "Eroare articol",
+                "title": "Eroare eveniment",
                 "link": list_url,
                 "data": "Eroare",
-                "locatie": "Eroare",
                 "descriere": str(e),
+                "imagine": None,
                 "source": urlparse(list_url).netloc
             })
 
     return events
-def scrape_humanitas(driver, list_url="https://humanitas.ro/"):
+
+
+
+
+def scrape_bn_events(driver, list_url="https://www.barnesandnobleinc.com/our-stores-communities/events/"):
     driver.get(list_url)
     time.sleep(3)
+
     soup = BeautifulSoup(driver.page_source, "html.parser")
     events = []
 
-    # Selectează containerul mare de evenimente
-    container = soup.select_one("div.big_events")
-    if not container:
-        return []
+    paragraphs = soup.find_all("p", style=lambda value: value and "text-align: center" in value)
 
-    # Fiecare bloc de eveniment e un <p> sau <div> cu text simplu
-    event_blocks = container.find_all("p") + container.find_all("div", recursive=False)
-    for block in event_blocks:
+    for p in paragraphs:
         try:
-            text = block.get_text(" ", strip=True)
+            text = p.get_text(strip=True)
             if not text or len(text) < 10:
                 continue
 
-            title = text.split(":", 1)[-1].strip() if ":" in text else text
+            title = text.split(".")[0] if "." in text else text
+
             data = extract_date(text)
             locatie = extract_location(text)
 
@@ -229,19 +209,87 @@ def scrape_humanitas(driver, list_url="https://humanitas.ro/"):
                 "title": title,
                 "link": list_url,
                 "data": data,
-                "locatie": locatie,
                 "descriere": text,
+                "imagine": None,
+                "source": urlparse(list_url).netloc
+            })
+        except Exception as e:
+            events.append({
+                "title": "Eroare eveniment",
+                "link": list_url,
+                "data": "Eroare",
+                "descriere": str(e),
+                "imagine": None,
+                "source": urlparse(list_url).netloc
+            })
+
+    return events
+
+
+
+def scrape_bookscouter_events(driver, list_url):
+    driver.get(list_url)
+    time.sleep(3)
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+    events = []
+
+    event_blocks = soup.select("h2")  # fiecare titlu de eveniment
+
+    for h2 in event_blocks:
+        try:
+            raw_title = h2.get_text(strip=True)
+            title = re.sub(r"^\d+\.\s*", "", raw_title)
+
+            parent = h2.find_next_sibling()
+            data, locatie, descriere = "Necunoscută", "Necunoscută", ""
+
+
+            # Caută imagine în frații anteriori sau următori
+            img_tag = h2.find_previous("img") or h2.find_next("img")
+            if img_tag and img_tag.has_attr("src"):
+                imagine = img_tag["src"]
+
+            while parent and parent.name != "h2":
+                text = parent.get_text(" ", strip=True)
+
+                if "When:" in text:
+                    match = re.search(r"(?<=When:\s).*", text)
+                    if match:
+                        data = match.group(0).strip()
+                elif "Where:" in text:
+                    match = re.search(r"(?<=Where:\s).*", text)
+                    if match:
+                        locatie = match.group(0).strip()
+                else:
+                    descriere += text + " "
+
+                parent = parent.find_next_sibling()
+
+            descriere = descriere.strip()
+            if len(descriere) > 1000:
+                descriere = descriere[:1000].rsplit(".", 1)[0] + "..."
+
+            events.append({
+                "title": title,
+                "link": list_url,
+                "data": data,
+                "locatie": locatie,
+                 "imagine": imagine,
+                "descriere": descriere,
                 "source": urlparse(list_url).netloc
             })
 
         except Exception as e:
             events.append({
-                "title": "Eroare articol",
+                "title": "Eroare eveniment",
                 "link": list_url,
                 "data": "Eroare",
                 "locatie": "Eroare",
                 "descriere": str(e),
+                 "imagine": None,
                 "source": urlparse(list_url).netloc
             })
 
     return events
+
+
