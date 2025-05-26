@@ -19,6 +19,44 @@ def extract_date(text):
 def extract_location(text):
     match = re.search(r"(la|în)\s+[A-ZĂÂÎȘȚ][\w\s,\-.]{2,50}", text)
     return match.group(0).strip() if match else "Necunoscută"
+def scrape_carturesti(driver, list_url):
+    driver.get(list_url)
+    time.sleep(3)
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+    events = []
+
+    articles = soup.select("article.article--grid")
+    for article in articles:
+        try:
+            content_div = article.select_one("div.article__content")
+            descriere = content_div.get_text(" ", strip=True) if content_div else ""
+            title = descriere.split(".")[0] if descriere else "Fără titlu"
+
+            if len(descriere) > 1000:
+                descriere = descriere[:1000].rsplit(".", 1)[0] + "..."
+                descriere = descriere.replace("Read more", "").replace("Citește mai mult", "").strip()
+
+
+            events.append({
+                "title": title,
+                "link": list_url,  # Linkul articolului complet nu apare aici
+                "data": extract_date(descriere),
+                "locatie": extract_location(descriere),
+                "descriere": descriere,
+                "source": urlparse(list_url).netloc
+            })
+
+        except Exception as e:
+            events.append({
+                "title": "Eroare articol",
+                "link": list_url,
+                "data": "Eroare",
+                "locatie": "Eroare",
+                "descriere": str(e),
+                "source": urlparse(list_url).netloc
+            })
+
+    return events
 
 
          
