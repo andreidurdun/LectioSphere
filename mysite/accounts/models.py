@@ -37,9 +37,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    
-    goal_books = models.IntegerField(default=0)
-    goal_pages = models.IntegerField(default=0)
 
     #username = models.CharField(max_length=255, blank=True, null=True)
     objects = UserAccountManager()

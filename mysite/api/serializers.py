@@ -9,7 +9,6 @@ from .models.PostLike import PostLike
 from .models.ReadingSheet import ReadingSheet
 from .models.Shelf import Shelf
 from .models.ShelfBooks import ShelfBooks
-from accounts.serializers import UserAccountSerializer
 
 
 
@@ -52,7 +51,7 @@ class MediaSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    user = UserAccountSerializer(read_only=True)
+    user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
     book = BookSerializer(read_only=True)  
     media = MediaSerializer(many=True, read_only=True) # media = iamgini / poze
     like_count = serializers.SerializerMethodField()

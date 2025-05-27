@@ -85,12 +85,8 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
             const response = await axios.get(`${apiBaseUrl}/books/recommendation/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            if (Array.isArray(response.data)) {
-                const booksWithThumbnail = response.data.filter(book => book.thumbnail);
-                setYouMayLikeItems(booksWithThumbnail.slice(0, 15));
-            } else {
-                setRead(false); 
-            }
+            const booksWithThumbnail = response.data.filter(book => book.thumbnail);
+            setYoyMayLikeItems(booksWithThumbnail.data.slice(0, 15));
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
@@ -98,12 +94,8 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
                     const retryResponse = await axios.get(`${apiBaseUrl}/books/recommendation/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    if (Array.isArray(retryResponse.data)) {
-                        const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail);
-                        setYouMayLikeItems(booksWithThumbnail.slice(0, 15));
-                    } else {
-                        setRead(false); 
-                    }
+                    const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail);
+                    setYouMayLikeItems(booksWithThumbnail.data.slice(0, 15));
                 } else {
                     console.error("Unable to refresh for reading items.");
                 }
@@ -136,7 +128,7 @@ const HomePage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) 
                     const retryResponse = await axios.get(`${apiBaseUrl}/books/get_friends_books/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    if (Array.isArray(retryResponse.data)) {
+                    if (Array.isArray(response.data)) {
                         const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail);
                         setFriendsAreReadingItems(booksWithThumbnail.slice(0, 15));
                     } else {

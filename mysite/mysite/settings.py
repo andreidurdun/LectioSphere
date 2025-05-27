@@ -46,12 +46,10 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'djoser',
-    #'accounts',
+    'accounts',
     'social_django',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework_simplejwt',
-    'accounts.apps.AccountsConfig',  #  'accounts'
-
 
 ]
 

@@ -140,24 +140,6 @@ class PostsView(ViewSet):
 
 
 
-    # DOAR postarile de tip POST
-    @action(detail=False, methods=['get'])
-    def list_post_type_posts(self, request):
-        posts = Post.objects.filter(user=request.user, action=Post.ActionChoices.POST)
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
-
-
-
-    # TOATE postarile, DAR fărăfara cele de tip POST
-    @action(detail=False, methods=['get'])
-    def list_non_post_type_posts(self, request):
-        posts = Post.objects.filter(user=request.user).exclude(action=Post.ActionChoices.POST)
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
-
-
-
 
     # vedem feed ul . maxim 50 de postari in ordine cronologica
     @action(detail=False, methods=["get"])

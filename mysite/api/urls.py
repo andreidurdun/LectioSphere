@@ -4,8 +4,8 @@ from .views import GoogleBooksAPIView
 from .views import BooksView
 from .views import PostsView
 from .views import EventsScapperView
-from api.views.ShelfByNameView import ShelfByNameView  # ✅ corect
 
+from api.views.LibraryPageView import LibraryPageView
 
 from api.views.ReadingSheetsView import ReadingSheetsView
 from api.views.LibraryPageView import LibraryPageView
@@ -24,8 +24,6 @@ from rest_framework.routers import DefaultRouter
 from .views import PostsView  # asigură-te că importul e corect
 router = DefaultRouter()
 router.register(r"posts", PostsView, basename="posts")
-router.register(r"library", LibraryPageView, basename="library")
-
 
 
 
@@ -59,8 +57,6 @@ urlpatterns = [
    path("posts/<int:pk>/update/", PostsView.as_view({"put": "update_post", "patch": "update_post"}), name="update-post"),
    path("posts/", PostsView.as_view({"get": "list_posts"}), name="list-posts"),
    path("posts/feed/", PostsView.as_view({"get": "feed"}), name="feed"),
-   path("posts/post_type/", PostsView.as_view({"get": "list_post_type_posts"}), name="list-post-type-posts"),
-   path("posts/non_post_type/", PostsView.as_view({"get": "list_non_post_type_posts"}), name="list-non-post-type-posts"),
     
     
     
@@ -75,7 +71,7 @@ urlpatterns = [
 
 # Like / Unlike la postări
   #  path("posts/<int:pk>/toggle_like/", PostsView.as_view({"post": "toggle_like"}), name="toggle-like"),
-  path(
+ path(
         "library/shelf/<str:name>/", 
         LibraryPageView.as_view({"get": "get_shelf_by_name"}), 
         name="library-shelf"),
@@ -84,11 +80,6 @@ urlpatterns = [
    path("library/book_status/", LibraryPageView.as_view({"get": "book_status"})),
    
      
-     
-     
-     
-  path("library/shelf/<str:name>/", ShelfByNameView.as_view(), name="shelf-by-name"),
-
      
     path("api/", include(router2.urls)),  #pt rafturi
 

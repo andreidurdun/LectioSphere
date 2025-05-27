@@ -177,24 +177,13 @@ Content-Type: application/json
 //var cu user bagat de mn nu automat
 ###
 POST http://localhost:8000/api/shelves/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE5MTQyLCJpYXQiOjE3NDgxMTU1NDIsImp0aSI6IjY5NWMxMmQ3YWI2NDQ5MzViMDMxOWQzOWYxMGM3MzcxIiwidXNlcl9pZCI6MX0.YNzsmwyWiw6O53Ux5_vmLDvzCcqFDCsILPhnuhiAr74
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDU3LCJpYXQiOjE3NDYzOTY0NTcsImp0aSI6ImYxODJjZTg3M2IzMjQyYjE5OWU4Zjk2M2UxNmZkMjUyIiwidXNlcl9pZCI6MX0.FQcQGPt2lvq_ojdq9jfgwEkVPTSvzRDFALTK43Vy5os
 Content-Type: application/json
 
 {
    "user": 1,
-   "name": "Nefavorite"
+   "name": "asa VREAU"
 }
-
-
-###
-POST http://localhost:8000/api/library/create_shelf/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE5MTQyLCJpYXQiOjE3NDgxMTU1NDIsImp0aSI6IjY5NWMxMmQ3YWI2NDQ5MzViMDMxOWQzOWYxMGM3MzcxIiwidXNlcl9pZCI6MX0.YNzsmwyWiw6O53Ux5_vmLDvzCcqFDCsILPhnuhiAr74
-Content-Type: application/json
-
-{
-  "name": "RaftulMeu"
-}
-
 
 
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDEyLCJpYXQiOjE3NDYzOTY0MTIsImp0aSI6IjY3YTRhMTBiZGI1NjQ2OWM5ZDZiYjY0ZDk3ODIyZTA4IiwidXNlcl9pZCI6MX0.UQXyyLqq2lSAm22DIJA4O9O3-bhIdwphyjqYISn0DI
@@ -232,14 +221,6 @@ GET http://localhost:8000/posts/
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
 Content-Type: application/json
 
-
-###
-POST http://localhost:8000/api/token/
-Content-Type: application/json
-{
-  "email": "test@example.com",
-  "password": "test1234"
-}
 
 
 
@@ -290,7 +271,7 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 Content-Type: application/json
 
 
-###  ADAUGĂ COMENTARIU la postare
+### 💬 ADAUGĂ COMENTARIU la postare
 POST http://localhost:8000/api/posts/1/add_comment/
 Content-Type: application/json
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
@@ -302,7 +283,7 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 }
 
 
-###  VEZI TOATE COMENTARIILE
+### 👀 VEZI TOATE COMENTARIILE
 GET http://localhost:8000/api/posts/1/list_comments/
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
 
@@ -321,7 +302,7 @@ Content-Type: application/json
 
 ### rafturile standard + custom
 GET http://localhost:8000/library/shelves/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE4MjMzLCJpYXQiOjE3NDgxMTQ2MzMsImp0aSI6ImY0MmIyMjI5NjM1MzQzYjg4ZjQzZjExNDcwYjgwOGYzIiwidXNlcl9pZCI6MX0.gWT9R4b0q_IkPeAZFYdk_RJKDqMS18CNdnyy51YbOnI
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
 Content-Type: application/json
 
 ### 5 carti și 1200 pagini
@@ -335,24 +316,19 @@ GET http://localhost:8000/library/book_status/?isbn=9780316769488
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
 
 //pt un raft anume,dat ca parametru
-//var fara router 
 ###
-GET /library/shelf/RaftulMeu/
+GET /library/shelf/Read/ HTTP/1.1
 Host: localhost:8000
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE5MTQyLCJpYXQiOjE3NDgxMTU1NDIsImp0aSI6IjY5NWMxMmQ3YWI2NDQ5MzViMDMxOWQzOWYxMGM3MzcxIiwidXNlcl9pZCI6MX0.YNzsmwyWiw6O53Ux5_vmLDvzCcqFDCsILPhnuhiAr74
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
 Content-Type: application/json
 
-###
-GET http://localhost:8000/library/shelf/RaftulMeu/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE4MjMzLCJpYXQiOjE3NDgxMTQ2MzMsImp0aSI6ImY0MmIyMjI5NjM1MzQzYjg4ZjQzZjExNDcwYjgwOGYzIiwidXNlcl9pZCI6MX0.gWT9R4b0q_IkPeAZFYdk_RJKDqMS18CNdnyy51YbOnI
-Content-Type: application/json
 
 
 
 ##pt fisele de lectura
 ###
 GET http://localhost:8000/api/reading-sheets/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE0NzI1LCJpYXQiOjE3NDgxMTExMjUsImp0aSI6ImIzNDQ5YmU5NWEyNzRjZGY4OTljNDBjZTgzYmI2ZjBjIiwidXNlcl9pZCI6MX0.e2SQ8mD01p6LhOJE0HyKb5E6S77oYOBjfXMM_2tDOYA
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
 Accept: application/json
 
 
@@ -360,7 +336,7 @@ Accept: application/json
 ##ultimele 5 fise
 ###
 GET http://localhost:8000/api/reading-sheets/latest/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE0NzI1LCJpYXQiOjE3NDgxMTExMjUsImp0aSI6ImIzNDQ5YmU5NWEyNzRjZGY4OTljNDBjZTgzYmI2ZjBjIiwidXNlcl9pZCI6MX0.e2SQ8mD01p6LhOJE0HyKb5E6S77oYOBjfXMM_2tDOYA
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
 Accept: application/json
 
 ##toate fisle doar titlu si autor
@@ -368,38 +344,13 @@ Accept: application/json
 GET http://localhost:8000/api/reading-sheets/simple/
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
 Accept: application/json
-g
+
 
 #pt events
 ### Scrape evenimente literare de pe carturesti.ro
 GET http://localhost:8000/scrape-events/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTkxMzI1LCJpYXQiOjE3NDgxODc3MjUsImp0aSI6Ijk2MzVmYWNjMGQyMTRlMDQ4ZTIxZDEwYzE4ZmY1NTA1IiwidXNlcl9pZCI6MX0.WfUhcFo7pBwpdo34A7TrQi3zyuPv12KYE-pRx6D8Y9c
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MjU2OTc2LCJpYXQiOjE3NDcyNTMzNzYsImp0aSI6ImFkMGEyNTNlMzc3YzQ3ZTg5Mjk0YTM2NWRkZDZkZmQyIiwidXNlcl9pZCI6MX0.q_XgLFavK8lY7jmZdXkNegg2gOcJJkmCMhR63Z8B_nk
 Accept: application/json
 
 
-
-
-
-#update 24mai
-###
-GET http://localhost:8000/library/reading_challenge/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTIyOTExLCJpYXQiOjE3NDgxMTkzMTEsImp0aSI6IjNmMDUwOWM1NmZmZTRkZWZhOTc4MGI5MDBjNTMyYzMwIiwidXNlcl9pZCI6MX0.yjHp_7tiyTa6EYQz3ZZeX4doaB3GQ_N58Az1QjlTZzA
-Accept: application/json
-
-
-
-### parametri personalizat  URL (override temporar)
-GET http://localhost:8000/library/reading_challenge/?goal_books=10&goal_pages=2500
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTIyOTExLCJpYXQiOjE3NDgxMTkzMTEsImp0aSI6IjNmMDUwOWM1NmZmZTRkZWZhOTc4MGI5MDBjNTMyYzMwIiwidXNlcl9pZCI6MX0.yjHp_7tiyTa6EYQz3ZZeX4doaB3GQ_N58Az1QjlTZzA
-
-
-
-### Act biectivele permanente pentru utilizator
-POST http://localhost:8000/api/library/update_reading_goals/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTIyOTExLCJpYXQiOjE3NDgxMTkzMTEsImp0aSI6IjNmMDUwOWM1NmZmZTRkZWZhOTc4MGI5MDBjNTMyYzMwIiwidXNlcl9pZCI6MX0.yjHp_7tiyTa6EYQz3ZZeX4doaB3GQ_N58Az1QjlTZzA
-Content-Type: application/json
-
-{
-  "goal_books": 20,
-  "goal_pages": 5000
-}
+#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MjEyMjA4LCJpYXQiOjE3NDcyMDg2MDgsImp0aSI6IjVkZTk0NGU4ZWVmYzQ2Y2E4YzkwNmE4NTJlYjlhODQzIiwidXNlcl9pZCI6MX0.pu2_tp9_TzH0pbcJZ9mXkz989XpKUfXuBTg90XdbP6w

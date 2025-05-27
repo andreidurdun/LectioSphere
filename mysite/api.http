@@ -246,7 +246,7 @@ Content-Type: application/json
 
 
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTkwNjkwLCJpYXQiOjE3NDgxODcwOTAsImp0aSI6IjMxMzMwMTA0NTQzMzQzYmNiNGQxYzg0ZmZhYTA1ZDJkIiwidXNlcl9pZCI6MX0.3rVZLnbD5Gi2vIJHDuAMll62eN4M84c4-m8WOq9g334
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTA5NzMwLCJpYXQiOjE3NDgxMDYxMzAsImp0aSI6IjhiM2Q3YzNiYzVhODRhNGM5NjA1MDhkMGI4YTM0ZTNmIiwidXNlcl9pZCI6MX0._QYLvh_YDcIzZOEXJn-DRfi1voBJbVHoByxxGzTJ4RU
 Content-Type: application/json
 
 {
@@ -260,49 +260,7 @@ Content-Type: application/json
 ###
 
 GET http://localhost:8000/posts/ 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTkwNjkwLCJpYXQiOjE3NDgxODcwOTAsImp0aSI6IjMxMzMwMTA0NTQzMzQzYmNiNGQxYzg0ZmZhYTA1ZDJkIiwidXNlcl9pZCI6MX0.3rVZLnbD5Gi2vIJHDuAMll62eN4M84c4-m8WOq9g334
-
-
-###
-
-POST http://localhost:8000/posts/add/
-Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTkwNjkwLCJpYXQiOjE3NDgxODcwOTAsImp0aSI6IjMxMzMwMTA0NTQzMzQzYmNiNGQxYzg0ZmZhYTA1ZDJkIiwidXNlcl9pZCI6MX0.3rVZLnbD5Gi2vIJHDuAMll62eN4M84c4-m8WOq9g334
-Content-Type: application/json
-
-{
-  "action": "post",
-  "description": "Mi-a plăcut cum arată coperta!",
-  "id": "yow0EAAAQBAJ"
-  
-}
-
-###
-
-
-POST http://localhost:8000/posts/post_type
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTkwNjkwLCJpYXQiOjE3NDgxODcwOTAsImp0aSI6IjMxMzMwMTA0NTQzMzQzYmNiNGQxYzg0ZmZhYTA1ZDJkIiwidXNlcl9pZCI6MX0.3rVZLnbD5Gi2vIJHDuAMll62eN4M84c4-m8WOq9g334
-Content-Type: application/json
-
-{
-  "action": "made_progress",
-  "pages_read": 10,
-  "id": "yow0EAAAQBAJ"
-}
-
-
-
-###
-
-
-GET http://localhost:8000/posts/post_type/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTkwNjkwLCJpYXQiOjE3NDgxODcwOTAsImp0aSI6IjMxMzMwMTA0NTQzMzQzYmNiNGQxYzg0ZmZhYTA1ZDJkIiwidXNlcl9pZCI6MX0.3rVZLnbD5Gi2vIJHDuAMll62eN4M84c4-m8WOq9g334
-
-
-###
-
-
-GET http://localhost:8000/posts/non_post_type/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTkwNjkwLCJpYXQiOjE3NDgxODcwOTAsImp0aSI6IjMxMzMwMTA0NTQzMzQzYmNiNGQxYzg0ZmZhYTA1ZDJkIiwidXNlcl9pZCI6MX0.3rVZLnbD5Gi2vIJHDuAMll62eN4M84c4-m8WOq9g334
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTA5NzMwLCJpYXQiOjE3NDgxMDYxMzAsImp0aSI6IjhiM2Q3YzNiYzVhODRhNGM5NjA1MDhkMGI4YTM0ZTNmIiwidXNlcl9pZCI6MX0._QYLvh_YDcIzZOEXJn-DRfi1voBJbVHoByxxGzTJ4RU
 
 
 
