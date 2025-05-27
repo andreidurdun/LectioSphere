@@ -5,8 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from api.models import Shelf, ShelfBooks
 from api.serializers import BookSerializer
-from urllib.parse import unquote  # pentru a decoda URL-uri cu spatii
-from django.db.models.functions import Lower
+from urllib.parse import unquote  # pentru a decoda URL-uri cu spații, %20 etc.
 
 
 class LibraryPageView(ViewSet):
@@ -89,39 +88,26 @@ class LibraryPageView(ViewSet):
         percent = int((pages_read / goal_pages) * 100) if goal_pages else 0
         return {"goal": goal_pages, "percent": percent}
 
-    
     def get_shelves(self, user):
         standard_names = ["Read", "Reading", "Readlist", "Favourites"]
-        invalid_names = ["", "0", "null", "undefined"]
-        forbidden_names = [n.lower() for n in standard_names + invalid_names]
-
-        # Colectăm rafturile standard
         standard = {}
         for name in standard_names:
-            shelf = Shelf.objects.filter(user=user, name__iexact=name).first()
+            shelf = Shelf.objects.filter(user=user, name=name).first()
             books = []
             if shelf:
                 shelf_books = ShelfBooks.objects.filter(shelf=shelf).select_related("book")
                 books = [BookSerializer(sb.book).data for sb in shelf_books]
             standard[name] = books
 
-        # rafturile custom,nume nevalide sau confundabile
         custom = []
-        others = Shelf.objects.annotate(lower_name=Lower("name")).filter(user=user)\
-            .exclude(lower_name__in=forbidden_names)\
-            .exclude(name__isnull=True)
-
+        others = Shelf.objects.filter(user=user).exclude(name__in=standard_names)
         for shelf in others:
             shelf_books = ShelfBooks.objects.filter(shelf=shelf).select_related("book")
             books = [BookSerializer(sb.book).data for sb in shelf_books]
-            if shelf.name:  # extra protecție
-                custom.append({
-                    "shelf_name": shelf.name,
-                    "books": books
-                })
-
-        if not custom:
-            custom = []
+            custom.append({
+                "shelf_name": shelf.name,
+                "books": books
+            })
 
         return standard, custom
 
@@ -165,7 +151,7 @@ class LibraryPageView(ViewSet):
         if not name:
             return Response({"error": "Shelf name is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # verific
+        # verifică dacă raftul cu același nume există deja
         if Shelf.objects.filter(user=user, name=name).exists():
            return Response({"error": "A shelf with this name already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -174,28 +160,8 @@ class LibraryPageView(ViewSet):
 
     
      
-    @action(detail=False, methods=["delete"], url_path=r"delete_shelf/(?P<name>[^/]+)")
-    def delete_shelf(self, request, name=None):
-        user = request.user
-        standard_names = ["Read", "Reading", "Readlist", "Favourites"]
-
-        if not name:
-            return Response({"error": "Shelf name is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        decoded_name = unquote(name)
-
-        if decoded_name.lower() in [s.lower() for s in standard_names]:
-            return Response({"error": f"Cannot delete standard shelf: '{decoded_name}'."}, status=status.HTTP_403_FORBIDDEN)
-
-        shelf = Shelf.objects.filter(user=user, name__iexact=decoded_name).first()
-
-        if not shelf:
-            return Response({"error": f"Shelf '{decoded_name}' not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        shelf.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-            
         
+       
 
 
 
