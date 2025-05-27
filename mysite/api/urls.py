@@ -4,8 +4,8 @@ from .views import GoogleBooksAPIView
 from .views import BooksView
 from .views import PostsView
 from .views import EventsScapperView
-
-from api.views.LibraryPageView import LibraryPageView
+from api.views.ShelfByNameView import ShelfByNameView  # ✅ corect
+from api.views.BooksWebScrapperView import BooksWebScrapperView  # Import the missing view
 
 from api.views.ReadingSheetsView import ReadingSheetsView
 from api.views.LibraryPageView import LibraryPageView
@@ -13,17 +13,12 @@ from api.views.LibraryPageView import LibraryPageView
 from api.views.ReadingSheetsView import ReadingSheetsView
 from rest_framework.routers import DefaultRouter
 from .views import PostsView  # asigură-te că importul e corect
-from api.views.LibraryPageView import LibraryPageView
-from api.views.LibraryPageView import LibraryPageView  # Removed as it could not be resolved
-
-from api.views.ReadingSheetsView import ReadingSheetsView
-from api.views.LibraryPageView import LibraryPageView
-
-from api.views.ReadingSheetsView import ReadingSheetsView
 from rest_framework.routers import DefaultRouter
 from .views import PostsView  # asigură-te că importul e corect
 router = DefaultRouter()
 router.register(r"posts", PostsView, basename="posts")
+router.register(r"library", LibraryPageView, basename="library")
+
 
 
 
@@ -57,11 +52,14 @@ urlpatterns = [
    path("posts/<int:pk>/update/", PostsView.as_view({"put": "update_post", "patch": "update_post"}), name="update-post"),
    path("posts/", PostsView.as_view({"get": "list_posts"}), name="list-posts"),
    path("posts/feed/", PostsView.as_view({"get": "feed"}), name="feed"),
+   path("posts/post_type/", PostsView.as_view({"get": "list_post_type_posts"}), name="list-post-type-posts"),
+   path("posts/non_post_type/", PostsView.as_view({"get": "list_non_post_type_posts"}), name="list-non-post-type-posts"),
     
     
     
     
    path("library/", LibraryPageView.as_view({'get': 'list'}), name="library-page"),
+   path("library/delete_shelf/<str:name>/", LibraryPageView.as_view({"delete": "delete_shelf"}), name="delete-shelf"),
 
    path("api/", include(router.urls)),
 
@@ -71,7 +69,7 @@ urlpatterns = [
 
 # Like / Unlike la postări
   #  path("posts/<int:pk>/toggle_like/", PostsView.as_view({"post": "toggle_like"}), name="toggle-like"),
- path(
+  path(
         "library/shelf/<str:name>/", 
         LibraryPageView.as_view({"get": "get_shelf_by_name"}), 
         name="library-shelf"),
@@ -81,12 +79,17 @@ urlpatterns = [
    
      
      
+     
+     
+  path("library/shelf/<str:name>/", ShelfByNameView.as_view(), name="shelf-by-name"),
+
+     
     path("api/", include(router2.urls)),  #pt rafturi
 
 
 #pt even
 
-
+    path('scrape-books/', BooksWebScrapperView.as_view(), name='scrape_books'),
     path('scrape-events/', EventsScapperView.scrape_events),
 
 ]

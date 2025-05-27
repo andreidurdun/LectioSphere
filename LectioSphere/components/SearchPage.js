@@ -130,9 +130,9 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
     useEffect(() => {
         if (isAuthenticated) {
             fetchUserData();
-            // fetchCategory('recent', setRecentlyPublishedItems);
+            fetchCategory('recent', setRecentlyPublishedItems);
             // fetchCategory('popular', setPopularItems);
-            fetchCategory('adventure', setAdventure);
+            // fetchCategory('adventure', setAdventure);
             // fetchCategory('fantasy', setFantasy);
             // fetchCategory('romance', setRomance);
             // fetchCategory('thriller', setThriller);
