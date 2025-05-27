@@ -214,16 +214,6 @@ Content-Type: application/json
 
 
 
-
-
-//teste like uri si postari
-###
-//toate postarile
-GET http://localhost:8000/posts/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
-Content-Type: application/json
-
-
 ###
 POST http://localhost:8000/api/token/
 Content-Type: application/json
@@ -235,16 +225,24 @@ Content-Type: application/json
 
 
 
+//teste like uri si postari
 ###
-
-
-
-# facem o postare de tip "post" -OK
-POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+//toate postarile ----
+GET http://localhost:8000/posts/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MzQyMDMwLCJpYXQiOjE3NDgzMzg0MzAsImp0aSI6IjI2NDU5NWQwMjI1ZTRkOGY5M2VmZmE5MDY5YzcxYjU2IiwidXNlcl9pZCI6MX0.S1qoN31Ak0EVrImF-vFr1WFrD2AlcudAQr1PYZUZLEQ
 Content-Type: application/json
 
+
+###
+# facem o postare de tip "post" -OK
+POST http://localhost:8000/posts/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MzQyMDMwLCJpYXQiOjE3NDgzMzg0MzAsImp0aSI6IjI2NDU5NWQwMjI1ZTRkOGY5M2VmZmE5MDY5YzcxYjU2IiwidXNlcl9pZCI6MX0.S1qoN31Ak0EVrImF-vFr1WFrD2AlcudAQr1PYZUZLEQ
+Content-Type: application/json
+
+
+
 {
+  "id" :"1",
   "action": "post",
   "description": "post test!",
   "ISBN": "9781234567890"
@@ -253,10 +251,11 @@ Content-Type: application/json
 
 ###
 POST http://localhost:8000/posts/add/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MzQyMDMwLCJpYXQiOjE3NDgzMzg0MzAsImp0aSI6IjI2NDU5NWQwMjI1ZTRkOGY5M2VmZmE5MDY5YzcxYjU2IiwidXNlcl9pZCI6MX0.S1qoN31Ak0EVrImF-vFr1WFrD2AlcudAQr1PYZUZLEQ
 Content-Type: application/json
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQzOTU4LCJpYXQiOjE3NDY0NDAzNTgsImp0aSI6IjBkMDYyNDdmY2FhNjRmOGFiYmZjNjY1MzY3MTA5Y2JhIiwidXNlcl9pZCI6MX0.R_37wPlB1rmmi3YBmm2kHzjTFJO6k_jUjMpVgJdG8Qs
 
 {
+  "id":"1",
   "ISBN": "9780140449266",
   "action": "review",
   "rating": 5,
@@ -267,24 +266,33 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 
 
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQzOTU4LCJpYXQiOjE3NDY0NDAzNTgsImp0aSI6IjBkMDYyNDdmY2FhNjRmOGFiYmZjNjY1MzY3MTA5Y2JhIiwidXNlcl9pZCI6MX0.R_37wPlB1rmmi3YBmm2kHzjTFJO6k_jUjMpVgJdG8Qs
-### Vezi comentariile pentru o postare
+### Vezi comentariile pentru o postare ---
 GET http://localhost:8000/posts/1/list_comments/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQzOTU4LCJpYXQiOjE3NDY0NDAzNTgsImp0aSI6IjBkMDYyNDdmY2FhNjRmOGFiYmZjNjY1MzY3MTA5Y2JhIiwidXNlcl9pZCI6MX0.R_37wPlB1rmmi3YBmm2kHzjTFJO6k_jUjMpVgJdG8Qs
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MzQyMDMwLCJpYXQiOjE3NDgzMzg0MzAsImp0aSI6IjI2NDU5NWQwMjI1ZTRkOGY5M2VmZmE5MDY5YzcxYjU2IiwidXNlcl9pZCI6MX0.S1qoN31Ak0EVrImF-vFr1WFrD2AlcudAQr1PYZUZLEQ
+Content-Type: application/json
 
-
-
-
-
-###LIKE la o postare
-POST http://localhost:8000/api/posts/3/toggle_like/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+//daca am dat like la o anumita postare
+###
+GET http://localhost:8000/posts/1/has_liked/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MzU0Mjg0LCJpYXQiOjE3NDgzNTA2ODQsImp0aSI6ImZhOWVhNDJhN2U3MDQ4MTBiNzc4ZmZkMzIwMDQzMTlhIiwidXNlcl9pZCI6MX0.HVlbL6HEIclItebS9mp6GMXlaYBPqHEwQ9ndjRgjAe0
 Content-Type: application/json
 
 
-###  ADAUGĂ COMENTARIU la postare
+
+
+###LIKE la o postare ---
+POST http://localhost:8000/api/posts/1/toggle_like/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MzQyMDMwLCJpYXQiOjE3NDgzMzg0MzAsImp0aSI6IjI2NDU5NWQwMjI1ZTRkOGY5M2VmZmE5MDY5YzcxYjU2IiwidXNlcl9pZCI6MX0.S1qoN31Ak0EVrImF-vFr1WFrD2AlcudAQr1PYZUZLEQ
+Content-Type: application/json
+
+
+
+
+
+###  ADAUGa COMENTARIU la postare ---
 POST http://localhost:8000/api/posts/1/add_comment/
 Content-Type: application/json
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MzQyMDMwLCJpYXQiOjE3NDgzMzg0MzAsImp0aSI6IjI2NDU5NWQwMjI1ZTRkOGY5M2VmZmE5MDY5YzcxYjU2IiwidXNlcl9pZCI6MX0.S1qoN31Ak0EVrImF-vFr1WFrD2AlcudAQr1PYZUZLEQ
 
 {
   "user": 1,
@@ -293,9 +301,10 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 }
 
 
-###  VEZI TOATE COMENTARIILE
+###  VEZI TOATE COMENTARIILE ---
 GET http://localhost:8000/api/posts/1/list_comments/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDQ4NjQ1LCJpYXQiOjE3NDY0NDUwNDUsImp0aSI6ImE0ZjgzYmI5MDQ3NTQyZTM4MzRkZjRhNTU2NzY0OWUxIiwidXNlcl9pZCI6MX0.h5qd0A19WO2HjwNhDw21EUAkDiH1-SpGL1_imZSZU60
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MzQyMDMwLCJpYXQiOjE3NDgzMzg0MzAsImp0aSI6IjI2NDU5NWQwMjI1ZTRkOGY5M2VmZmE5MDY5YzcxYjU2IiwidXNlcl9pZCI6MX0.S1qoN31Ak0EVrImF-vFr1WFrD2AlcudAQr1PYZUZLEQ
+Content-Type: application/json
 
 
 
