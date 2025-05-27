@@ -190,7 +190,6 @@ class PostsView(ViewSet):
 
     
     from api.models import PostLike
-
     @action(detail=True, methods=['post'])
     def toggle_like(self, request, pk=None):
         try:
@@ -212,6 +211,24 @@ class PostsView(ViewSet):
         "liked": liked,
         "like_count": like_count
     }, status=status.HTTP_200_OK)
+        
+        
+    @action(detail=True, methods=['get'])
+    def has_liked(self, request, pk=None):
+        try:
+            post = Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+        liked = PostLike.objects.filter(user=user, post=post).exists()
+
+        return Response({
+            "liked": liked
+        }, status=status.HTTP_200_OK)
+
+
+
 
     @action(detail=True, methods=['post'])
     def add_comment(self, request, pk=None):

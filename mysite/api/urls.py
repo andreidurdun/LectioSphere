@@ -55,8 +55,10 @@ urlpatterns = [
    path("posts/post_type/", PostsView.as_view({"get": "list_post_type_posts"}), name="list-post-type-posts"),
    path("posts/non_post_type/", PostsView.as_view({"get": "list_non_post_type_posts"}), name="list-non-post-type-posts"),
     
-    
-    
+    path("posts/<int:pk>/add_comment/", PostsView.as_view({"post": "add_comment"}), name="add-comment"),
+    path("posts/<int:pk>/list_comments/", PostsView.as_view({"get": "list_comments"}), name="list-comments"),
+    path("posts/<int:pk>/has_liked/", PostsView.as_view({"get": "has_liked"}), name="has-liked"),
+
     
    path("library/", LibraryPageView.as_view({'get': 'list'}), name="library-page"),
    path("library/delete_shelf/<str:name>/", LibraryPageView.as_view({"delete": "delete_shelf"}), name="delete-shelf"),
