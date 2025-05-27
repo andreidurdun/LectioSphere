@@ -186,15 +186,6 @@ Content-Type: application/json
 }
 
 
-###
-POST http://localhost:8000/api/library/create_shelf/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE5MTQyLCJpYXQiOjE3NDgxMTU1NDIsImp0aSI6IjY5NWMxMmQ3YWI2NDQ5MzViMDMxOWQzOWYxMGM3MzcxIiwidXNlcl9pZCI6MX0.YNzsmwyWiw6O53Ux5_vmLDvzCcqFDCsILPhnuhiAr74
-Content-Type: application/json
-
-{
-  "name": "RaftulMeu"
-}
-
 
 
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NDAwMDEyLCJpYXQiOjE3NDYzOTY0MTIsImp0aSI6IjY3YTRhMTBiZGI1NjQ2OWM5ZDZiYjY0ZDk3ODIyZTA4IiwidXNlcl9pZCI6MX0.UQXyyLqq2lSAm22DIJA4O9O3-bhIdwphyjqYISn0DI
@@ -321,13 +312,30 @@ Content-Type: application/json
 
 ### rafturile standard + custom
 GET http://localhost:8000/library/shelves/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE4MjMzLCJpYXQiOjE3NDgxMTQ2MzMsImp0aSI6ImY0MmIyMjI5NjM1MzQzYjg4ZjQzZjExNDcwYjgwOGYzIiwidXNlcl9pZCI6MX0.gWT9R4b0q_IkPeAZFYdk_RJKDqMS18CNdnyy51YbOnI
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MjAyMDc4LCJpYXQiOjE3NDgxOTg0NzgsImp0aSI6Ijg0NWE3OTM2OWRiYTRlZmZhNWY2MDY1ZDM2YzE3MmJlIiwidXNlcl9pZCI6MX0.7VRL2hAUk92zjgIebBksHiMe7ZFDy8R6sO13aRolIcM
 Content-Type: application/json
 
 ### 5 carti și 1200 pagini
 GET http://localhost:8000/library/reading_challenge/?goal_books=5&goal_pages=1200
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ2NTI3NDAyLCJpYXQiOjE3NDY1MjM4MDIsImp0aSI6ImIzMWU4MThjZjhiZTQ1NDE4OWRmNjYwMjkwNTkxMDA3IiwidXNlcl9pZCI6MX0.XvHfamMujwa2Ofzs1FAsXivtJ4ybDrWlGNIVdwtlrxg
 
+
+###
+POST http://localhost:8000/api/library/create_shelf/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MjAyMDc4LCJpYXQiOjE3NDgxOTg0NzgsImp0aSI6Ijg0NWE3OTM2OWRiYTRlZmZhNWY2MDY1ZDM2YzE3MmJlIiwidXNlcl9pZCI6MX0.7VRL2hAUk92zjgIebBksHiMe7ZFDy8R6sO13aRolIcM
+Content-Type: application/json
+
+{
+  "name": "Nefavorite"
+}
+
+###
+DELETE http://localhost:8000/library/delete_shelf/ReadList/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MjAyMDc4LCJpYXQiOjE3NDgxOTg0NzgsImp0aSI6Ijg0NWE3OTM2OWRiYTRlZmZhNWY2MDY1ZDM2YzE3MmJlIiwidXNlcl9pZCI6MX0.7VRL2hAUk92zjgIebBksHiMe7ZFDy8R6sO13aRolIcM
+
+{
+  "name": "ReadList"
+}
 
 
 ###  daca o carte este în vreun raft (exemplu ISBN)
@@ -337,14 +345,14 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 //pt un raft anume,dat ca parametru
 //var fara router 
 ###
-GET /library/shelf/RaftulMeu/
+GET /library/shelf/Read/
 Host: localhost:8000
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE5MTQyLCJpYXQiOjE3NDgxMTU1NDIsImp0aSI6IjY5NWMxMmQ3YWI2NDQ5MzViMDMxOWQzOWYxMGM3MzcxIiwidXNlcl9pZCI6MX0.YNzsmwyWiw6O53Ux5_vmLDvzCcqFDCsILPhnuhiAr74
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MjAyMDc4LCJpYXQiOjE3NDgxOTg0NzgsImp0aSI6Ijg0NWE3OTM2OWRiYTRlZmZhNWY2MDY1ZDM2YzE3MmJlIiwidXNlcl9pZCI6MX0.7VRL2hAUk92zjgIebBksHiMe7ZFDy8R6sO13aRolIcM
 Content-Type: application/json
 
 ###
 GET http://localhost:8000/library/shelf/RaftulMeu/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE4MjMzLCJpYXQiOjE3NDgxMTQ2MzMsImp0aSI6ImY0MmIyMjI5NjM1MzQzYjg4ZjQzZjExNDcwYjgwOGYzIiwidXNlcl9pZCI6MX0.gWT9R4b0q_IkPeAZFYdk_RJKDqMS18CNdnyy51YbOnI
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MjAyMDc4LCJpYXQiOjE3NDgxOTg0NzgsImp0aSI6Ijg0NWE3OTM2OWRiYTRlZmZhNWY2MDY1ZDM2YzE3MmJlIiwidXNlcl9pZCI6MX0.7VRL2hAUk92zjgIebBksHiMe7ZFDy8R6sO13aRolIcM
 Content-Type: application/json
 
 
@@ -368,15 +376,21 @@ Accept: application/json
 GET http://localhost:8000/api/reading-sheets/simple/
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NTc2ODU2LCJpYXQiOjE3NDc1NzMyNTYsImp0aSI6Ijc3Y2Q3M2JlMTMxNjQ4YTBiYzIzOWM0Zjg4MzMzZDcxIiwidXNlcl9pZCI6MX0.QVPQ-ZhQtqUlrVYKofNHULMuvqNuDO4vk4vR3MplufU
 Accept: application/json
-g
+
 
 #pt events
 ### Scrape evenimente literare de pe carturesti.ro
 GET http://localhost:8000/scrape-events/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTkxMzI1LCJpYXQiOjE3NDgxODc3MjUsImp0aSI6Ijk2MzVmYWNjMGQyMTRlMDQ4ZTIxZDEwYzE4ZmY1NTA1IiwidXNlcl9pZCI6MX0.WfUhcFo7pBwpdo34A7TrQi3zyuPv12KYE-pRx6D8Y9c
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MjUwNTc0LCJpYXQiOjE3NDgyNDY5NzQsImp0aSI6Ijg5NjRjZTgzMTE2OTRiYWQ5MjkyNDRkOWQyYzA1YTdiIiwidXNlcl9pZCI6MX0.4Hi8R7va5Ua77rwkssHkqNJp11RlM0-AECAZotOCKmU
 Accept: application/json
 
 
+
+#pt carti
+### 
+GET http://localhost:8000/scrape-books/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MjUwNTc0LCJpYXQiOjE3NDgyNDY5NzQsImp0aSI6Ijg5NjRjZTgzMTE2OTRiYWQ5MjkyNDRkOWQyYzA1YTdiIiwidXNlcl9pZCI6MX0.4Hi8R7va5Ua77rwkssHkqNJp11RlM0-AECAZotOCKmU
+Accept: application/json
 
 
 

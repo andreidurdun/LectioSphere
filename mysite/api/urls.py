@@ -5,7 +5,7 @@ from .views import BooksView
 from .views import PostsView
 from .views import EventsScapperView
 from api.views.ShelfByNameView import ShelfByNameView  # ✅ corect
-
+from api.views.BooksWebScrapperView import BooksWebScrapperView  # Import the missing view
 
 from api.views.ReadingSheetsView import ReadingSheetsView
 from api.views.LibraryPageView import LibraryPageView
@@ -13,13 +13,6 @@ from api.views.LibraryPageView import LibraryPageView
 from api.views.ReadingSheetsView import ReadingSheetsView
 from rest_framework.routers import DefaultRouter
 from .views import PostsView  # asigură-te că importul e corect
-from api.views.LibraryPageView import LibraryPageView
-from api.views.LibraryPageView import LibraryPageView  # Removed as it could not be resolved
-
-from api.views.ReadingSheetsView import ReadingSheetsView
-from api.views.LibraryPageView import LibraryPageView
-
-from api.views.ReadingSheetsView import ReadingSheetsView
 from rest_framework.routers import DefaultRouter
 from .views import PostsView  # asigură-te că importul e corect
 router = DefaultRouter()
@@ -66,6 +59,7 @@ urlpatterns = [
     
     
    path("library/", LibraryPageView.as_view({'get': 'list'}), name="library-page"),
+   path("library/delete_shelf/<str:name>/", LibraryPageView.as_view({"delete": "delete_shelf"}), name="delete-shelf"),
 
    path("api/", include(router.urls)),
 
@@ -95,7 +89,7 @@ urlpatterns = [
 
 #pt even
 
-
+    path('scrape-books/', BooksWebScrapperView.as_view(), name='scrape_books'),
     path('scrape-events/', EventsScapperView.scrape_events),
 
 ]
