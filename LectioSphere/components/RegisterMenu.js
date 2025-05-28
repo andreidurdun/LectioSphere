@@ -42,53 +42,67 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
             last_name,
             password,
             re_password
-        };
-
-        try {
+        };        try {
+            // Create a clean axios instance for registration with ZERO interceptors
+            const axiosInstance = axios.create();
+            // IMPORTANT: Delete any authorization headers that might be present
+            delete axiosInstance.defaults.headers.common['Authorization'];
+            
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
                 }
             };
-            // Folosim URL-ul API din props
-            const response = await axios.post(`${apiBaseUrl}/auth/users/`, userData, config);
             
-            console.log(response.data);
+            console.log("Sending registration request to:", `${apiBaseUrl}/auth/users/`);
+            console.log("Registration data:", JSON.stringify(userData));
+            
+            // Folosim URL-ul API din props
+            const response = await axiosInstance.post(`${apiBaseUrl}/auth/users/`, userData, config);
+            
+            console.log('Registration successful:', response.data);
+            
+            // Display success message and redirect to login
+            Alert.alert(
+                'Registration Successful',
+                'Your account has been created. Please log in with your credentials.',
+                [{ text: 'OK', onPress: () => navigation.navigate('LoginMenu') }]
+            );
 
 
             // Înregistrarea a fost reușită, acum încercăm să autentificăm utilizatorul
-            try {
-                const loginResponse = await axios.post(`${apiBaseUrl}/auth/jwt/create/`, {
-                    email: email,
-                    password: password
-                });
+            // try {
+            //     const loginResponse = await axios.post(`${apiBaseUrl}/auth/jwt/create/`, {
+            //         email: email,
+            //         password: password
+            //     });
 
-                if (loginResponse.status === 200) {
-                    const { access, refresh } = loginResponse.data;
+            //     if (loginResponse.status === 200) {
+            //         const { access, refresh } = loginResponse.data;
                     
-                    // Salvăm ambele tokenuri
-                    await AsyncStorage.setItem('auth_token', access);
-                    await AsyncStorage.setItem('refresh_token', refresh);
+            //         // Salvăm ambele tokenuri
+            //         await AsyncStorage.setItem('auth_token', access);
+            //         await AsyncStorage.setItem('refresh_token', refresh);
                     
-                    // Folosim funcția transmisă prin props pentru a salva tokenul și a actualiza starea
-                    saveAuthToken(access);
+            //         // Folosim funcția transmisă prin props pentru a salva tokenul și a actualiza starea
+            //         saveAuthToken(access);
                     
-                    Alert.alert(
-                        'Registration Successful',
-                        'Your account has been created and you have been logged in.',
-                        [{ text: 'OK', onPress: () => navigation.replace('HomePage') }]
-                    );
-                }
-            } catch (loginError) {
-                console.error('Auto-login error:', loginError.response?.data || loginError.message);
+            //         Alert.alert(
+            //             'Registration Successful',
+            //             'Your account has been created and you have been logged in.',
+            //             [{ text: 'OK', onPress: () => navigation.replace('HomePage') }]
+            //         );
+            //     }
+            // } catch (loginError) {
+            //     console.error('Auto-login error:', loginError.response?.data || loginError.message);
                 
-                // Dacă autentificarea automată eșuează, redirecționăm utilizatorul către pagina de login
-                Alert.alert(
-                    'Registration Successful',
-                    'Your account has been created. Please log in with your credentials.',
-                    [{ text: 'OK', onPress: () => navigation.replace('LoginMenu') }]
-                );
-            }
+            //     // Dacă autentificarea automată eșuează, redirecționăm utilizatorul către pagina de login
+            //     Alert.alert(
+            //         'Registration Successful',
+            //         'Your account has been created. Please log in with your credentials.',
+            //         [{ text: 'OK', onPress: () => navigation.replace('LoginMenu') }]
+            //     );
+            // }
         } catch (error) {
             console.error('Registration error:', error.response?.data || error.message);
             

@@ -40,9 +40,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         } catch (error) {
             console.error("Error saving auth token:", error);
         }
-    };
-
-    const fetchUserData = async () => {
+    };    const fetchUserData = async () => {
         try {
             const response = await axios.get(`${apiBaseUrl}/auth/users/me/`, {
                 headers: { Authorization: authToken }
@@ -51,72 +49,116 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         } catch (error) {
             if (error.response?.status === 401) {
                 try {
-                    const response = await axios.post(`${apiBaseUrl}/auth/jwt/refresh/`, {
-                        refresh: refreshToken
-                    });
+                    console.log("Attempting to refresh token with:", refreshToken);
+                    
+                    // Create clean axios instance for refresh token request
+                    const axiosInstance = axios.create();
+                    delete axiosInstance.defaults.headers.common['Authorization'];
+                    
+                    const response = await axiosInstance.post(
+                        `${apiBaseUrl}/auth/jwt/refresh/`, 
+                        { refresh: refreshToken },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    );
+                    
                     const newToken = response.data.access;
+                    console.log("Successfully refreshed token");
                     
-                    saveAuthToken(newToken, refreshToken);
+                    // Save the new token
+                    await AsyncStorage.setItem('auth_token', newToken);
+                    setAuthToken(`JWT ${newToken}`);
                     
+                    // Retry the original request
                     const retryResponse = await axios.get(`${apiBaseUrl}/auth/users/me/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
                     setUserData(retryResponse.data);
                 } catch (refreshError) {
-                    console.error("Failed to refresh token:", refreshError);
+                    console.error("Failed to refresh token:", refreshError.response?.data || refreshError.message);
+                    // If refresh fails, need to log out
                     handleLogout();
                 }
             } else {
                 console.error("User fetch error:", error.message);
             }
         }
-    };
-
-    const fetchProfileData = async () => {
+    };    const fetchProfileData = async () => {
         try {
-            const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/read`, {
+            const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/read/`, {
                 headers: { Authorization: authToken }
-            });
+            });            
+            console.log('Profile data received:', response.data);
             setProfileData(response.data);
         } catch (error) {
             if (error.response?.status === 401) {
                 try {
-                    const response = await axios.post(`${apiBaseUrl}/auth/jwt/refresh/`, {
-                        refresh: refreshToken
-                    });
+                    console.log("Attempting to refresh token for profile data");
+                    
+                    // Create clean axios instance for refresh token request
+                    const axiosInstance = axios.create();
+                    delete axiosInstance.defaults.headers.common['Authorization'];
+                    
+                    const response = await axiosInstance.post(
+                        `${apiBaseUrl}/auth/jwt/refresh/`, 
+                        { refresh: refreshToken },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    );
+                    
                     const newToken = response.data.access;
+                    console.log("Successfully refreshed token for profile data");
                     
-                    saveAuthToken(newToken, refreshToken);
+                    // Save the new token
+                    await AsyncStorage.setItem('auth_token', newToken);
+                    setAuthToken(`JWT ${newToken}`);
                     
-                    const retryResponse = await axios.get(`${apiBaseUrl}/api/profile/`, {
+                    // Make sure we're using the correct endpoint for the retry
+                    const retryResponse = await axios.get(`${apiBaseUrl}/api/accounts/profile/read/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
                     setProfileData(retryResponse.data);
                 } catch (refreshError) {
-                    console.error("Failed to refresh token:", refreshError);
+                    console.error("Failed to refresh token for profile:", refreshError.response?.data || refreshError.message);
+                    // Don't log out here, just log the error since user data might still be available
                 }
             } else {
                 console.error("Profile fetch error:", error.message);
             }
         }
-    };
-
-    useEffect(() => {
+    };    useEffect(() => {
         const getTokensAndFetchData = async () => {
             try {
                 const storedAuthToken = await AsyncStorage.getItem('auth_token');
                 const storedRefreshToken = await AsyncStorage.getItem('refresh_token');
                 
+                console.log("Retrieved tokens - Auth token exists:", !!storedAuthToken);
+                console.log("Retrieved tokens - Refresh token exists:", !!storedRefreshToken);
+                
                 if (storedAuthToken && storedRefreshToken) {
                     setAuthToken(`JWT ${storedAuthToken}`);
                     setRefreshToken(storedRefreshToken);
                     
-                    // Fetch data after tokens are set
-                    fetchUserData();
-                    fetchProfileData();
+                    // Slight delay to ensure state is updated before fetching
+                    setTimeout(() => {
+                        // Fetch data after tokens are set
+                        fetchUserData();
+                        fetchProfileData();
+                    }, 100);
+                } else {
+                    // If tokens aren't found, redirect to login
+                    console.log("No tokens found or tokens incomplete, redirecting to login");
+                    navigation.replace('LoginMenu');
                 }
             } catch (error) {
                 console.error("Error retrieving tokens:", error);
+                navigation.replace('LoginMenu');
             }
         };
         
@@ -147,7 +189,8 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         navigation.navigate('ProfileEdit');
     }
 
-    // console.log("Profile Data:", profileData);    
+    // console.log("Profile Data:", profileData);
+    
     return (
         <SafeAreaView style={styles.screen}>
             <TopBar pageName="ProfilePage" />

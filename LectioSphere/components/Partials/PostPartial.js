@@ -34,6 +34,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
             setPost(null);
             setLoading(false);
         }
+
     }, [postData]);
 
     if (loading) return <ActivityIndicator size="large" style={styles.centered} />;
@@ -109,70 +110,116 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
         }
     };
 
+    
+    const handleLikePress = async (id) => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                console.error('No token found');
+                return;
+            }
+
+            const response = await axios.post(
+                `${apiBaseUrl}/posts/like/`,
+                { id },
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            console.log('Post liked successfully:', response.data);
+            Alert.alert('Success', 'You liked the post!', [{ text: 'OK' }]);
+        } catch (error) {
+            console.error('Error liking post:', error);
+            let errorMessage = 'Failed to like post.';
+            if (error.response && error.response.data) {
+                errorMessage = typeof error.response.data === 'string'
+                    ? error.response.data
+                    : JSON.stringify(error.response.data);
+            }
+            Alert.alert('Like Failed', errorMessage, [{ text: 'OK' }]);
+        }
+    }
+
+
 
     if (post.action == 'made_progress') 
     {
+
+        // console.log(post);
+
         return (
             <View style={styles.container}>
-                <View style={styles.headerContainer}>
-                    <View style={styles.headerInfo}>
-                        <View style={styles.profileInfo}>
-                            <Image 
-                            source={
-                                // post?.profile_pic 
-                                // ? { uri: profileData.profile_pic } 
-                                // : defaultPicture
-                                defaultPicture
-                            }
-                            style={styles.profilePic}
-                            />
+            <View style={styles.headerContainer}>
+                <View style={styles.headerInfo}>
+                <View style={styles.profileInfo}>
+                    <Image 
+                    source={
+                    // post?.profile_pic 
+                    // ? { uri: profileData.profile_pic } 
+                    // : defaultPicture
+                    defaultPicture
+                    }
+                    style={styles.profilePic}
+                    />
 
-                            <View style={styles.profileText}>
-                                <Text style={styles.username}>
-                                    @{post?.profile_name || 'Unknown User'}
-                                </Text>
-                                <Text style={styles.normalText}>
-                                    made progress 
-                                </Text>
-                            </View>
-                        </View>
-
-                        <Text style={styles.bookTitle}>
-                            {post?.book?.title || 'Unknown Book'}
-                        </Text>
-
-                        <Text style={styles.author}>
-                            {post?.book?.author || 'Unknown Author'}
-                        </Text>
-
-                        <TouchableNativeFeedback 
-                            onPress={() => handleAddToLibrary(post.book.id)}
-                        >
-                            <View style={styles.addButtonTouchable}>
-                                <Text style={styles.addButtonText}>
-                                    Add to Library
-                                </Text>
-                            </View>
-                        </TouchableNativeFeedback>
-
+                    <View style={styles.profileText}>
+                    <Text style={styles.username}>
+                        @{post?.user?.username || 'Unknown User'}
+                    </Text>
+                    <Text style={styles.normalText}>
+                        made progress 
+                    </Text>
                     </View>
+                </View>
 
-                    <View style={styles.headerBookContainer}>
-                            {post.book.cover && (
-                                <Image 
-                                    source={{ uri: post.book.cover}} 
-                                    style={styles.coverImage} 
-                                    resizeMode="cover"
-                                />
-                            )}
+                <Text style={styles.bookTitle}>
+                    {post?.book?.title || 'Unknown Book'}
+                </Text>
+
+                <Text style={styles.author}>
+                    {post?.book?.author || 'Unknown Author'}
+                </Text>
+
+                <TouchableNativeFeedback 
+                    onPress={() => handleAddToLibrary(post.book.id)}
+                >
+                    <View style={styles.addButtonTouchable}>
+                    <Text style={styles.addButtonText}>
+                        Add to Library
+                    </Text>
                     </View>
-
+                </TouchableNativeFeedback>
 
                 </View>
 
-                
-                
+                <View style={styles.headerBookContainer}>
+                    {post.book.cover && (
+                    <Image 
+                        source={{ uri: post.book.cover}} 
+                        style={styles.coverImage} 
+                        resizeMode="cover"
+                    />
+                    )}
+                </View>
+            </View>
 
+            <View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                <TouchableNativeFeedback onPress={handleLikePress}>
+                    <Image
+                    source={require('../../assets/heartFull.png')}
+                    style={{ width: 25, height: 22, marginRight: 6 }}
+                    />
+                </TouchableNativeFeedback>
+                <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                    {post.like_count || 0} 
+                </Text>
+                </View>
+            </View>
             </View>
         );
     }
