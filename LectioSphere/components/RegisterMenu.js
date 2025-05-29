@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
+import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -132,114 +132,123 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
             
             Alert.alert('Registration Error', errorMessage);
         }
-    };
-
-    return (
+    };    return (
         <SafeAreaView style={styles.container}>
+            <KeyboardAvoidingView 
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={styles.keyboardView}
+            >
+                <ScrollView 
+                    style={styles.scrollView}
+                    contentContainerStyle={styles.scrollContainer}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                    enableOnAndroid={true}
+                >
+                    <Image
+                        source={require('../assets/favicon.png')}
+                        style={styles.bigIcon}
+                        resizeMode="contain"
+                    />
 
-            <Image
-                source={require('../assets/favicon.png')}
-                style={styles.bigIcon}
-                resizeMode="contain"
-            />
+                    <Text style={styles.title}>
+                        LectioSphere
+                    </Text>
+                    <Text style={styles.subtitle}>
+                        Literary Experience, Community, Thoughts, Interaction, Organization
+                    </Text>
+                
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>First Name:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={first_name}
+                            onChangeText={setFirstName}
+                            placeholder="Enter your first name"
+                            autoCapitalize="none"
+                            placeholderTextColor="#E5C3D1" // Placeholder text color
+                        />
+                    </View>
 
-            <Text style={styles.title}>
-                LectioSphere
-            </Text>
-            <Text style={styles.subtitle}>
-                Literary Experience, Community, Thoughts, Interaction, Organization
-            </Text>
-        
-            <View style={styles.inputGroup}>
-                <Text style={styles.label}>First Name:</Text>
-                <TextInput
-                    style={styles.input}
-                    value={first_name}
-                    onChangeText={setFirstName}
-                    placeholder="Enter your first name"
-                    autoCapitalize="none"
-                    placeholderTextColor="#E5C3D1" // Placeholder text color
-                />
-            </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Last Name:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={last_name}
+                            onChangeText={setLastName}
+                            placeholder="Enter your last name"
+                            autoCapitalize="none"
+                            placeholderTextColor="#E5C3D1" // Placeholder text color
+                        />
+                    </View>
 
-            <View style={styles.inputGroup}>
-                <Text style={styles.label}>Last Name:</Text>
-                <TextInput
-                    style={styles.input}
-                    value={last_name}
-                    onChangeText={setLastName}
-                    placeholder="Enter your last name"
-                    autoCapitalize="none"
-                    placeholderTextColor="#E5C3D1" // Placeholder text color
-                />
-            </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Username:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={username}
+                            onChangeText={setUsername}
+                            placeholder="Enter your username"
+                            autoCapitalize="none"
+                            placeholderTextColor="#E5C3D1" // Placeholder text color
+                        />
+                    </View>
 
-            <View style={styles.inputGroup}>
-                <Text style={styles.label}>Username:</Text>
-                <TextInput
-                    style={styles.input}
-                    value={username}
-                    onChangeText={setUsername}
-                    placeholder="Enter your username"
-                    autoCapitalize="none"
-                    placeholderTextColor="#E5C3D1" // Placeholder text color
-                />
-            </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Email:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={email}
+                            onChangeText={setEmail}
+                            placeholder="Enter your Email"
+                            autoCapitalize="none"
+                            keyboardType="email-address"
+                            placeholderTextColor="#E5C3D1" // Placeholder text color
+                        />
+                    </View>
 
-            <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email:</Text>
-                <TextInput
-                    style={styles.input}
-                    value={email}
-                    onChangeText={setEmail}
-                    placeholder="Enter your Email"
-                    autoCapitalize="none"
-                    keyboardType="email-address"
-                    placeholderTextColor="#E5C3D1" // Placeholder text color
-                />
-            </View>
-            
-            <View style={styles.inputGroup}>
-                <Text style={styles.label}>Password:</Text>
-                <TextInput
-                    style={styles.input}
-                    value={password}
-                    onChangeText={setPassword}
-                    placeholder="Enter your password"
-                    secureTextEntry
-                    placeholderTextColor="#E5C3D1" // Placeholder text color
-                />
-            </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Password:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={password}
+                            onChangeText={setPassword}
+                            placeholder="Enter your password"
+                            secureTextEntry
+                            placeholderTextColor="#E5C3D1" // Placeholder text color
+                        />
+                    </View>
 
-            <View style={styles.inputGroup}>
-                <Text style={styles.label}>Confirm your password:</Text>
-                <TextInput
-                    style={styles.input}
-                    value={re_password}
-                    onChangeText={setRePassword}
-                    placeholder="Confirm your password"
-                    secureTextEntry
-                    placeholderTextColor="#E5C3D1" // Placeholder text color
-                />
-            </View>
-            
-            <View style={{ marginTop: 12, width: '100%' }}>
-                <Button
-                    title="Register"
-                    onPress={handleSubmit}
-                    color="#613F75" // Set button color to match the theme
-                />
-            </View>
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Confirm your password:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={re_password}
+                            onChangeText={setRePassword}
+                            placeholder="Confirm your password"
+                            secureTextEntry
+                            placeholderTextColor="#E5C3D1" // Placeholder text color
+                        />
+                    </View>
+                    
+                    <View style={{ marginTop: 12, width: '100%' }}>
+                        <Button
+                            title="Register"
+                            onPress={handleSubmit}
+                            color="#613F75" // Set button color to match the theme
+                        />
+                    </View>
 
-            <Text style={styles.registerText}>
-                Already have an account?{' '}
-                <Text
-                    style={{ color: '#613F75', textDecorationLine: 'underline' }}
-                    onPress={() => navigation.navigate('LoginMenu')}>
-                    Log In!
-                </Text>
-            </Text>
-
+                    <Text style={styles.registerText}>
+                        Already have an account?{' '}
+                        <Text
+                            style={{ color: '#613F75', textDecorationLine: 'underline' }}
+                            onPress={() => navigation.navigate('LoginMenu')}>
+                            Log In!
+                        </Text>
+                    </Text>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 };
@@ -247,10 +256,20 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FFFFFF',
+    },
+    keyboardView: {
+        flex: 1,
+    },
+    scrollView: {
+        flex: 1,
+    },
+    scrollContainer: {
+        flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center', // Center content horizontally
         padding: 20,
-        backgroundColor: '#FFFFFF',
+        paddingBottom: 100, // Extra padding at bottom for keyboard
     },
     inputGroup: {
         marginBottom: 15,
@@ -271,22 +290,23 @@ const styles = StyleSheet.create({
     },
     bigIcon: {
         maxWidth: '100%',
-        height: '25%',
-        marginBottom: 20, // Add spacing below the image
+        height: 120, // Reduced height for register form
+        marginBottom: 15, // Add spacing below the image
     },
     title: {
         fontFamily: 'Nunito_600SemiBold',
-        fontSize: 32,
+        fontSize: 28, // Slightly smaller for register
         color: '#613F75'
     },
     subtitle: {
         fontFamily: 'Nunito_400Regular',
-        fontSize: 10,
+        fontSize: 9, // Slightly smaller
         color: '#18101D',
-        marginBottom: 8,
+        marginBottom: 15, // Margin for better spacing
     },
     registerText: {
-        marginTop: 16,
+        marginTop: 20, // Increased margin
+        marginBottom: 20, // Added bottom margin
     },
     logo: {
         padding: 0,

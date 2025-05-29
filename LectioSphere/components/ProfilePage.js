@@ -40,7 +40,9 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         } catch (error) {
             console.error("Error saving auth token:", error);
         }
-    };    const fetchUserData = async () => {
+    };
+
+    const fetchUserData = async () => {
         try {
             const response = await axios.get(`${apiBaseUrl}/auth/users/me/`, {
                 headers: { Authorization: authToken }
@@ -49,116 +51,72 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         } catch (error) {
             if (error.response?.status === 401) {
                 try {
-                    console.log("Attempting to refresh token with:", refreshToken);
-                    
-                    // Create clean axios instance for refresh token request
-                    const axiosInstance = axios.create();
-                    delete axiosInstance.defaults.headers.common['Authorization'];
-                    
-                    const response = await axiosInstance.post(
-                        `${apiBaseUrl}/auth/jwt/refresh/`, 
-                        { refresh: refreshToken },
-                        {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }
-                    );
-                    
+                    const response = await axios.post(`${apiBaseUrl}/auth/jwt/refresh/`, {
+                        refresh: refreshToken
+                    });
                     const newToken = response.data.access;
-                    console.log("Successfully refreshed token");
                     
-                    // Save the new token
-                    await AsyncStorage.setItem('auth_token', newToken);
-                    setAuthToken(`JWT ${newToken}`);
+                    saveAuthToken(newToken, refreshToken);
                     
-                    // Retry the original request
                     const retryResponse = await axios.get(`${apiBaseUrl}/auth/users/me/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
                     setUserData(retryResponse.data);
                 } catch (refreshError) {
-                    console.error("Failed to refresh token:", refreshError.response?.data || refreshError.message);
-                    // If refresh fails, need to log out
+                    console.error("Failed to refresh token:", refreshError);
                     handleLogout();
                 }
             } else {
                 console.error("User fetch error:", error.message);
             }
         }
-    };    const fetchProfileData = async () => {
+    };
+
+    const fetchProfileData = async () => {
         try {
-            const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/read/`, {
+            const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/read`, {
                 headers: { Authorization: authToken }
-            });            
-            console.log('Profile data received:', response.data);
+            });
             setProfileData(response.data);
         } catch (error) {
             if (error.response?.status === 401) {
                 try {
-                    console.log("Attempting to refresh token for profile data");
-                    
-                    // Create clean axios instance for refresh token request
-                    const axiosInstance = axios.create();
-                    delete axiosInstance.defaults.headers.common['Authorization'];
-                    
-                    const response = await axiosInstance.post(
-                        `${apiBaseUrl}/auth/jwt/refresh/`, 
-                        { refresh: refreshToken },
-                        {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }
-                    );
-                    
+                    const response = await axios.post(`${apiBaseUrl}/auth/jwt/refresh/`, {
+                        refresh: refreshToken
+                    });
                     const newToken = response.data.access;
-                    console.log("Successfully refreshed token for profile data");
                     
-                    // Save the new token
-                    await AsyncStorage.setItem('auth_token', newToken);
-                    setAuthToken(`JWT ${newToken}`);
+                    saveAuthToken(newToken, refreshToken);
                     
-                    // Make sure we're using the correct endpoint for the retry
-                    const retryResponse = await axios.get(`${apiBaseUrl}/api/accounts/profile/read/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/api/profile/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
                     setProfileData(retryResponse.data);
                 } catch (refreshError) {
-                    console.error("Failed to refresh token for profile:", refreshError.response?.data || refreshError.message);
-                    // Don't log out here, just log the error since user data might still be available
+                    console.error("Failed to refresh token:", refreshError);
                 }
             } else {
                 console.error("Profile fetch error:", error.message);
             }
         }
-    };    useEffect(() => {
+    };
+
+    useEffect(() => {
         const getTokensAndFetchData = async () => {
             try {
                 const storedAuthToken = await AsyncStorage.getItem('auth_token');
                 const storedRefreshToken = await AsyncStorage.getItem('refresh_token');
                 
-                console.log("Retrieved tokens - Auth token exists:", !!storedAuthToken);
-                console.log("Retrieved tokens - Refresh token exists:", !!storedRefreshToken);
-                
                 if (storedAuthToken && storedRefreshToken) {
                     setAuthToken(`JWT ${storedAuthToken}`);
                     setRefreshToken(storedRefreshToken);
                     
-                    // Slight delay to ensure state is updated before fetching
-                    setTimeout(() => {
-                        // Fetch data after tokens are set
-                        fetchUserData();
-                        fetchProfileData();
-                    }, 100);
-                } else {
-                    // If tokens aren't found, redirect to login
-                    console.log("No tokens found or tokens incomplete, redirecting to login");
-                    navigation.replace('LoginMenu');
+                    // Fetch data after tokens are set
+                    fetchUserData();
+                    fetchProfileData();
                 }
             } catch (error) {
                 console.error("Error retrieving tokens:", error);
-                navigation.replace('LoginMenu');
             }
         };
         
@@ -183,22 +141,20 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                 }
             ]
         );
-    };
-
-    const handlePressEdit = () => {
+    };    const handlePressEdit = () => {
         navigation.navigate('ProfileEdit');
     }
 
     // console.log("Profile Data:", profileData);
-    
+
     return (
         <SafeAreaView style={styles.screen}>
             <TopBar pageName="ProfilePage" />
-            
+
             <ScrollView 
                 style={styles.scrollView}
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={true}
+                contentContainerStyle={styles.scrollContainer}
+                showsVerticalScrollIndicator={false}
             >
                 <View style={styles.body}>
                     <View style={styles.profileCard}>
@@ -285,9 +241,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                     </View>
                 </View>
 
-                <View style={styles.postingsContainer}>
-                    <Postings selection={selected} apiBaseUrl={apiBaseUrl}/>
-                </View>
+                <Postings selection={selected} apiBaseUrl={apiBaseUrl}/>
             </ScrollView>
 
             <NavBar navigation={navigation} page="ProfilePage" />
@@ -295,25 +249,18 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
     );
 };
 
-const styles = StyleSheet.create({
-    screen: {
+const styles = StyleSheet.create({    screen: {
         flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        padding: 0,
         backgroundColor: '#FCF8FA',
     },
     scrollView: {
-        width: '100%',
         flex: 1,
+        width: '100%',
     },
-    scrollContent: {
+    scrollContainer: {
+        flexGrow: 1,
         alignItems: 'center',
-        paddingBottom: 80, // Provide space at the bottom so content isn't hidden by NavBar
-    },
-    postingsContainer: {
-        width: '95%',
-        marginTop: 10,
+        paddingBottom: 100, // Space for NavBar
     },
     body: {
         marginTop: 100,
@@ -414,6 +361,7 @@ const styles = StyleSheet.create({
     },
     selection: {
         marginTop: 16,
+        marginBottom: 16,
         backgroundColor: '#F7EDF1',
         borderRadius: 8,
         borderWidth: 1,

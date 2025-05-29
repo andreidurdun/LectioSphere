@@ -21,12 +21,13 @@ export default function Postings ({ apiBaseUrl, selection }) {
 
         React.useEffect(() => {
             axios.get(`${apiBaseUrl}/posts/`)
-                .then(res => setPosts(res.data))
+                .then(res => {
+                    // Sortează postările după data descrescător (presupunând că au un câmp 'createdAt')
+                    const sortedPosts = res.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    setPosts(sortedPosts);
+                })
                 .catch(err => console.error(err));
         }, []);
-
-        // console.log(posts);
-
 
         if (posts.length === 0) {
             return (
@@ -40,11 +41,12 @@ export default function Postings ({ apiBaseUrl, selection }) {
             );
         }
         
+
         return (
             <View style={styles.card}>
-            {posts.map((post, index) => (
-                <PostPartial postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={index} />
-            ))}
+                {posts.map((post, index) => (
+                    <PostPartial postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={index} />
+                ))}
             </View>
         );
 
