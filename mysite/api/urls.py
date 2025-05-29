@@ -52,6 +52,7 @@ urlpatterns = [
    path("posts/<int:pk>/update/", PostsView.as_view({"put": "update_post", "patch": "update_post"}), name="update-post"),
    path("posts/", PostsView.as_view({"get": "list_posts"}), name="list-posts"),
    path("posts/feed/", PostsView.as_view({"get": "feed"}), name="feed"),
+   
    path("posts/post_type/", PostsView.as_view({"get": "list_post_type_posts"}), name="list-post-type-posts"),
    path("posts/non_post_type/", PostsView.as_view({"get": "list_non_post_type_posts"}), name="list-non-post-type-posts"),
     

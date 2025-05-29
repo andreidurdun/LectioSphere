@@ -1,6 +1,8 @@
 import React from 'react';
 import { SafeAreaView, View, Text, TextInput, StyleSheet, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const icon = require('../../assets/favicon.png');
 const searchPurpleIcon = require('../../assets/searchPurple.png');
@@ -9,14 +11,42 @@ const addReadingSheetIcon = require('../../assets/addReadingSheet.png');
 const envelope = require('../../assets/envelope.png');
 const threeDots = require('../../assets/threeDots.png');
 
-const TopBar = ({pageName, page}) => {
+const TopBar = ({pageName, page, apiBaseUrl}) => {
     const [followSearchVal, setFollowSearchVal] = React.useState('');
     const [searchSearchVal, setSearchSearchVal] = React.useState('');
-    const navigation = useNavigation();
-
-    const handleFollowSearchInput = (text) => {
-        //console.log("Search input:", text);
+    const navigation = useNavigation();    
+      const handleFollowSearchTextChange = (text) => {
         setFollowSearchVal(text);
+    };
+
+    const handleFollowSearchSubmit = async () => {
+        const text = followSearchVal;
+        
+        if (text.trim() === '') return;
+        
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You need to be logged in to search for users');
+                return;
+            }
+            
+            const response = await axios.get(`${apiBaseUrl}/api/accounts/profiles/search/`, {
+                headers: { Authorization: `JWT ${token}` },
+                params: { q: text }
+            });
+            
+            console.log(response.data);
+
+            navigation.navigate('UserSearchResult', {
+                users: response.data,
+                searchQuery: text,
+                apiBaseUrl: apiBaseUrl
+            });
+        } catch (error) {
+            console.error('Search error:', error.message);
+            Alert.alert('Error', 'Failed to search for users');
+        }
     };
 
     const handleSearchSearchInput = (text) => {
@@ -64,21 +94,19 @@ const TopBar = ({pageName, page}) => {
                 <Image 
                     source={icon} // Replace with your icon path
                     style={styles.icon}
-                />
-
-                <View style={styles.searchContainer}>
+                />                <View style={styles.searchContainer}>
                     <TextInput 
                         style={styles.searchInput} 
                         placeholder="Look for someone" 
                         value={followSearchVal}
                         placeholderTextColor="#613F75"
-                        onChangeText={(text) => handleFollowSearchInput(text)} // Update state on text input
-                        onSubmitEditing={() => handleFollowSearchInput(followSearchVal)} // Trigger handle on Enter
+                        onChangeText={(text) => handleFollowSearchTextChange(text)} // Update state on text input
+                        onSubmitEditing={() => handleFollowSearchSubmit()} // Trigger search on Enter
                     />
                     <Image 
                         source={searchPurpleIcon} // Replace with your search icon path
                         style={styles.searchIcon}
-                        onTouchEnd={() => handleFollowSearchInput(followSearchVal)} // Trigger search on image press
+                        onTouchEnd={() => handleFollowSearchSubmit()} // Trigger search on image press
                     />
                 </View>
             </SafeAreaView>

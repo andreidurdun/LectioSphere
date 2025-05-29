@@ -18,7 +18,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
     const [seeMorePressed, setSeeMorePressed] = useState(false);    const [showPagesModal, setShowPagesModal] = useState(false);
     const [pagesInput, setPagesInput] = useState('');
     const [showLibraryModal, setShowLibraryModal] = useState(false);
-      // Review modal states
+    // Review modal states
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [reviewRating, setReviewRating] = useState(0);
     const [reviewDescription, setReviewDescription] = useState('');    // Create post modal states
@@ -76,14 +76,19 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                 <Text style={styles.errorText}>Book not found</Text>
             </SafeAreaView>
         );
-    }        const handleAddToLibrary = async () => {
+    }        
+    
+    const handleAddToLibrary = async () => {
         setShowLibraryModal(true);
-    };    const handleUpdateReading = async () => {
+    };    
+    
+    const handleUpdateReading = async () => {
         // Show modal for pages input
         setPagesInput('');
         setShowPagesModal(true);
     };
-      const handlePagesSubmit = async () => {
+    
+    const handlePagesSubmit = async () => {
         const pagesRead = parseInt(pagesInput) || 0;
         if (pagesRead <= 0) {
             Alert.alert('Invalid Input', 'Please enter a valid number of pages greater than 0.');
@@ -94,10 +99,13 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
         await updateBookProgress(pagesRead);
         setPagesInput('');
     };
-      const handleModalCancel = () => {
+      
+    const handleModalCancel = () => {
         setShowPagesModal(false);
         setPagesInput('');
-    };    const handleLibraryModalCancel = () => {
+    };    
+    
+    const handleLibraryModalCancel = () => {
         setShowLibraryModal(false);
     };
 
@@ -121,12 +129,16 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
             case 'add_review':
                 handleAddReview();
                 break;        }
-    };    const handleAddReview = async () => {
+    };    
+    
+    const handleAddReview = async () => {
         // Show modal for review input
         setReviewRating(0);
         setReviewDescription('');
         setShowReviewModal(true);
-    };    const handleReviewSubmit = async () => {
+    };    
+    
+    const handleReviewSubmit = async () => {
         if (reviewRating === 0) {
             Alert.alert('Rating Required', 'Please select a rating (1-5 stars).');
             return;
@@ -135,11 +147,15 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
         await submitReview(reviewRating, reviewDescription);
         setReviewRating(0);
         setReviewDescription('');
-    };    const handleReviewModalCancel = () => {
+    };    
+    
+    const handleReviewModalCancel = () => {
         setShowReviewModal(false);
         setReviewRating(0);
         setReviewDescription('');
-    };    const submitReview = async (rating, description) => {
+    };
+    
+    const submitReview = async (rating, description) => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
             if (!token) {
@@ -227,7 +243,8 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
     const handleCreatePostModalCancel = () => {
         setShowCreatePostModal(false);
         setPostDescription('');
-    };    
+    };
+
     const submitCreatePost = async (description) => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
@@ -338,7 +355,9 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                 [{ text: 'OK' }]
             );
         }
-    };    const handleWantToRead = async () => {
+    };
+    
+    const handleWantToRead = async () => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
             if (!token) {
@@ -383,7 +402,9 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                 [{ text: 'OK' }]
             );
         }
-    };    const updateBookProgress = async (pagesRead) => {
+    };
+    
+    const updateBookProgress = async (pagesRead) => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
             if (!token) {
@@ -431,7 +452,6 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
         }
     };
 
-    // console.log('Book data:', bookData);
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -478,14 +498,20 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                 
                 <View style={styles.ratingContainer}>
                     <View style={styles.ratingStars}>
-                        <Image style={styles.star} source={purpleStarFull}/>
-                        <Image style={styles.star} source={purpleStarFull}/>
-                        <Image style={styles.star} source={purpleStarFull}/>
-                        <Image style={styles.star} source={purpleStarFull}/>
-                        <Image style={styles.star} source={purpleStarEmpty}/>
+                        {[1,2,3,4,5].map((star) => (
+                            <Image
+                                key={star}
+                                style={styles.star}
+                                source={
+                                    bookData.average_rating && bookData.average_rating >= star
+                                        ? purpleStarFull
+                                        : purpleStarEmpty
+                                }
+                            />
+                        ))}
                     </View>
                     <Text style={styles.ratingText}>
-                        4.25
+                        {bookData.average_rating ? bookData.average_rating.toFixed(2) : 'N/A'}
                     </Text>
                 </View>
 
@@ -732,7 +758,8 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                             </TouchableNativeFeedback>
                         </View>
                     </View>
-                </View>            </Modal>
+                </View>            
+            </Modal>
               {/* Create Post Modal */}
             <Modal
                 visible={showCreatePostModal}

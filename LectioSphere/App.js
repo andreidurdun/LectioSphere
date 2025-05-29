@@ -19,6 +19,9 @@ import PagesChallenge from './components/PagesChallenge';
 import ChangeGoalBooks from './components/ChangeGoalBooks';
 import ChangeGoalPages from './components/ChangeGoalPages';
 import AddShelf from './components/AddShelf';
+import FollowPage from './components/FollowPage';
+import UserSearchResult from './components/UserSearchResult';
+import ProfilePageOther from './components/ProfilePageOther';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -147,6 +150,17 @@ export default function App() {
         <Stack.Screen name="HomePage" options={{ headerShown: false }}>
           {(props) => (
             <HomePage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="FollowPage" options={{ headerShown: false }}>
+          {(props) => (
+            <FollowPage
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}
@@ -291,6 +305,28 @@ export default function App() {
         <Stack.Screen name="AddShelf" options={{ headerShown: false }}>
           {(props) => (
             <AddShelf
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="ProfilePageOther" options={{ headerShown: false }}>
+          {(props) => (
+            <ProfilePageOther
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="UserSearchResult" options={{ headerShown: false }}>
+          {(props) => (
+            <UserSearchResult
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}
