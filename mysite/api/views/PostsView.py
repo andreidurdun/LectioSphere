@@ -8,6 +8,7 @@ import json
 import requests
 from rest_framework.decorators import action
 from api.models import PostLike
+from accounts.models import Profile
 
 from api.models import Comment
 from api.serializers import CommentSerializer
@@ -180,6 +181,60 @@ class PostsView(ViewSet):
 
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+
+    
+
+
+
+
+
+
+
+    # review-urile pentru o anumita carte ale profilurilor pe care le urmaresc
+    @action(detail=False, methods=["get"])
+    def reviews_for_followed_users(self, request, book_id=None):
+        user = request.user
+        profile = user.profile
+        followed_users = profile.following.all()
+
+        reviews = Post.objects.filter(
+            action=Post.ActionChoices.REVIEW,
+            user__in=[u.user for u in followed_users],
+            book__id=book_id
+        ).order_by('-date')
+
+        serializer = PostSerializer(reviews, many=True)
+        return Response(serializer.data)
+
+
+    # review-urile pentru o anumita carte
+    @action(detail=False, methods=["get"])
+    def reviews_for_book(self, request, book_id=None):
+        reviews = Post.objects.filter(
+            action=Post.ActionChoices.REVIEW,
+            book__id=book_id
+        ).order_by('-date')
+
+        serializer = PostSerializer(reviews, many=True)
+        return Response(serializer.data)
+
+
+
+    # postarile unui utilizator
+    @action(detail=False, methods=["get"])
+    def posts_for_user(self, request, profile_id=None):
+        try:
+            profile = Profile.objects.get(pk=profile_id)
+            user = profile.user
+        except Profile.DoesNotExist:
+            return Response({"detail": "Profile not found."}, status=404)
+        
+        posts = Post.objects.filter(user=user).order_by('-date')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+
 
 
 

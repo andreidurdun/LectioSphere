@@ -108,6 +108,71 @@ class AddFollowerView(APIView):
 
 
 
+
+
+
+
+# dam unfollow
+# eliminăm un follower de la utilizatorul curent
+class RemoveFollowerView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            user_to_unfollow = Profile.objects.get(id=pk)
+        except Profile.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        current_user_profile = request.user.profile
+
+        if current_user_profile == user_to_unfollow:
+            return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if current_user_profile in user_to_unfollow.followers.all():
+            user_to_unfollow.followers.remove(current_user_profile)
+            return Response({"detail": "You have unfollowed this user."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": "You are not following this user."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# vedem daca urmareste sau nu pe cineva 
+class IsFollowingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            target_profile = Profile.objects.get(id=pk)
+        except Profile.DoesNotExist:
+            return Response({"detail": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        current_user_profile = request.user.profile
+        is_following = current_user_profile in target_profile.followers.all()
+
+        return Response({"is_following": is_following}, status=status.HTTP_200_OK)
+
+
+# vedem info despre un profil dat dupa id 
+class ProfileDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            profile = Profile.objects.get(id=pk)
+        except Profile.DoesNotExist:
+            return Response({"detail": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
 # Motor de cautare pentru puseri 
 class ProfileSearchView(APIView):
     permission_classes = [IsAuthenticated]

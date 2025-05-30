@@ -127,7 +127,7 @@ Content-Type: application/json
     "password" : "12345678Abc"
 
 }
-###
+### eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzU4LCJpYXQiOjE3NDg2MTQ3NTgsImp0aSI6IjIyZjQ1NzA2YWNiYTRkZThhYmJlOTg4YWM0NTk2NWJiIiwidXNlcl9pZCI6MX0.MHzq3RN5ol7Ro0FsPWY2arzqurtOOGCjO7c3NYLMsiI
 
 POST http://localhost:8000/auth/jwt/create/ HTTP/1.1
 Content-Type: application/json
@@ -137,29 +137,88 @@ Content-Type: application/json
     "password" : "12345678Abc"
 
 }
-###
+### eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzY1LCJpYXQiOjE3NDg2MTQ3NjUsImp0aSI6IjE0ZDQ0OWVjZjdjYjQzY2M4MGI4YjRkODk5NGM3MWIxIiwidXNlcl9pZCI6M30.98F-RVDXnSCXwYI6YasHoKkC2FmLvytCDVnetU8bV00
+
 
 ### Follow 
-PATCH http://localhost:8000/api/accounts/profile/2/follow/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
+PATCH http://localhost:8000/api/accounts/profile/3/follow/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzU4LCJpYXQiOjE3NDg2MTQ3NTgsImp0aSI6IjIyZjQ1NzA2YWNiYTRkZThhYmJlOTg4YWM0NTk2NWJiIiwidXNlcl9pZCI6MX0.MHzq3RN5ol7Ro0FsPWY2arzqurtOOGCjO7c3NYLMsiI
 
 {}
 ### Follow 
 PATCH http://localhost:8000/api/accounts/profile/1/follow/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4Nzg1LCJpYXQiOjE3NDc0NzUxODUsImp0aSI6IjRkZjgwNjhlMDcwYTRlMjc4MWE1MDllZjRmMGYyZDU5IiwidXNlcl9pZCI6Mn0.ADLOfjPAtYF-AV_a7yDoHq5r6tYEXZItjtzgaRphs6A
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzY1LCJpYXQiOjE3NDg2MTQ3NjUsImp0aSI6IjE0ZDQ0OWVjZjdjYjQzY2M4MGI4YjRkODk5NGM3MWIxIiwidXNlcl9pZCI6M30.98F-RVDXnSCXwYI6YasHoKkC2FmLvytCDVnetU8bV00
 Content-Type: application/json
 
 {}
 
 ###
+GET http://localhost:8000/posts/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzY1LCJpYXQiOjE3NDg2MTQ3NjUsImp0aSI6IjE0ZDQ0OWVjZjdjYjQzY2M4MGI4YjRkODk5NGM3MWIxIiwidXNlcl9pZCI6M30.98F-RVDXnSCXwYI6YasHoKkC2FmLvytCDVnetU8bV00
 
-GET http://localhost:8000/api/accounts/profile/read/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc5MjMxLCJpYXQiOjE3NDc0NzU2MzEsImp0aSI6ImRiZGIwYTc5MTMxYjQ0ODRiZmI0YzYyZWYwYzJkN2EwIiwidXNlcl9pZCI6MX0.ecl08pu0qgqTKnbG7vCQhb_Ama_AZitKqUkO3uhx5k4
+
+###
+
+GET http://localhost:8000/posts/ 
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzU4LCJpYXQiOjE3NDg2MTQ3NTgsImp0aSI6IjIyZjQ1NzA2YWNiYTRkZThhYmJlOTg4YWM0NTk2NWJiIiwidXNlcl9pZCI6MX0.MHzq3RN5ol7Ro0FsPWY2arzqurtOOGCjO7c3NYLMsiI
 
 ###
 
 GET http://localhost:8000/api/accounts/profile/read/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4Nzg1LCJpYXQiOjE3NDc0NzUxODUsImp0aSI6IjRkZjgwNjhlMDcwYTRlMjc4MWE1MDllZjRmMGYyZDU5IiwidXNlcl9pZCI6Mn0.ADLOfjPAtYF-AV_a7yDoHq5r6tYEXZItjtzgaRphs6A
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzU4LCJpYXQiOjE3NDg2MTQ3NTgsImp0aSI6IjIyZjQ1NzA2YWNiYTRkZThhYmJlOTg4YWM0NTk2NWJiIiwidXNlcl9pZCI6MX0.MHzq3RN5ol7Ro0FsPWY2arzqurtOOGCjO7c3NYLMsiI
+###
+
+GET http://localhost:8000/api/accounts/profile/read/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzY1LCJpYXQiOjE3NDg2MTQ3NjUsImp0aSI6IjE0ZDQ0OWVjZjdjYjQzY2M4MGI4YjRkODk5NGM3MWIxIiwidXNlcl9pZCI6M30.98F-RVDXnSCXwYI6YasHoKkC2FmLvytCDVnetU8bV00
+
+{}
+
+
+
+
+###
+### 1. UNFOLLOW OK
+PATCH http://localhost:8000/api/accounts/profile/3/unfollow/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzU4LCJpYXQiOjE3NDg2MTQ3NTgsImp0aSI6IjIyZjQ1NzA2YWNiYTRkZThhYmJlOTg4YWM0NTk2NWJiIiwidXNlcl9pZCI6MX0.MHzq3RN5ol7Ro0FsPWY2arzqurtOOGCjO7c3NYLMsiI
+
+
+###
+
+### 2. CHECK IF FOLLOWING OK
+GET http://localhost:8000/api/accounts/profile/3/is-following/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzU4LCJpYXQiOjE3NDg2MTQ3NTgsImp0aSI6IjIyZjQ1NzA2YWNiYTRkZThhYmJlOTg4YWM0NTk2NWJiIiwidXNlcl9pZCI6MX0.MHzq3RN5ol7Ro0FsPWY2arzqurtOOGCjO7c3NYLMsiI
+###
+
+### 3. REVIEWS FROM FOLLOWED USERS FOR A BOOK 
+GET http://localhost:8000/posts/reviews/followed/yow0EAAAQBAJ/
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzY1LCJpYXQiOjE3NDg2MTQ3NjUsImp0aSI6IjE0ZDQ0OWVjZjdjYjQzY2M4MGI4YjRkODk5NGM3MWIxIiwidXNlcl9pZCI6M30.98F-RVDXnSCXwYI6YasHoKkC2FmLvytCDVnetU8bV00
+
+
+###
+
+### 4. PROFILE DETAILS
+GET http://localhost:8000/api/accounts/profile/1/details/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzY1LCJpYXQiOjE3NDg2MTQ3NjUsImp0aSI6IjE0ZDQ0OWVjZjdjYjQzY2M4MGI4YjRkODk5NGM3MWIxIiwidXNlcl9pZCI6M30.98F-RVDXnSCXwYI6YasHoKkC2FmLvytCDVnetU8bV00
+
+
+###
+
+### 5. REVIEWS FOR A BOOK (all users)
+GET http://localhost:8000/posts/reviews/yow0EAAAQBAJ/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzU4LCJpYXQiOjE3NDg2MTQ3NTgsImp0aSI6IjIyZjQ1NzA2YWNiYTRkZThhYmJlOTg4YWM0NTk2NWJiIiwidXNlcl9pZCI6MX0.MHzq3RN5ol7Ro0FsPWY2arzqurtOOGCjO7c3NYLMsiI
+
+###
+
+### 6. POSTS FOR A USER
+GET http://localhost:8000/posts/user/1/
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzU4LCJpYXQiOjE3NDg2MTQ3NTgsImp0aSI6IjIyZjQ1NzA2YWNiYTRkZThhYmJlOTg4YWM0NTk2NWJiIiwidXNlcl9pZCI6MX0.MHzq3RN5ol7Ro0FsPWY2arzqurtOOGCjO7c3NYLMsiI
+
+
+
+
+
+
+
 
 
 
@@ -214,12 +273,12 @@ Content-Type: application/json
 ### 
 # facem o postare de tip "review" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4NjE4MzY1LCJpYXQiOjE3NDg2MTQ3NjUsImp0aSI6IjE0ZDQ0OWVjZjdjYjQzY2M4MGI4YjRkODk5NGM3MWIxIiwidXNlcl9pZCI6M30.98F-RVDXnSCXwYI6YasHoKkC2FmLvytCDVnetU8bV00
 Content-Type: application/json
 
 {
   "action": "review",
-  "rating": 4,
+  "rating": 3,
   "description": "SUPERR!",
   "id": "yow0EAAAQBAJ"
 }
@@ -367,5 +426,6 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 GET http://localhost:8000/api/accounts/profiles/search/?q=ana
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3MzM2NjM2LCJpYXQiOjE3NDczMzMwMzYsImp0aSI6ImI1YjJjZTYyZmY2ZTRkNWZiZjQ5YTI4ZTZhMzk3Mjk0IiwidXNlcl9pZCI6MX0.DAVI2JaO16U5c1S13-vxVxQYyL3Dulm_8KdkXahTdNc
 ###
+
 
 
