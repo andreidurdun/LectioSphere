@@ -54,6 +54,18 @@ urlpatterns = [
    path("posts/feed/", PostsView.as_view({"get": "feed"}), name="feed"),
    path("posts/post_type/", PostsView.as_view({"get": "list_post_type_posts"}), name="list-post-type-posts"),
    path("posts/non_post_type/", PostsView.as_view({"get": "list_non_post_type_posts"}), name="list-non-post-type-posts"),
+
+   path('posts/reviews/followed/<str:book_id>/', PostsView.as_view({"get": "reviews_for_followed_users"}), name='reviews-for-followed-users'),
+   path('posts/reviews/<str:book_id>/', PostsView.as_view({"get": "reviews_for_book"}), name='reviews-for-book'),
+   path('posts/user/<int:profile_id>/', PostsView.as_view({"get": "posts_for_user"}), name='posts-for-user'),
+
+
+
+
+
+
+
+
     
     path("posts/<int:pk>/add_comment/", PostsView.as_view({"post": "add_comment"}), name="add-comment"),
     path("posts/<int:pk>/list_comments/", PostsView.as_view({"get": "list_comments"}), name="list-comments"),
