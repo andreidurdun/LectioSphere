@@ -15,7 +15,8 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
     const [bookData, setBookData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [seeMorePressed, setSeeMorePressed] = useState(false);    const [showPagesModal, setShowPagesModal] = useState(false);
+    const [seeMorePressed, setSeeMorePressed] = useState(false);    
+    const [showPagesModal, setShowPagesModal] = useState(false);
     const [pagesInput, setPagesInput] = useState('');
     const [showLibraryModal, setShowLibraryModal] = useState(false);
     // Review modal states

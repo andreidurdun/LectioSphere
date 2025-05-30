@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, Image, TouchableNativeFeedback } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, Image, TouchableNativeFeedback, Modal, TextInput } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+const purpleStarFull = require('../../assets/purpleStarFull.png');
+const purpleStarEmpty = require('../../assets/purpleStarEmpty.png');
+
 const PostPartial = ({ apiBaseUrl, postData }) => {
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
     const defaultPicture = require('../../assets/defaultProfilePic.jpg');
+
+    const [showPagesModal, setShowPagesModal] = useState(false);
+    const [pagesInput, setPagesInput] = useState('');
+    const [showLibraryModal, setShowLibraryModal] = useState(false);
+    // Review modal states
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [reviewRating, setReviewRating] = useState(0);
+    const [reviewDescription, setReviewDescription] = useState('');    // Create post modal states
+    const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+    const [postDescription, setPostDescription] = useState('');
+    
 
 
     const [fontsLoaded] = useFonts({
@@ -42,74 +56,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
     if (!post) return <Text style={styles.centered}>Post not found.</Text>;
 
     // console.log('Post data:', post)
-    
-    const handleAddToLibrary = async (bookId) => {
-        Alert.alert(
-            'Choose an action',
-            '',
-            [
-                { text: 'Start/Update Reading', onPress: () => handleUpdateReading(bookId) },
-                { text: 'Finish Reading', onPress: () => console.log('Finish Reading') },
-                { text: 'Want to Read', onPress: () => console.log('Want to Read') },
-                { text: 'Add to Shelf', onPress: () => console.log('Add to Shelf') },
-                { text: 'Create Post', onPress: () => console.log('Create Post') },
-                { text: 'Add Review', onPress: () => console.log('Add Review') },
-                { text: 'Cancel', style: 'cancel' }
-            ],
-            { cancelable: true }
-        );
-    };
 
-    const handleUpdateReading = async (bookId) => {
-        try {
-            const token = await AsyncStorage.getItem('auth_token');
-            if (!token) {
-                console.error('No token found');
-                return;
-            }
-
-            const response = await axios.post(
-                `${apiBaseUrl}/posts/add/`,
-                {
-                    action: 'made_progress',
-                    pages_read: 10,
-                    id: bookId
-                },
-                {
-                    headers: {
-                        Authorization: `JWT ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-
-            console.log('Book updated successfully:', response.data);
-            Alert.alert(
-                'Success',
-                'Your reading progress has been updated!',
-                [{ text: 'OK' }]
-            );
-        } catch (error) {
-            console.error('Error updating book:', error);
-
-            let errorMessage = 'Failed to update reading progress.';
-            if (error.response) {
-                if (error.response.data) {
-                    errorMessage = typeof error.response.data === 'string'
-                        ? error.response.data
-                        : JSON.stringify(error.response.data);
-                }
-                console.log('Error status:', error.response.status);
-                console.log('Error data:', error.response.data);
-            }
-
-            Alert.alert(
-                'Update Failed',
-                errorMessage,
-                [{ text: 'OK' }]
-            );
-        }
-    };
 
       const handleLikePress = async (id) => {
         try {
@@ -143,6 +90,601 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
             Alert.alert('Like Failed', errorMessage, [{ text: 'OK' }]);
         }
     }
+
+
+    // Handlere pentru butonul de add to library
+
+    const handleAddToLibrary = async () => {
+        setShowLibraryModal(true);
+    };    
+    
+    const handleUpdateReading = async () => {
+        // Show modal for pages input
+        setPagesInput('');
+        setShowPagesModal(true);
+    };
+    
+    const handlePagesSubmit = async () => {
+        const pagesRead = parseInt(pagesInput) || 0;
+        if (pagesRead <= 0) {
+            Alert.alert('Invalid Input', 'Please enter a valid number of pages greater than 0.');
+            return;
+        }
+        
+        setShowPagesModal(false);
+        await updateBookProgress(pagesRead);
+        setPagesInput('');
+    };
+      
+    const handleModalCancel = () => {
+        setShowPagesModal(false);
+        setPagesInput('');
+    };    
+    
+    const handleLibraryModalCancel = () => {
+        setShowLibraryModal(false);
+    };
+
+    const handleLibraryAction = (action) => {
+        setShowLibraryModal(false);
+          switch(action) {
+            case 'update_reading':
+                handleUpdateReading();
+                break;
+            case 'finish_reading':
+                handleFinishReading();
+                break;
+            case 'want_to_read':
+                handleWantToRead();
+                break;
+            case 'add_to_shelf':
+                console.log('Add to Shelf'); // AICI ANDREEA
+                break;            case 'create_post':
+                handleCreatePost();
+                break;
+            case 'add_review':
+                handleAddReview();
+                break;        }
+    };    
+    
+    const handleAddReview = async () => {
+        // Show modal for review input
+        setReviewRating(0);
+        setReviewDescription('');
+        setShowReviewModal(true);
+    };    
+    
+    const handleReviewSubmit = async () => {
+        if (reviewRating === 0) {
+            Alert.alert('Rating Required', 'Please select a rating (1-5 stars).');
+            return;
+        }
+          setShowReviewModal(false);
+        await submitReview(reviewRating, reviewDescription);
+        setReviewRating(0);
+        setReviewDescription('');
+    };    
+    
+    const handleReviewModalCancel = () => {
+        setShowReviewModal(false);
+        setReviewRating(0);
+        setReviewDescription('');
+    };
+    
+    const submitReview = async (rating, description) => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You are not logged in.');
+                return;
+            }
+
+            const reviewData = {
+                action: 'review',
+                rating: rating,
+                id: post.book.id
+            };
+
+            // Only add description if it's not empty
+            if (description && description.trim()) {
+                reviewData.description = description.trim();
+            }
+
+            console.log('Sending review data:', reviewData); // Debug log
+
+            const response = await axios.post(
+                `${apiBaseUrl}/posts/add/`,
+                reviewData,
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );            Alert.alert(
+                'Success',
+                'Your review has been added successfully!',
+                [{ text: 'OK' }]
+            );
+        } catch (error) {
+            console.error('Review submission error:', error); // Debug log
+            let errorMessage = 'Failed to add review.';
+            
+            if (error.response) {
+                console.log('Error response status:', error.response.status);
+                console.log('Error response data:', error.response.data);
+                
+                if (error.response.data) {
+                    if (typeof error.response.data === 'string') {
+                        errorMessage = error.response.data;
+                    } else if (error.response.data.detail) {
+                        errorMessage = error.response.data.detail;
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    } else {
+                        errorMessage = `Server error: ${error.response.status}`;
+                    }
+                }
+            } else if (error.request) {
+                errorMessage = 'Network error. Please check your connection.';
+            } else {
+                errorMessage = error.message || 'Unknown error occurred.';
+            }
+            
+            Alert.alert(
+                'Review Failed',
+                errorMessage,
+                [{ text: 'OK' }]
+            );
+        }
+    };    
+    
+    const handleCreatePost = async () => {
+        // Show modal for create post input
+        setPostDescription('');
+        setShowCreatePostModal(true);
+    };
+
+    const handleCreatePostSubmit = async () => {
+        if (!postDescription || !postDescription.trim()) {
+            Alert.alert('Description Required', 'Please write a description for your post.');
+            return;
+        }
+          
+        setShowCreatePostModal(false);
+        await submitCreatePost(postDescription);
+        setPostDescription('');
+    };
+
+    const handleCreatePostModalCancel = () => {
+        setShowCreatePostModal(false);
+        setPostDescription('');
+    };
+
+    const submitCreatePost = async (description) => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You are not logged in.');
+                return;
+            }
+
+            const postData = {
+                action: 'post',
+                description: description.trim(),
+                id: post.book.id
+            };
+
+            console.log('Sending create post data:', postData); // Debug log
+
+            const response = await axios.post(
+                `${apiBaseUrl}/posts/add/`,
+                postData,
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            Alert.alert(
+                'Success',
+                'Your post has been created successfully!',
+                [{ text: 'OK' }]
+            );
+        } catch (error) {
+            console.error('Create post submission error:', error); // Debug log
+            let errorMessage = 'Failed to create post.';
+            
+            if (error.response) {
+                console.log('Error response status:', error.response.status);
+                console.log('Error response data:', error.response.data);
+                
+                if (error.response.data) {
+                    if (typeof error.response.data === 'string') {
+                        errorMessage = error.response.data;
+                    } else if (error.response.data.detail) {
+                        errorMessage = error.response.data.detail;
+                    } else if (error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    } else {
+                        errorMessage = `Server error: ${error.response.status}`;
+                    }
+                }
+            } else if (error.request) {
+                errorMessage = 'Network error. Please check your connection.';
+            } else {
+                errorMessage = error.message || 'Unknown error occurred.';
+            }
+            
+            Alert.alert(
+                'Create Post Failed',
+                errorMessage,
+                [{ text: 'OK' }]
+            );
+        }
+    };
+
+    const handleFinishReading = async () => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You are not logged in.');
+                return;
+            }
+
+            // Try refresh token if needed (optional, depends on your backend)
+            // await refreshAccessToken();
+
+            const response = await axios.post(
+                `${apiBaseUrl}/posts/add/`,
+                {
+                    action: 'finished_reading',
+                    id: post.book.id // Most APIs expect 'book_id', not 'id'
+                },
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            Alert.alert(
+                'Success',
+                `You finished reading this book!`,
+                [{ text: 'OK' }]
+            );
+        } catch (error) {
+            let errorMessage = 'Failed to annotate book.';
+            if (error.response && error.response.data) {
+                if (typeof error.response.data === 'string') {
+                    errorMessage = error.response.data;
+                } else if (error.response.data.detail) {
+                    errorMessage = error.response.data.detail;
+                }
+            }
+            Alert.alert(
+                'Update Failed',
+                errorMessage,
+                [{ text: 'OK' }]
+            );
+        }
+    };
+    
+    const handleWantToRead = async () => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You are not logged in.');
+                return;
+            }
+
+            // Try refresh token if needed (optional, depends on your backend)
+            // await refreshAccessToken();
+
+            const response = await axios.post(
+                `${apiBaseUrl}/posts/add/`,
+                {
+                    action: 'want_to_read',
+                    id: post.book.id // Most APIs expect 'book_id', not 'id'
+                },
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            Alert.alert(
+                'Success',
+                `Your now want to read this book!`,
+                [{ text: 'OK' }]
+            );
+        } catch (error) {
+            let errorMessage = 'Failed to annotate book.';
+            if (error.response && error.response.data) {
+                if (typeof error.response.data === 'string') {
+                    errorMessage = error.response.data;
+                } else if (error.response.data.detail) {
+                    errorMessage = error.response.data.detail;
+                }
+            }
+            Alert.alert(
+                'Update Failed',
+                errorMessage,
+                [{ text: 'OK' }]
+            );
+        }
+    };
+    
+    const updateBookProgress = async (pagesRead) => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You are not logged in.');
+                return;
+            }
+
+            // Try refresh token if needed (optional, depends on your backend)
+            // await refreshAccessToken();
+
+            const response = await axios.post(
+                `${apiBaseUrl}/posts/add/`,
+                {
+                    action: 'made_progress',
+                    pages_read: pagesRead,
+                    id: post.book.id // Most APIs expect 'book_id', not 'id'
+                },
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            Alert.alert(
+                'Success',
+                `Your reading progress has been updated! You read ${pagesRead} pages.`,
+                [{ text: 'OK' }]
+            );
+        } catch (error) {
+            let errorMessage = 'Failed to update reading progress.';
+            if (error.response && error.response.data) {
+                if (typeof error.response.data === 'string') {
+                    errorMessage = error.response.data;
+                } else if (error.response.data.detail) {
+                    errorMessage = error.response.data.detail;
+                }
+            }
+            Alert.alert(
+                'Update Failed',
+                errorMessage,
+                [{ text: 'OK' }]
+            );
+        }
+    };
+
+
+    const modalAddToLibrary = () => {
+        return (
+            <>
+                {/* Modal for Android pages input */}
+                <Modal
+                    visible={showPagesModal}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={handleModalCancel}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContainer}>                        
+                            <Text style={styles.modalTitle}>
+                                Update Reading Progress
+                            </Text>
+                            <Text style={styles.modalMessage}>
+                                How many pages have you read?
+                            </Text>
+                            
+                            <TextInput
+                                style={styles.modalInput}
+                                value={pagesInput}
+                                onChangeText={setPagesInput}
+                                placeholder="Enter number of pages"
+                                keyboardType="numeric"
+                                autoFocus={true}
+                            />
+                            
+                            <View style={styles.modalButtons}>
+                                <TouchableNativeFeedback onPress={handleModalCancel}>
+                                    <View style={[styles.modalButton, styles.cancelButton]}>
+                                        <Text style={styles.cancelButtonText}>
+                                            Cancel
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                
+                                <TouchableNativeFeedback onPress={handlePagesSubmit}>
+                                    <View style={[styles.modalButton, styles.updateButton]}>
+                                        <Text style={styles.updateButtonText}>
+                                            Update
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                            </View>
+                        </View>
+                    </View>            
+                </Modal>
+                
+                {/* Custom Library Actions Modal */}
+                <Modal
+                    visible={showLibraryModal}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={handleLibraryModalCancel}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.libraryModalContainer}>
+                            <Text style={styles.modalTitle}>Choose an action</Text>
+                            
+                            <TouchableNativeFeedback onPress={() => handleLibraryAction('update_reading')}>
+                                <View style={styles.libraryOption}>
+                                    <Text style={styles.libraryOptionText}>Start/Update Reading</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                            
+                            <TouchableNativeFeedback onPress={() => handleLibraryAction('finish_reading')}>
+                                <View style={styles.libraryOption}>
+                                    <Text style={styles.libraryOptionText}>Finish Reading</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                            
+                            <TouchableNativeFeedback onPress={() => handleLibraryAction('want_to_read')}>
+                                <View style={styles.libraryOption}>
+                                    <Text style={styles.libraryOptionText}>Want to Read</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                            
+                            <TouchableNativeFeedback onPress={() => handleLibraryAction('add_to_shelf')}>
+                                <View style={styles.libraryOption}>
+                                    <Text style={styles.libraryOptionText}>Add to Shelf</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                            
+                            <TouchableNativeFeedback onPress={() => handleLibraryAction('create_post')}>
+                                <View style={styles.libraryOption}>
+                                    <Text style={styles.libraryOptionText}>Create Post</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                            
+                            <TouchableNativeFeedback onPress={() => handleLibraryAction('add_review')}>
+                                <View style={styles.libraryOption}>
+                                    <Text style={styles.libraryOptionText}>Add Review</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                            
+                            <TouchableNativeFeedback onPress={handleLibraryModalCancel}>
+                                <View style={[styles.libraryOption, styles.cancelOption]}>
+                                    <Text style={[styles.libraryOptionText, styles.cancelOptionText]}>Cancel</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View>
+                    </View>
+                </Modal>
+                
+                {/* Review Submission Modal */}
+                <Modal
+                    visible={showReviewModal}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={handleReviewModalCancel}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.modalTitle}>Submit a Review</Text>
+                            
+                            <Text style={styles.modalMessage}>
+                                We value your feedback! Please rate the book and leave a comment.
+                            </Text>
+                            
+                            <View style={styles.ratingContainer}>
+                                <Text style={styles.label}>Rating:</Text>
+                                <View style={styles.starsContainer}>
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <TouchableNativeFeedback 
+                                            key={star} 
+                                            onPress={() => setReviewRating(star)}
+                                        >
+                                            <Image 
+                                                style={styles.star} 
+                                                source={star <= reviewRating ? purpleStarFull : purpleStarEmpty}
+                                            />
+                                        </TouchableNativeFeedback>
+                                    ))}
+                                </View>
+                            </View>
+                            
+                            <TextInput
+                                style={styles.modalInput}
+                                value={reviewDescription}
+                                onChangeText={setReviewDescription}
+                                placeholder="Write your review here..."
+                                multiline={true}
+                                numberOfLines={4}
+                                textAlignVertical="top"
+                            />
+                            
+                            <View style={styles.modalButtons}>
+                                <TouchableNativeFeedback onPress={handleReviewModalCancel}>
+                                    <View style={[styles.modalButton, styles.cancelButton]}>
+                                        <Text style={styles.cancelButtonText}>
+                                            Cancel
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                
+                                <TouchableNativeFeedback onPress={handleReviewSubmit}>
+                                    <View style={[styles.modalButton, styles.updateButton]}>
+                                        <Text style={styles.updateButtonText}>
+                                            Submit Review
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                            </View>
+                        </View>
+                    </View>            
+                </Modal>
+                    {/* Create Post Modal */}
+                <Modal
+                    visible={showCreatePostModal}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={handleCreatePostModalCancel}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.modalTitle}>Create a Post</Text>
+                            
+                            <Text style={styles.modalMessage}>
+                                Share your thoughts about this book.
+                            </Text>
+                            
+                            <TextInput
+                                style={styles.modalInput}
+                                value={postDescription}
+                                onChangeText={setPostDescription}
+                                placeholder="Write your post here... (required)"
+                                multiline={true}
+                                numberOfLines={4}
+                                textAlignVertical="top"
+                            />
+                            
+                            <View style={styles.modalButtons}>
+                                <TouchableNativeFeedback onPress={handleCreatePostModalCancel}>
+                                    <View style={[styles.modalButton, styles.cancelButton]}>
+                                        <Text style={styles.cancelButtonText}>
+                                            Cancel
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                
+                                <TouchableNativeFeedback onPress={handleCreatePostSubmit}>
+                                    <View style={[styles.modalButton, styles.updateButton]}>
+                                        <Text style={styles.updateButtonText}>
+                                            Create Post
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+            </>
+        );
+    }
+
 
 
     if (post.action == "finished_reading" || post.progress >= post.book.nr_pages)
@@ -210,13 +752,15 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                     </TouchableNativeFeedback>
                     <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
                         {post.like_count || 0} 
-                    </Text>                    </View>
+                    </Text>
+                    </View>
                 </View>
+                {modalAddToLibrary()}
             </View>
         );
     }
 
-    console.log(post);
+    // console.log(post);
 
     if (post.action == 'made_progress')
     {
@@ -301,6 +845,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                         </Text>
                     </View>
                 </View>
+                {modalAddToLibrary()}
             </View>
         );
     }
@@ -370,8 +915,10 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                     </TouchableNativeFeedback>
                     <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
                         {post.like_count || 0} 
-                    </Text>                    </View>
+                    </Text>
+                    </View>
                 </View>
+                {modalAddToLibrary()}
             </View>
         );
     }    
@@ -471,6 +1018,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                             </View>
                         </View>
                     </View>
+                    {modalAddToLibrary()}
                 </View>
             );
         }
@@ -544,6 +1092,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                             </View>
                         </View>
                     </View>
+                    {modalAddToLibrary()}
                 </View>
             );        }
     }
@@ -620,6 +1169,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                         </Text>
                     </View>
                 </View>
+                {modalAddToLibrary()}
             </View>
         );
     }
@@ -773,6 +1323,137 @@ const styles = StyleSheet.create({    container:
         textAlign: 'center',
         lineHeight: 20,
         marginTop: 8,
+    },
+    // Modal styles
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        backgroundColor: '#FCF8FA',
+        borderRadius: 12,
+        padding: 20,
+        width: '80%',
+        maxWidth: 300,
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontFamily: 'Nunito_600SemiBold',
+        color: '#613F75',
+        textAlign: 'center',
+        marginBottom: 8,
+    },
+    modalMessage: {
+        fontSize: 14,
+        fontFamily: 'Nunito_400Regular',
+        color: '#18101D',
+        textAlign: 'center',
+        marginBottom: 16,
+    },
+    modalInput: {
+        borderWidth: 1,
+        borderColor: '#E5C3D1',
+        borderRadius: 8,
+        padding: 12,
+        fontSize: 16,
+        fontFamily: 'Nunito_400Regular',
+        color: '#18101D',
+        backgroundColor: '#F7EDF1',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    modalButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    modalButton: {
+        flex: 1,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        marginHorizontal: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    cancelButton: {
+        backgroundColor: '#E5C3D1',
+    },
+    updateButton: {
+        backgroundColor: '#613F75',
+    },
+    cancelButtonText: {
+        color: '#613F75',
+        fontSize: 14,
+        fontFamily: 'Nunito_500Medium',
+    },    updateButtonText: {
+        color: '#FCF8FA',
+        fontSize: 14,
+        fontFamily: 'Nunito_500Medium',
+    },
+    
+    // Library Modal styles
+    libraryModalContainer: {
+        backgroundColor: '#FCF8FA',
+        borderRadius: 12,
+        padding: 20,
+        width: '85%',
+        maxWidth: 350,
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    libraryOption: {
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5C3D1',
+        backgroundColor: '#F7EDF1',
+        marginVertical: 2,
+        borderRadius: 8,
+    },
+    libraryOptionText: {
+        fontSize: 16,
+        fontFamily: 'Nunito_500Medium',
+        color: '#613F75',
+        textAlign: 'center',
+    },
+    cancelOption: {
+        backgroundColor: '#E5C3D1',
+        marginTop: 10,
+        borderBottomWidth: 0,
+    },    cancelOptionText: {
+        color: '#613F75',
+        fontFamily: 'Nunito_600SemiBold',
+    },
+    
+    // Review modal specific styles
+    ratingContainer: {
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    starsContainer: {
+        flexDirection: 'row',
+        marginTop: 8,
+    },
+    star: {
+        width: 24,
+        height: 24,
+        margin: 6
     },
 });
 
