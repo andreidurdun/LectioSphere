@@ -13,62 +13,58 @@ export default function Postings ({ apiBaseUrl, selection }) {
         Nunito_600SemiBold
     });
 
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     const defaultPicture = require('../../assets/defaultProfilePic.jpg');
 
-    if(selection === 'photo')
-    {
-        const [posts, setPosts] = useState([]);
+    useEffect(() => {
+        setLoading(true);
+        setPosts([]);
+        
+        let endpoint = '';
+        
+        if (selection === 'photo') {
+            endpoint = `${apiBaseUrl}/posts/post_type`;
+        } else if (selection === 'glasses') {
+            endpoint = `${apiBaseUrl}/posts/non_post_type`;
+        } else if (selection === 'closedBook') {
+            // Pentru closedBook, nu facem cerere API încă
+            setLoading(false);
+            return;
+        }
 
-        React.useEffect(() => {
-            axios.get(`${apiBaseUrl}/posts/`)
+        if (endpoint) {
+            axios.get(endpoint)
                 .then(res => {
-                    // Sortează postările după data descrescător (presupunând că au un câmp 'createdAt')
+                    // Sortează postările după data descrescător
                     const sortedPosts = res.data.sort((a, b) => new Date(b.date) - new Date(a.date));
                     setPosts(sortedPosts);
+                    setLoading(false);
                 })
-                .catch(err => console.error(err));
-        }, []);
-
-        if (posts.length === 0) {
-            return (
-                <View style={styles.card}>
-                    <View style={styles.notFoundContainer}>
-                        <Text style={styles.notFoundText}>
-                            This user didn't post anything yet
-                        </Text>
-                    </View>
-                </View>
-            );
+                .catch(err => {
+                    console.error(err);
+                    setLoading(false);
+                });
         }
-        
+    }, [selection, apiBaseUrl]); // Re-run when selection or apiBaseUrl changes
 
-        return (
-            <View style={styles.card}>
-                {posts.map((post, index) => (
-                    <PostPartial postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={index} />
-                ))}
-            </View>
-        );
+    // console.log('Current selection:', selection);
+    // console.log('Posts:', posts);
 
-
-
-
-    }
-    else if (selection === 'glasses')
-    {
+    if (loading) {
         return (
             <View style={styles.card}>
                 <View style={styles.notFoundContainer}>
                     <Text style={styles.notFoundText}>
-                        This user had no interaction with books yet
+                        Loading...
                     </Text>
                 </View>
             </View>
-            
         );
     }
-    else if (selection === 'closedBook')
-    {
+
+    if (selection === 'closedBook') {
         return (
             <View style={styles.card}>
                 <View style={styles.notFoundContainer}>
@@ -77,12 +73,31 @@ export default function Postings ({ apiBaseUrl, selection }) {
                     </Text>
                 </View>
             </View>
-            
         );
     }
 
-    return null; // Ensure a default return value
-};
+    if (posts.length === 0) {
+        const message = selection === 'photo' 
+            ? "This user didn't post anything yet"
+            : "This user doesn't have any interactions yet";
+            
+        return (
+            <View style={styles.card}>
+                <View style={styles.notFoundContainer}>
+                    <Text style={styles.notFoundText}>
+                        {message}
+                    </Text>
+                </View>
+            </View>
+        );
+    }    return (
+        <View style={styles.card}>
+            {posts.map((post, index) => (
+                <PostPartial postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={`${selection}-${post.id || index}`} />
+            ))}
+        </View>
+    );
+}
 
 const styles = StyleSheet.create({
     card: {

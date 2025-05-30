@@ -159,14 +159,14 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                 <View style={styles.body}>
                     <View style={styles.profileCard}>
                         <View style={styles.generalInfo}>
-                            <Image 
+                            {/* <Image 
                                 source={
                                     profileData?.profile_pic 
                                     ? { uri: profileData.profile_pic } 
                                     : defaultPicture
                                 }
                                 style={styles.profilePic}
-                            />
+                            /> */}
                             <View style={styles.textInfo}>
                                 <View style={styles.followersInfo}>
                                     <Text style={styles.followers}>
@@ -241,7 +241,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                     </View>
                 </View>
 
-                <Postings selection={selected} apiBaseUrl={apiBaseUrl}/>
+                <Postings selection={selected} apiBaseUrl={apiBaseUrl} key={selected}/>
             </ScrollView>
 
             <NavBar navigation={navigation} page="ProfilePage" />

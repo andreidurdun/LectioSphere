@@ -5,7 +5,9 @@ import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
-import { refreshAccessToken } from './refreshAccessToken'; 
+import { refreshAccessToken } from './refreshAccessToken';
+import UserSearchResult from './UserSearchResult';
+import PostPartial from './Partials/PostPartial';
 
 const FollowPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
@@ -93,24 +95,26 @@ const FollowPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
         return <Text>Loading fonts...</Text>;
     }
 
-    
-
     return (
         <SafeAreaView style={styles.screen}>
-            <TopBar pageName="FollowPage" apiBaseUrl={apiBaseUrl}/>
-
-            <ScrollView contentContainerStyle={{ marginTop: 8, paddingBottom: 46 }}>
-                <View style={[styles.header, { alignItems: 'center', justifyContent: 'center' }]}>
-                    {feed && feed.length > 0 ? (
-                        feed.map(post => (
-                            <PostPartial key={post.id} post={post} navigation={navigation} />
-                        ))
-                    ) : (
-                        <Text style={[styles.textAdvice, { textAlign: 'center' }]}>
+            <TopBar pageName="FollowPage" apiBaseUrl={apiBaseUrl}/>            
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                {feed && feed.length > 0 ? (
+                    feed.map((post, index) => (
+                        <PostPartial
+                            key={`feed-${post.id || index}`}
+                            postData={JSON.stringify(post)}
+                            apiBaseUrl={apiBaseUrl}
+                            navigation={navigation}
+                        />
+                    ))
+                ) : (
+                    <View style={styles.noPostsContainer}>
+                        <Text style={styles.textAdvice}>
                             There are no posts from the people you follow. Follow users to see their posts here!
                         </Text>
-                    )}
-                </View>
+                    </View>
+                )}
             </ScrollView>
 
             <NavBar navigation={navigation} page="FollowPage" />
@@ -126,12 +130,26 @@ const styles = StyleSheet.create({
         padding: 0,
         backgroundColor: '#FCF8FA',
     },
+    scrollContainer: {
+        marginTop: 80,
+        paddingBottom: 46,
+        flexGrow: 1,
+        width: 372,
+    },
+    noPostsContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        marginTop: 50,
+    },
     header: {
         width: '100%',
         justifyContent: 'flex-start',
         alignItems: 'center',
         marginBottom: 20,
         marginTop: 84,
+        paddingHorizontal: 0,
     },
     container: {
         backgroundColor: '#F7EDF1',

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, Image, TouchableNativeFeedback } from 'react-native';
+import { ProgressBar } from 'react-native-paper';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -110,8 +111,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
         }
     };
 
-    
-    const handleLikePress = async (id) => {
+      const handleLikePress = async (id) => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
             if (!token) {
@@ -120,8 +120,8 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
             }
 
             const response = await axios.post(
-                `${apiBaseUrl}/posts/like/`,
-                { id },
+                `${apiBaseUrl}/api/posts/${id}/toggle_like/`,
+                {},
                 {
                     headers: {
                         Authorization: `JWT ${token}`,
@@ -130,11 +130,11 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                 }
             );
 
-            console.log('Post liked successfully:', response.data);
-            Alert.alert('Success', 'You liked the post!', [{ text: 'OK' }]);
+            console.log('Post like toggled successfully:', response.data);
+            // Alert.alert('Success', 'You liked the post!', [{ text: 'OK' }]);
         } catch (error) {
-            console.error('Error liking post:', error);
-            let errorMessage = 'Failed to like post.';
+            console.error('Error toggling like:', error);
+            let errorMessage = 'Failed to toggle like.';
             if (error.response && error.response.data) {
                 errorMessage = typeof error.response.data === 'string'
                     ? error.response.data
@@ -145,95 +145,505 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
     }
 
 
+    if (post.action == "finished_reading" || post.progress >= post.book.nr_pages)
+    {
+        return (
+            <View style={styles.container}>
+                <View style={styles.headerContainer}>
+                    <View style={styles.headerInfo}>
+                        <View style={styles.profileInfo}>
+                            {/* <Image 
+                            source={
+                            // post?.profile_pic 
+                            // ? { uri: profileData.profile_pic } 
+                            // : defaultPicture
+                            defaultPicture
+                            }
+                            style={styles.profilePic}
+                            /> */}
 
-    if (post.action == 'made_progress') 
+                            <View style={styles.profileText}>
+                            <Text style={styles.username}>
+                                @{post?.user?.username || 'Unknown User'}
+                            </Text>
+                            <Text style={styles.normalText}>
+                                finished reading 
+                            </Text>
+                            </View>
+                        </View>
+
+                        <Text style={styles.bookTitle}>
+                            {post?.book?.title || 'Unknown Book'}
+                        </Text>
+
+                        <Text style={styles.author}>
+                            {post?.book?.author || 'Unknown Author'}
+                        </Text>
+
+                        <TouchableNativeFeedback 
+                            onPress={() => handleAddToLibrary(post.book.id)}
+                        >
+                            <View style={styles.addButtonTouchable}>
+                            <Text style={styles.addButtonText}>
+                                Add to Library
+                            </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                    </View>                
+                    
+                    <View style={styles.headerBookContainer}>
+                        {post.book.cover && (
+                        <Image 
+                            source={{ uri: post.book.cover}} 
+                            style={styles.coverImage} 
+                            resizeMode="cover"
+                        />
+                        )}
+                    </View>
+                </View>                <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                    <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                        <Image
+                        source={require('../../assets/heartFull.png')}
+                        style={{ width: 25, height: 22, marginRight: 6 }}
+                        />
+                    </TouchableNativeFeedback>
+                    <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                        {post.like_count || 0} 
+                    </Text>                    </View>
+                </View>
+            </View>
+        );
+    }
+
+    console.log(post);
+
+    if (post.action == 'made_progress')
     {
 
         // console.log(post);
 
         return (
             <View style={styles.container}>
-            <View style={styles.headerContainer}>
-                <View style={styles.headerInfo}>
-                <View style={styles.profileInfo}>
-                    <Image 
-                    source={
-                    // post?.profile_pic 
-                    // ? { uri: profileData.profile_pic } 
-                    // : defaultPicture
-                    defaultPicture
-                    }
-                    style={styles.profilePic}
-                    />
+                <View style={styles.headerContainer}>
+                    <View style={styles.headerInfo}>
+                    <View style={styles.profileInfo}>
+                        {/* <Image 
+                        source={
+                        // post?.profile_pic 
+                        // ? { uri: profileData.profile_pic } 
+                        // : defaultPicture
+                        defaultPicture
+                        }
+                        style={styles.profilePic}
+                        /> */}
 
-                    <View style={styles.profileText}>
-                    <Text style={styles.username}>
-                        @{post?.user?.username || 'Unknown User'}
+                        <View style={styles.profileText}>
+                            <Text style={styles.username}>
+                                @{post?.user?.username || 'Unknown User'}
+                            </Text>
+                            <Text style={styles.normalText}>
+                                made progress 
+                            </Text>
+                        </View>
+                    </View>
+
+                    <Text style={styles.bookTitle}>
+                        {post?.book?.title || 'Unknown Book'}
                     </Text>
-                    <Text style={styles.normalText}>
-                        made progress 
+
+                    <Text style={styles.author}>
+                        {post?.book?.author || 'Unknown Author'}
                     </Text>
+
+                    <TouchableNativeFeedback 
+                        onPress={() => handleAddToLibrary(post.book.id)}
+                    >
+                        <View style={styles.addButtonTouchable}>
+                        <Text style={styles.addButtonText}>
+                            Add to Library
+                        </Text>
+                        </View>
+                    </TouchableNativeFeedback>
+
+                    </View>                <View style={styles.headerBookContainer}>
+                        {post.book.cover && (
+                        <Image 
+                            source={{ uri: post.book.cover}} 
+                            style={styles.coverImage} 
+                            resizeMode="cover"
+                        />
+                        )}
+                    </View>
+                </View>            
+                {/* Progress Bar Section */}
+                {post.progress !== undefined && post.progress !== null && post.book.nr_pages && post.book.nr_pages > 0 && (
+                    <View style={styles.progressContainer}>
+                        <ProgressBar 
+                            progress={Math.min(post.progress / post.book.nr_pages, 1)}
+                            color="#613F75"
+                            style={styles.progressBar}
+                        />
+                        <Text style={styles.progressText}>
+                            {post.progress} / {post.book.nr_pages} pages ({Math.round((post.progress / post.book.nr_pages) * 100)}%)
+                        </Text>
+                    </View>
+                )}                <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                        <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                            <Image
+                            source={require('../../assets/heartFull.png')}
+                            style={{ width: 25, height: 22, marginRight: 6 }}
+                            />
+                        </TouchableNativeFeedback>
+                        <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                            {post.like_count || 0} 
+                        </Text>
                     </View>
                 </View>
-
-                <Text style={styles.bookTitle}>
-                    {post?.book?.title || 'Unknown Book'}
-                </Text>
-
-                <Text style={styles.author}>
-                    {post?.book?.author || 'Unknown Author'}
-                </Text>
-
-                <TouchableNativeFeedback 
-                    onPress={() => handleAddToLibrary(post.book.id)}
-                >
-                    <View style={styles.addButtonTouchable}>
-                    <Text style={styles.addButtonText}>
-                        Add to Library
-                    </Text>
-                    </View>
-                </TouchableNativeFeedback>
-
-                </View>
-
-                <View style={styles.headerBookContainer}>
-                    {post.book.cover && (
-                    <Image 
-                        source={{ uri: post.book.cover}} 
-                        style={styles.coverImage} 
-                        resizeMode="cover"
-                    />
-                    )}
-                </View>
-            </View>
-
-            <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-                <TouchableNativeFeedback onPress={handleLikePress}>
-                    <Image
-                    source={require('../../assets/heartFull.png')}
-                    style={{ width: 25, height: 22, marginRight: 6 }}
-                    />
-                </TouchableNativeFeedback>
-                <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
-                    {post.like_count || 0} 
-                </Text>
-                </View>
-            </View>
             </View>
         );
     }
+
+    if (post.action == "want_to_read")
+    {
+        return (
+            <View style={styles.container}>
+                <View style={styles.headerContainer}>
+                    <View style={styles.headerInfo}>
+                        <View style={styles.profileInfo}>
+                            {/* <Image 
+                            source={
+                            // post?.profile_pic 
+                            // ? { uri: profileData.profile_pic } 
+                            // : defaultPicture
+                            defaultPicture
+                            }
+                            style={styles.profilePic}
+                            /> */}
+
+                            <View style={styles.profileText}>
+                            <Text style={styles.username}>
+                                @{post?.user?.username || 'Unknown User'}
+                            </Text>
+                            <Text style={styles.normalText}>
+                                wants to read 
+                            </Text>
+                            </View>
+                        </View>
+
+                        <Text style={styles.bookTitle}>
+                            {post?.book?.title || 'Unknown Book'}
+                        </Text>
+
+                        <Text style={styles.author}>
+                            {post?.book?.author || 'Unknown Author'}
+                        </Text>
+
+                        <TouchableNativeFeedback 
+                            onPress={() => handleAddToLibrary(post.book.id)}
+                        >
+                            <View style={styles.addButtonTouchable}>
+                            <Text style={styles.addButtonText}>
+                                Add to Library
+                            </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                    </View>                
+                    
+                    <View style={styles.headerBookContainer}>
+                        {post.book.cover && (
+                        <Image 
+                            source={{ uri: post.book.cover}} 
+                            style={styles.coverImage} 
+                            resizeMode="cover"
+                        />
+                        )}
+                    </View>
+                </View>                <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                    <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                        <Image
+                        source={require('../../assets/heartFull.png')}
+                        style={{ width: 25, height: 22, marginRight: 6 }}
+                        />
+                    </TouchableNativeFeedback>
+                    <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                        {post.like_count || 0} 
+                    </Text>                    </View>
+                </View>
+            </View>
+        );
+    }    
+    
+    if (post.action == "review")
+    {
+        const renderStars = (rating) => {
+            const stars = [];
+            for (let i = 1; i <= 5; i++) {
+                stars.push(
+                    <Image
+                        key={i}
+                        source={i <= rating ? require('../../assets/purpleStarFull.png') : require('../../assets/purpleStarEmpty.png')}
+                        style={{ width: 20, height: 20, marginRight: 2 }}
+                    />
+                );
+            }
+            return stars;
+        };
+
+        if (post.description)
+        {
+            return (
+                <View style={styles.container}>
+                    <View style={styles.headerContainer}>
+                        <View style={styles.headerInfo}>
+                            <View style={styles.profileInfo}>
+                                {/* <Image 
+                                source={defaultPicture}
+                                style={styles.profilePic}
+                                /> */}
+
+                                <View style={styles.profileText}>
+                                <Text style={styles.username}>
+                                    @{post?.user?.username || 'Unknown User'}
+                                </Text>
+                                <Text style={styles.normalText}>
+                                    reviewed 
+                                </Text>
+                                </View>
+                            </View>
+
+                            <Text style={styles.bookTitle}>
+                                {post?.book?.title || 'Unknown Book'}
+                            </Text>
+
+                            <Text style={styles.author}>
+                                {post?.book?.author || 'Unknown Author'}
+                            </Text>
+
+                            <TouchableNativeFeedback 
+                                onPress={() => handleAddToLibrary(post.book.id)}
+                            >
+                                <View style={styles.addButtonTouchable}>
+                                <Text style={styles.addButtonText}>
+                                    Add to Library
+                                </Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View>                
+                        
+                        <View style={styles.headerBookContainer}>
+                            {post.book.cover && (
+                            <Image 
+                                source={{ uri: post.book.cover}} 
+                                style={styles.coverImage} 
+                                resizeMode="cover"
+                            />
+                            )}
+                        </View>                    </View>
+
+                    {/* Description Section */}
+                    {post.description && (
+                        <View style={styles.reviewContainer}>
+                            <Text style={styles.reviewDescription}>
+                                {post.description}
+                            </Text>
+                        </View>
+                    )}
+
+                    <View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                                    <Image
+                                    source={require('../../assets/heartFull.png')}
+                                    style={{ width: 25, height: 22, marginRight: 6 }}
+                                    />
+                                </TouchableNativeFeedback>
+                                <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                                    {post.like_count || 0} 
+                                </Text>
+                            </View>
+                            
+                            <View style={styles.starsContainer}>
+                                {renderStars(post.rating || 0)}
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            );
+        }
+        else
+        {
+            return (
+                <View style={styles.container}>
+                    <View style={styles.headerContainer}>
+                        <View style={styles.headerInfo}>
+                            <View style={styles.profileInfo}>
+                                {/* <Image 
+                                source={defaultPicture}
+                                style={styles.profilePic}
+                                /> */}
+
+                                <View style={styles.profileText}>
+                                <Text style={styles.username}>
+                                    @{post?.user?.username || 'Unknown User'}
+                                </Text>
+                                <Text style={styles.normalText}>
+                                    rated 
+                                </Text>
+                                </View>
+                            </View>
+
+                            <Text style={styles.bookTitle}>
+                                {post?.book?.title || 'Unknown Book'}
+                            </Text>
+
+                            <Text style={styles.author}>
+                                {post?.book?.author || 'Unknown Author'}
+                            </Text>
+
+                            <TouchableNativeFeedback 
+                                onPress={() => handleAddToLibrary(post.book.id)}
+                            >
+                                <View style={styles.addButtonTouchable}>
+                                <Text style={styles.addButtonText}>
+                                    Add to Library
+                                </Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View>                
+                        
+                        <View style={styles.headerBookContainer}>
+                            {post.book.cover && (
+                            <Image 
+                                source={{ uri: post.book.cover}} 
+                                style={styles.coverImage} 
+                                resizeMode="cover"
+                            />
+                            )}
+                        </View>                    </View>
+
+                    <View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                                    <Image
+                                    source={require('../../assets/heartFull.png')}
+                                    style={{ width: 25, height: 22, marginRight: 6 }}
+                                    />
+                                </TouchableNativeFeedback>
+                                <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                                    {post.like_count || 0} 
+                                </Text>
+                            </View>
+                            
+                            <View style={styles.starsContainer}>
+                                {renderStars(post.rating || 0)}
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            );        }
+    }
+
+    if (post.action == "post")
+    {
+        return (
+            <View style={styles.container}>
+                <View style={styles.headerContainer}>
+                    <View style={styles.headerInfo}>
+                        <View style={styles.profileInfo}>
+                            {/* <Image 
+                            source={defaultPicture}
+                            style={styles.profilePic}
+                            /> */}
+
+                            <View style={styles.profileText}>
+                            <Text style={styles.username}>
+                                @{post?.user?.username || 'Unknown User'}
+                            </Text>
+                            <Text style={styles.normalText}>
+                                posted about 
+                            </Text>
+                            </View>
+                        </View>
+
+                        <Text style={styles.bookTitle}>
+                            {post?.book?.title || 'Unknown Book'}
+                        </Text>
+
+                        <Text style={styles.author}>
+                            {post?.book?.author || 'Unknown Author'}
+                        </Text>
+
+                        <TouchableNativeFeedback 
+                            onPress={() => handleAddToLibrary(post.book.id)}
+                        >
+                            <View style={styles.addButtonTouchable}>
+                            <Text style={styles.addButtonText}>
+                                Add to Library
+                            </Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                    </View>                
+                    
+                    <View style={styles.headerBookContainer}>
+                        {post.book.cover && (
+                        <Image 
+                            source={{ uri: post.book.cover}} 
+                            style={styles.coverImage} 
+                            resizeMode="cover"
+                        />
+                        )}
+                    </View>
+                </View>
+
+                {/* Description Section */}
+                <View style={styles.reviewContainer}>
+                    <Text style={styles.reviewDescription}>
+                        {post.description}
+                    </Text>
+                </View>
+
+                <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                        <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                            <Image
+                            source={require('../../assets/heartFull.png')}
+                            style={{ width: 25, height: 22, marginRight: 6 }}
+                            />
+                        </TouchableNativeFeedback>
+                        <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                            {post.like_count || 0} 
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
+
+    // Default return for other post types
+    return (
+        <View style={styles.container}>
+            <Text style={styles.centered}>Post type "{post.action}" not supported yet.</Text>
+        </View>
+    );
 };
 
-const styles = StyleSheet.create({
-    container: 
+const styles = StyleSheet.create({    container: 
     { 
+        width: '95%',
+        marginHorizontal: 'auto',
         marginTop: 16,
         padding: 16,
         borderRadius: 8,
         backgroundColor: '#F7EDF1',
         borderWidth: 1,
         borderColor: '#F3E3E9',
+        alignSelf: 'center',
     },
     centered: 
     { 
@@ -270,8 +680,7 @@ const styles = StyleSheet.create({
         fontSize: 14, 
         fontFamily: 'Nunito_400Regular', 
         color: '#18101D' 
-    },
-    headerContainer: 
+    },    headerContainer: 
     { 
         flexDirection: 'row', 
         alignItems: 'flex-start',
@@ -295,8 +704,7 @@ const styles = StyleSheet.create({
         height: 152, 
         borderRadius: 4, 
         marginRight: 10 
-    },
-    bookTitle: 
+    },    bookTitle: 
     { 
         fontSize: 18,
         fontWeight: 'bold',
@@ -317,8 +725,7 @@ const styles = StyleSheet.create({
         marginRight: 8,
         textAlign: 'right',
         alignSelf: 'flex-end',
-    },
-    addButtonTouchable: {
+    },    addButtonTouchable: {
         backgroundColor: '#613F75',
         width: 120,
         height: 30,
@@ -328,9 +735,44 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         marginRight: 8,
         marginTop: 16,
-    },
-    addButtonText: {
+    },addButtonText: {
         color: '#FCF8FA',
+    },
+      // Progress Bar Styles
+    progressContainer: {
+        marginVertical: 0,
+        paddingHorizontal: 10,
+    },
+    progressText: {
+        fontSize: 12,
+        fontFamily: 'Nunito_500Medium',
+        color: '#18101D',
+        textAlign: 'center',
+        marginTop: 4,
+    },    progressBar: {
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#E5C3D1',
+    },
+    // Review Styles
+    reviewContainer: {
+        marginVertical: 8,
+        paddingHorizontal: 10,
+    },
+    ratingContainer: {
+        alignItems: 'center',
+        marginBottom: 8,
+    },    starsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    reviewDescription: {
+        fontSize: 14,
+        fontFamily: 'Nunito_400Regular',
+        color: '#18101D',
+        textAlign: 'center',
+        lineHeight: 20,
+        marginTop: 8,
     },
 });
 

@@ -7,20 +7,18 @@ import axios from 'axios';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import Postings from './Partials/Postings';
 
-
-const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
-    const { userId } = navigation?.route?.params || {};
-
-    
+const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) => {
+    const { userId } = route.params; // Get the user ID from navigation params
     const [userData, setUserData] = useState(null);
     const [profileData, setProfileData] = useState(null);
     const [authToken, setAuthToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [followLoading, setFollowLoading] = useState(false);
 
     const [selected, setSelected] = useState('photo');
 
     const defaultPicture = require('../assets/defaultProfilePic.jpg');
-    const editPen = require('../assets/editPen.png');
     const photoPurple = require('../assets/photoPurple.png');
     const photoBlack = require('../assets/photoBlack.png');
     const glassesPurple = require('../assets/glassesPurple.png');
@@ -33,26 +31,7 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         Nunito_500Medium,
         Nunito_600SemiBold
     });
-    
-    useEffect(() => {
-        if (!userId) return;
-        const getTokensAndFetchData = async () => {
-            try {
-                const storedAuthToken = await AsyncStorage.getItem('auth_token');
-                const storedRefreshToken = await AsyncStorage.getItem('refresh_token');
-                if (storedAuthToken && storedRefreshToken) {
-                    setAuthToken(`JWT ${storedAuthToken}`);
-                    setRefreshToken(storedRefreshToken);
-                    fetchUserData();
-                    fetchProfileData();
-                }
-            } catch (error) {
-                console.error("Error retrieving tokens:", error);
-            }
-        };
-        getTokensAndFetchData();
-    }, [userId]);
-    
+
     const saveAuthToken = async (newToken, refreshToken) => {
         try {
             await AsyncStorage.setItem('auth_token', newToken);
@@ -64,7 +43,7 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
 
     const fetchUserData = async () => {
         try {
-            const response = await axios.get(`${apiBaseUrl}/auth/users/me/`, {
+            const response = await axios.get(`${apiBaseUrl}/auth/users/${userId}/`, {
                 headers: { Authorization: authToken }
             });
             setUserData(response.data);
@@ -78,13 +57,12 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                     
                     saveAuthToken(newToken, refreshToken);
                     
-                    const retryResponse = await axios.get(`${apiBaseUrl}/auth/users/me/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/auth/users/${userId}/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
                     setUserData(retryResponse.data);
                 } catch (refreshError) {
                     console.error("Failed to refresh token:", refreshError);
-                    handleLogout();
                 }
             } else {
                 console.error("User fetch error:", error.message);
@@ -92,32 +70,83 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         }
     };
 
-    const fetchProfileData = async () => {
+    // const fetchProfileData = async () => {
+    //     try {
+    //         const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/read/`, {
+    //             headers: { Authorization: authToken }
+    //         });
+    //         setProfileData(response.data);
+    //     } catch (error) {
+    //         if (error.response?.status === 401) {
+    //             try {
+    //                 const response = await axios.post(`${apiBaseUrl}/auth/jwt/refresh/`, {
+    //                     refresh: refreshToken
+    //                 });
+    //                 const newToken = response.data.access;
+                    
+    //                 saveAuthToken(newToken, refreshToken);
+                    
+    //                 const retryResponse = await axios.get(`${apiBaseUrl}/api/accounts/profile/read/${userId}`, {
+    //                     headers: { Authorization: `JWT ${newToken}` }
+    //                 });
+    //                 setProfileData(retryResponse.data);
+    //             } catch (refreshError) {
+    //                 console.error("Failed to refresh token:", refreshError);
+    //             }
+    //         } else {
+    //             console.error("Profile fetch error:", error.message);
+    //         }
+    //     }
+    // };
+
+    // const checkFollowStatus = async () => {
+    //     try {
+    //         const response = await axios.get(`${apiBaseUrl}/api/accounts/follow/status/${userId}`, {
+    //             headers: { Authorization: authToken }
+    //         });
+    //         setIsFollowing(response.data.is_following);
+    //     } catch (error) {
+    //         console.error("Follow status check error:", error.message);
+    //     }
+    // };
+
+    const toggleFollow = async () => {
+        if (followLoading) return;
+        
+        setFollowLoading(true);
         try {
-            const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/read`, {
+            // const endpoint = isFollowing 
+            //     ? `${apiBaseUrl}/api/accounts/unfollow/${userId}` 
+            //     : `${apiBaseUrl}/api/accounts/${userId}/follow`;
+            
+            const endpoint = `${apiBaseUrl}/api/accounts/profile/${userData.id}/follow`;
+
+            // console.log(endpoint);
+
+            await axios.patch(`${apiBaseUrl}/api/accounts/profile/${userData.id}/follow/`, {}, {
                 headers: { Authorization: authToken }
             });
-            setProfileData(response.data);
+            
+            setIsFollowing(!isFollowing);
+            
+            // Update follower count locally
+            // if (profileData) {
+            //     setProfileData(prev => ({
+            //         ...prev,
+            //         follower_count: isFollowing 
+            //             ? prev.follower_count - 1 
+            //             : prev.follower_count + 1
+            //     }));
+            // }
         } catch (error) {
-            if (error.response?.status === 401) {
-                try {
-                    const response = await axios.post(`${apiBaseUrl}/auth/jwt/refresh/`, {
-                        refresh: refreshToken
-                    });
-                    const newToken = response.data.access;
-                    
-                    saveAuthToken(newToken, refreshToken);
-                    
-                    const retryResponse = await axios.get(`${apiBaseUrl}/api/profile/`, {
-                        headers: { Authorization: `JWT ${newToken}` }
-                    });
-                    setProfileData(retryResponse.data);
-                } catch (refreshError) {
-                    console.error("Failed to refresh token:", refreshError);
-                }
-            } else {
-                console.error("Profile fetch error:", error.message);
+            console.error("Follow toggle error:", error.message);
+            if (error.response) {
+                console.error("Error response data:", error.response.data);
+                console.error("Error response status:", error.response.status);
             }
+            Alert.alert("Error", "Failed to update follow status. Please try again.");
+        } finally {
+            setFollowLoading(false);
         }
     };
 
@@ -130,10 +159,6 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                 if (storedAuthToken && storedRefreshToken) {
                     setAuthToken(`JWT ${storedAuthToken}`);
                     setRefreshToken(storedRefreshToken);
-                    
-                    // Fetch data after tokens are set
-                    fetchUserData();
-                    fetchProfileData();
                 }
             } catch (error) {
                 console.error("Error retrieving tokens:", error);
@@ -143,33 +168,23 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         getTokensAndFetchData();
     }, []);
 
+    useEffect(() => {
+        if (authToken && userId) {
+            fetchUserData();
+            // fetchProfileData();
+            // checkFollowStatus();
+        }
+    }, [authToken, userId]);
 
-    const handleLogout = async () => {
-        Alert.alert(
-            'Logout',
-            'Are you sure you want to logout?',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                { 
-                    text: 'Logout', 
-                    onPress: async () => {
-                        // Utilizează funcția removeAuthToken pasată din App.js
-                        await removeAuthToken();
-                        // Navigăm către ecranul de login
-                        navigation.replace('LoginMenu');
-                    }
-                }
-            ]
-        );
-    };    const handlePressEdit = () => {
-        navigation.navigate('ProfileEdit');
+    if (!fontsLoaded) {
+        return null; // or a loading indicator
     }
 
-    // console.log("Profile Data:", profileData);
+    // console.log(userData);
 
     return (
         <SafeAreaView style={styles.screen}>
-            <TopBar pageName="ProfilePage" />
+            <TopBar pageName="HomePage" />
 
             <ScrollView 
                 style={styles.scrollView}
@@ -179,14 +194,14 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                 <View style={styles.body}>
                     <View style={styles.profileCard}>
                         <View style={styles.generalInfo}>
-                            <Image 
+                            {/* <Image 
                                 source={
                                     profileData?.profile_pic 
                                     ? { uri: profileData.profile_pic } 
                                     : defaultPicture
                                 }
                                 style={styles.profilePic}
-                            />
+                            /> */}
                             <View style={styles.textInfo}>
                                 <View style={styles.followersInfo}>
                                     <Text style={styles.followers}>
@@ -197,7 +212,7 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                                         {profileData?.following_count || 0} {'\n'}following
                                     </Text>
                                 </View>
-                                <View style={styles.nameAndEdit}>
+                                <View style={styles.nameAndFollow}>
                                     <View style={styles.nameInfo}>
                                         <View style={styles.fullname}>
                                             <Text style={styles.nameText}>
@@ -208,22 +223,29 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                                             <Text style={styles.usernameText}>
                                                 @{userData?.username}
                                             </Text>
-                                            
                                         </View>
                                     </View>
-                                    <TouchableOpacity onPress={handlePressEdit}>
-                                        <Image 
-                                            source={editPen} 
-                                            style={styles.editPen} 
-                                        />
+                                    <TouchableOpacity 
+                                        onPress={toggleFollow}
+                                        disabled={followLoading}
+                                        style={[
+                                            styles.followButton,
+                                            isFollowing ? styles.followingButton : styles.notFollowingButton
+                                        ]}
+                                    >
+                                        <Text style={[
+                                            styles.followButtonText,
+                                            isFollowing ? styles.followingButtonText : styles.notFollowingButtonText
+                                        ]}>
+                                            {followLoading ? '...' : (isFollowing ? 'Following' : 'Follow')}
+                                        </Text>
                                     </TouchableOpacity>
                                 </View>
-                                
                             </View>
                         </View>
                         <View style={styles.description}>
                             <Text style={styles.bioText}>
-                                {profileData?.profile.bio || "No bio available"}
+                                {profileData?.profile?.bio || "No bio available"}
                             </Text>
                         </View>
                     </View>
@@ -261,15 +283,16 @@ const ProfilePageOther = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                     </View>
                 </View>
 
-                <Postings selection={selected} apiBaseUrl={apiBaseUrl}/>
+                <Postings selection={selected} apiBaseUrl={apiBaseUrl} userId={userId} />
             </ScrollView>
 
-            <NavBar navigation={navigation} page="ProfilePage" />
+            <NavBar navigation={navigation} page="FollowPage" />
         </SafeAreaView>
     );
 };
 
-const styles = StyleSheet.create({    screen: {
+const styles = StyleSheet.create({
+    screen: {
         flex: 1,
         backgroundColor: '#FCF8FA',
     },
@@ -293,7 +316,7 @@ const styles = StyleSheet.create({    screen: {
         minHeight: 200,
         backgroundColor: '#F7EDF1',
         borderRadius: 8,
-        borderWidth: 1, // Added border width of 1px
+        borderWidth: 1,
         borderColor: '#F3E3E9',
         padding: 16,
         flexDirection: 'column',
@@ -334,13 +357,14 @@ const styles = StyleSheet.create({    screen: {
         paddingLeft: 12,
         textAlign: 'center',
     },
-    verticalLine : {
+    verticalLine: {
         width: 1,
         backgroundColor: '#E5C3D1',
         height: 'auto'
     },
     nameInfo: {
         marginTop: 5,
+        flex: 1,
     },
     fullname: {
         marginBottom: 3,
@@ -361,15 +385,37 @@ const styles = StyleSheet.create({    screen: {
         fontFamily: 'Nunito_400Regular',
         flexWrap: 'wrap',
     },
-    nameAndEdit: {
+    nameAndFollow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
     },
-    editPen: {
-        width: 24,
-        height: 24,
-        marginRight: 20
+    followButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+        borderWidth: 1,
+        marginRight: 10,
+        minWidth: 80,
+        alignItems: 'center',
+    },
+    notFollowingButton: {
+        backgroundColor: '#613F75',
+        borderColor: '#613F75',
+    },
+    followingButton: {
+        backgroundColor: 'transparent',
+        borderColor: '#613F75',
+    },
+    followButtonText: {
+        fontSize: 14,
+        fontFamily: 'Nunito_600SemiBold',
+    },
+    notFollowingButtonText: {
+        color: '#FFFFFF',
+    },
+    followingButtonText: {
+        color: '#613F75',
     },
     bioText: {
         fontSize: 16,
@@ -390,7 +436,6 @@ const styles = StyleSheet.create({    screen: {
         justifyContent: 'space-around',
         padding: 12,
         alignItems: 'center',
-
     },
     selectionItem: {
         width: 40,
@@ -415,19 +460,6 @@ const styles = StyleSheet.create({    screen: {
         width: 21,
         height: 24,
         alignSelf: 'center'
-    },
-    logoutButton: {
-        paddingVertical: 6,
-        paddingHorizontal: 12,
-        backgroundColor: '#f44336',
-        borderRadius: 4,
-        alignSelf: 'flex-start',
-    },
-    logoutButtonText: {
-        fontSize: 12,
-        color: '#fff',
-        textAlign: 'center',
-        fontFamily: 'Nunito_500Medium',
     },
 });
 

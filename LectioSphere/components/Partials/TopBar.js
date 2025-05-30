@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, TextInput, StyleSheet, Image, Alert } from 'r
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import UserSearchResult from '../UserSearchResult';
 
 const icon = require('../../assets/favicon.png');
 const searchPurpleIcon = require('../../assets/searchPurple.png');
@@ -36,10 +37,10 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
                 params: { q: text }
             });
             
-            console.log(response.data);
+            // console.log(response.data);
 
             navigation.navigate('UserSearchResult', {
-                users: response.data,
+                users: response.data.results,
                 searchQuery: text,
                 apiBaseUrl: apiBaseUrl
             });

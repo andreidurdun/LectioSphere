@@ -52,17 +52,16 @@ const UserSearchResult = ({ navigation, route }) => {
         return null;
     }
 
-    // console.log(users);
-
-    return (        <SafeAreaView style={styles.screen}>
-            <TopBar pageName="UserSearchResult" apiBaseUrl={apiBaseUrl} />
+    return (
+        <SafeAreaView style={styles.screen}>
+            <TopBar pageName="HomePage" apiBaseUrl={apiBaseUrl} />
 
             <View style={styles.container}>
                 <Text style={styles.resultsHeader}>
                     Search results for "{searchQuery}"
                 </Text>
                 
-                {users.length > 0 ? (
+                {users && users.length > 0 ? (
                     <FlatList
                         data={users}
                         renderItem={renderUserItem}
@@ -79,7 +78,7 @@ const UserSearchResult = ({ navigation, route }) => {
                 )}
             </View>
 
-            <NavBar navigation={navigation} page="UserSearchResult" />
+            <NavBar navigation={navigation} page="FollowPage" />
         </SafeAreaView>
     );
 };
