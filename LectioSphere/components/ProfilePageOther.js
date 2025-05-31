@@ -5,7 +5,7 @@ import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
-import Postings from './Partials/Postings';
+import PostingsOther from './Partials/PostingsOther';
 
 const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) => {
     const { userId } = route.params; // Get the user ID from navigation params
@@ -105,11 +105,11 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
 
     const checkFollowStatus = async () => {
         try {
-            const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/${userData.id}/is-following/`, {
+            const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/${userId}/is-following/`, {
                 headers: { Authorization: authToken }
             });
             setIsFollowing(response.data.is_following);
-            console.log(response.data);
+            // console.log(isFollowing);
         } catch (error) {
             console.error("Follow status check error:", error.message);
         }
@@ -120,29 +120,33 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
         
         setFollowLoading(true);
         try {
-            // const endpoint = isFollowing 
-            //     ? `${apiBaseUrl}/api/accounts/${userData.id}/unfollow/` 
-            //     : `${apiBaseUrl}/api/accounts/${userData.id}/follow`;
+            const endpoint = isFollowing 
+                ? `${apiBaseUrl}/api/accounts/profile/${userId}/unfollow/` 
+                : `${apiBaseUrl}/api/accounts/profile/${userId}/follow/`;
             
-            const endpoint = `${apiBaseUrl}/api/accounts/profile/${userData.id}/unfollow`;
+            // const endpoint = `${apiBaseUrl}/api/accounts/profile/${userId}/unfollow`;
 
             // console.log(endpoint);
 
-            await axios.patch(`${apiBaseUrl}/api/accounts/profile/${userData.id}/follow/`, {}, {
+            // await axios.patch(`${apiBaseUrl}/api/accounts/profile/${userId}/follow/`, {}, {
+            //     headers: { Authorization: authToken }
+            // });
+            
+            await axios.patch(endpoint, {}, {
                 headers: { Authorization: authToken }
             });
-            
+
             setIsFollowing(!isFollowing);
             
             // Update follower count locally
-            // if (profileData) {
-            //     setProfileData(prev => ({
-            //         ...prev,
-            //         follower_count: isFollowing 
-            //             ? prev.follower_count - 1 
-            //             : prev.follower_count + 1
-            //     }));
-            // }
+            if (profileData) {
+                setProfileData(prev => ({
+                    ...prev,
+                    follower_count: isFollowing 
+                        ? prev.follower_count - 1 
+                        : prev.follower_count + 1
+                }));
+            }
         } catch (error) {
             console.error("Follow toggle error:", error.message);
             if (error.response) {
@@ -171,16 +175,17 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
         };
         
         getTokensAndFetchData();
-    }, []);
-
+    }, []);    
+    
     useEffect(() => {
         if (authToken && userId) {
             fetchUserData();
-            console.log(userData);
-            // fetchProfileData();
+            console.log('User ID:', userId);
+            // Note: userData will be null here since fetchUserData is async
+            fetchProfileData();
             // console.log(profileData);
             
-            // checkFollowStatus();
+            checkFollowStatus();
         }
     }, [authToken, userId]);
 
@@ -188,7 +193,8 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
         return null; // or a loading indicator
     }
 
-    // console.log(userData);
+    console.log(userData);
+    console.log(profileData);
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -213,7 +219,7 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                             <View style={styles.textInfo}>
                                 <View style={styles.followersInfo}>
                                     <Text style={styles.followers}>
-                                        {profileData?.follower_count || 0} {'\n'}followers
+                                        {profileData?.followers_count || 0} {'\n'}followers
                                     </Text>
                                     <View style={styles.verticalLine}></View>
                                     <Text style={styles.followers}>
@@ -253,7 +259,7 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                         </View>
                         <View style={styles.description}>
                             <Text style={styles.bioText}>
-                                {profileData?.profile?.bio || "No bio available"}
+                                {profileData?.bio || "No bio available"}
                             </Text>
                         </View>
                     </View>
@@ -289,10 +295,8 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                             />
                         </TouchableOpacity>
                     </View>
-                </View>
-
-                
-                <Postings selection={selected} apiBaseUrl={apiBaseUrl} userId={userData.id} />
+                </View>                
+                {userId && <PostingsOther selection={selected} apiBaseUrl={apiBaseUrl} userId={userId} />}
             </ScrollView>
 
             <NavBar navigation={navigation} page="FollowPage" />

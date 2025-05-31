@@ -5,7 +5,7 @@ import axios from 'axios';
 import PostPartial from './PostPartial'; // Adjust the import path as necessary
 
 
-export default function Postings ({ apiBaseUrl, selection }) {
+export default function Postings ({ apiBaseUrl, selection, userId }) {
 
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -25,16 +25,18 @@ export default function Postings ({ apiBaseUrl, selection }) {
         let endpoint = '';
         
         if (selection === 'photo') {
-            endpoint = `${apiBaseUrl}/posts/post_type`;
+            endpoint = `${apiBaseUrl}/posts/post_type/${userId}/`;
         } else if (selection === 'glasses') {
-            endpoint = `${apiBaseUrl}/posts/non_post_type`;
+            endpoint = `${apiBaseUrl}/posts/non_post_type/${userId}/`;
         } else if (selection === 'closedBook') {
             // Pentru closedBook, nu facem cerere API încă
             setLoading(false);
             return;
         }
 
-        if (endpoint) {
+        console.log(endpoint);
+
+        if (endpoint && userId) {
             axios.get(endpoint)
                 .then(res => {
                     // Sortează postările după data descrescător
@@ -47,7 +49,7 @@ export default function Postings ({ apiBaseUrl, selection }) {
                     setLoading(false);
                 });
         }
-    }, [selection, apiBaseUrl]); // Re-run when selection or apiBaseUrl changes
+    }, [selection, apiBaseUrl, userId]); // Re-run when selection, apiBaseUrl, or userId changes
 
     // console.log('Current selection:', selection);
     // console.log('Posts:', posts);
@@ -69,7 +71,7 @@ export default function Postings ({ apiBaseUrl, selection }) {
             <View style={styles.card}>
                 <View style={styles.notFoundContainer}>
                     <Text style={styles.notFoundText}>
-                        Your library is currently empty
+                        This user's library is currently empty
                     </Text>
                 </View>
             </View>
@@ -78,8 +80,8 @@ export default function Postings ({ apiBaseUrl, selection }) {
 
     if (posts.length === 0) {
         const message = selection === 'photo' 
-            ? "You didn't post anything yet"
-            : "You don't have any interactions yet";
+            ? "This user didn't post anything yet"
+            : "This user doesn't have any interactions yet";
             
         return (
             <View style={styles.card}>

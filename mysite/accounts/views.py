@@ -15,6 +15,7 @@ from .serializers import ProfileSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.db.models import Q
+from IPADDRESS import getIP
 
 
 def get_object(self):
@@ -27,7 +28,7 @@ class ActivateAccountView(generics.GenericAPIView):
         if not uid or not token:
             return Response({"error": "Missing 'uid' or 'token'"}, status=status.HTTP_400_BAD_REQUEST)
 
-        url = "http://localhost:8000/auth/users/activation/"
+        url = "http://" + getIP() + ":8000/auth/users/activation/"
         payload = {
             "uid": uid,
             "token": token

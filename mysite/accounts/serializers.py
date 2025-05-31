@@ -7,6 +7,7 @@ from api.models import Comment
 from api.models import PostLike
 from api.models import Post
 from accounts.models import UserAccount
+from IPADDRESS import getIP
 
 
 
@@ -19,7 +20,7 @@ class UserCreateSerializer(UserCreateSerializer):
 
     def get_email_context(self):
         context = super().get_email_context()
-        context['domain'] = '192.168.1.129:8000'  # sau domeniul tău real
+        context['domain'] = getIP() + ':8000'  # sau domeniul tău real
         context['site_name'] = 'LectioSphere'
         print("Email context:", context)
         return context
