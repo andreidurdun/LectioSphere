@@ -95,7 +95,8 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
                 <Image 
                     source={icon} // Replace with your icon path
                     style={styles.icon}
-                />                <View style={styles.searchContainer}>
+                />
+                <View style={styles.searchContainer}>
                     <TextInput 
                         style={styles.searchInput} 
                         placeholder="Look for someone" 

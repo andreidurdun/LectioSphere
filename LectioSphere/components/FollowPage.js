@@ -97,7 +97,7 @@ const FollowPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
 
     return (
         <SafeAreaView style={styles.screen}>
-            <TopBar pageName="FollowPage" apiBaseUrl={apiBaseUrl}/>            
+            <TopBar pageName="FollowPage" apiBaseUrl={apiBaseUrl}/>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {feed && feed.length > 0 ? (
                     feed.map((post, index) => (
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     },
     scrollContainer: {
         marginTop: 80,
-        paddingBottom: 46,
+        paddingBottom: 140,
         flexGrow: 1,
         width: 372,
     },

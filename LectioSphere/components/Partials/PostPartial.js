@@ -77,7 +77,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                 }
             );
 
-            console.log('Post like toggled successfully:', response.data);
+            // console.log('Post like toggled successfully:', response.data);
             // Alert.alert('Success', 'You liked the post!', [{ text: 'OK' }]);
         } catch (error) {
             console.error('Error toggling like:', error);
@@ -190,7 +190,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                 reviewData.description = description.trim();
             }
 
-            console.log('Sending review data:', reviewData); // Debug log
+            // console.log('Sending review data:', reviewData); // Debug log
 
             const response = await axios.post(
                 `${apiBaseUrl}/posts/add/`,
@@ -275,7 +275,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                 id: post.book.id
             };
 
-            console.log('Sending create post data:', postData); // Debug log
+            // console.log('Sending create post data:', postData); // Debug log
 
             const response = await axios.post(
                 `${apiBaseUrl}/posts/add/`,
@@ -480,7 +480,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                     onRequestClose={handleModalCancel}
                 >
                     <View style={styles.modalOverlay}>
-                        <View style={styles.modalContainer}>                        
+                        <View style={styles.modalContainer}>
                             <Text style={styles.modalTitle}>
                                 Update Reading Progress
                             </Text>
@@ -515,7 +515,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                                 </TouchableNativeFeedback>
                             </View>
                         </View>
-                    </View>            
+                    </View>
                 </Modal>
                 
                 {/* Custom Library Actions Modal */}
@@ -686,7 +686,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
     }
 
 
-    console.log(post);
+    // console.log(post);
 
     if (post.action == "finished_reading" || post.progress >= post.book.nr_pages)
     {
@@ -743,7 +743,8 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                         />
                         )}
                     </View>
-                </View>                <View>
+                </View>
+                <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                     <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
                         <Image
@@ -811,7 +812,8 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                         </View>
                     </TouchableNativeFeedback>
 
-                    </View>                <View style={styles.headerBookContainer}>
+                    </View>
+                    <View style={styles.headerBookContainer}>
                         {post.book.cover && (
                         <Image 
                             source={{ uri: post.book.cover}} 
@@ -820,7 +822,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                         />
                         )}
                     </View>
-                </View>            
+                </View>
                 {/* Progress Bar Section */}
                 {post.progress !== undefined && post.progress !== null && post.book.nr_pages && post.book.nr_pages > 0 && (
                     <View style={styles.progressContainer}>
@@ -833,7 +835,8 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                             {post.progress} / {post.book.nr_pages} pages ({Math.round((post.progress / post.book.nr_pages) * 100)}%)
                         </Text>
                     </View>
-                )}                <View>
+                )}
+                <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                         <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
                             <Image
@@ -895,7 +898,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                             </Text>
                             </View>
                         </TouchableNativeFeedback>
-                    </View>                
+                    </View>
                     
                     <View style={styles.headerBookContainer}>
                         {post.book.cover && (
@@ -906,7 +909,8 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                         />
                         )}
                     </View>
-                </View>                <View>
+                </View>
+                <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                     <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
                         <Image
@@ -979,7 +983,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                                 </Text>
                                 </View>
                             </TouchableNativeFeedback>
-                        </View>                
+                        </View>
                         
                         <View style={styles.headerBookContainer}>
                             {post.book.cover && (
@@ -989,7 +993,8 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                                 resizeMode="cover"
                             />
                             )}
-                        </View>                    </View>
+                        </View>
+                    </View>
 
                     {/* Description Section */}
                     {post.description && (
@@ -1062,7 +1067,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                                 </Text>
                                 </View>
                             </TouchableNativeFeedback>
-                        </View>                
+                        </View>
                         
                         <View style={styles.headerBookContainer}>
                             {post.book.cover && (
@@ -1072,7 +1077,8 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                                 resizeMode="cover"
                             />
                             )}
-                        </View>                    </View>
+                        </View>
+                    </View>
 
                     <View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
@@ -1137,7 +1143,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                             </Text>
                             </View>
                         </TouchableNativeFeedback>
-                    </View>                
+                    </View>
                     
                     <View style={styles.headerBookContainer}>
                         {post.book.cover && (
