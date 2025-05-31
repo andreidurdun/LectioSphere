@@ -85,27 +85,6 @@ export default function ProfileEdit({ navigation, removeAuthToken, apiBaseUrl })
             setLoading(false);
         }
     };
-
-    const pickImage = async () => {
-        // Solicităm permisiunea de a accesa galeria
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-          if (status !== 'granted') {
-            Alert.alert('Permission denied', 'Sorry, we need media library permissions to update your profile picture.');
-            return;
-        }
-        
-        // Lansăm selectorul de imagini
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.7,
-        });
-        
-        if (!result.canceled) {
-            setProfileImage({ uri: result.assets[0].uri });
-        }
-    };    
     
     const saveProfile = async () => {
         setLoading(true);
@@ -186,15 +165,6 @@ export default function ProfileEdit({ navigation, removeAuthToken, apiBaseUrl })
                     showsVerticalScrollIndicator={true}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <View style={styles.profileImageContainer}>
-                        <Image
-                            source={profileImage ? profileImage : defaultPicture}
-                            style={styles.profileImage}
-                        />
-                        <TouchableOpacity style={styles.editImageButton} onPress={pickImage}>
-                            <Image source={editPen} style={styles.editIcon} />
-                        </TouchableOpacity>
-                    </View>
                 
                     <Text style={styles.sectionTitle}>Personal Information</Text>
                 

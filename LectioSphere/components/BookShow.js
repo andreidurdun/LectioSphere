@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, Image, ScrollView, SafeAreaView, TouchableNativeFeedback, TextInput, Modal } from 'react-native';
-import axios from 'axios';
+import axios, { all } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { refreshAccessToken } from './refreshAccessToken';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold, Nunito_700Bold } from '@expo-google-fonts/nunito';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
+import PostPartial from './Partials/PostPartial';
 import { Alert } from 'react-native';
 
 const purpleStarFull = require('../assets/purpleStarFull.png');
 const purpleStarEmpty = require('../assets/purpleStarEmpty.png');
 
-const BookShow = ({ navigation, route, apiBaseUrl }) => {    
-    const [bookData, setBookData] = useState(null);
+const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, setBookData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [seeMorePressed, setSeeMorePressed] = useState(false);    
     const [showPagesModal, setShowPagesModal] = useState(false);
@@ -24,15 +25,18 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
     const [reviewRating, setReviewRating] = useState(0);
     const [reviewDescription, setReviewDescription] = useState('');    // Create post modal states
     const [showCreatePostModal, setShowCreatePostModal] = useState(false);
-    const [postDescription, setPostDescription] = useState('');
+    const [postDescription, setPostDescription] = useState('');    // Followed users' reviews state
+    const [followedPosts, setFollowedPosts] = useState([]);
+    // All reviews state
+    const [allPosts, setAllPosts] = useState([]);
 
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
         Nunito_500Medium,
         Nunito_600SemiBold,
-        Nunito_700Bold
-    });
-
+        Nunito_700Bold    });
+      
+    // useEffect for parsing book data
     useEffect(() => {
         if (route.params?.bookData) {
             try {
@@ -43,22 +47,126 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                 console.error('Error parsing book data:', err);
                 setError('Failed to load book details. Invalid data format.');
                 setLoading(false);
+                setReviewsLoading(false);
             }
         } else {
             setError('Book information is missing');
             setLoading(false);
+            setReviewsLoading(false);
         }
     }, [route.params]);
 
+    // Fetch functions
+    const fetchReviewFollowed = async (bookId) => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You are not logged in.');
+                return null;
+            }
+
+            const response = await axios.get(
+                `${apiBaseUrl}/posts/reviews/followed/${bookData.id}/`,
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                    },
+                }
+            );
+
+            return response.data;        
+        } catch (error) {
+            console.error('Error fetching reviews from followed users:', error);
+            Alert.alert('Error', 'Could not load reviews.', [{ text: 'OK' }]);
+            return null;
+        }
+    };
+
+    const fetchReviewAll = async (bookId) => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You are not logged in.');
+                return null;
+            }
+
+            const response = await axios.get(
+                `${apiBaseUrl}/posts/reviews/${bookData.id}/`,
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                    },
+                }
+            );
+
+            // console.log('Reviews from all users:', response.data);
+            return response.data;
+        }
+        catch (error) {
+            console.error('Error fetching reviews from followed users:', error);
+            Alert.alert('Error', 'Could not load reviews.', [{ text: 'OK' }]);
+            return null;
+        }    
+    };
+
+    // Fetch both types of reviews when bookData is available
+    useEffect(() => {
+        if (bookData && bookData.id) {
+            const fetchAllReviews = async () => {
+                // console.log('Starting to fetch reviews for book:', bookData.id);
+                setReviewsLoading(true);
+                
+                try {
+                    // Fetch both types of reviews in parallel
+                    const [followedReviews, allReviews] = await Promise.allSettled([
+                        fetchReviewFollowed(bookData.id),
+                        fetchReviewAll(bookData.id)
+                    ]);
+                    
+                    // Set the reviews data
+                    if (followedReviews.status === 'fulfilled' && followedReviews.value) {
+                        // console.log('Setting followed posts:', followedReviews.value);
+                        setFollowedPosts(followedReviews.value);
+                    } else {
+                        // console.log('No followed reviews or error:', followedReviews);
+                        setFollowedPosts([]);
+                    }
+                    
+                    if (allReviews.status === 'fulfilled' && allReviews.value) {
+                        // console.log('Setting all posts:', allReviews.value);
+                        setAllPosts(allReviews.value);
+                    } else {
+                        // console.log('No all reviews or error:', allReviews);
+                        setAllPosts([]);
+                    }
+                } catch (error) {
+                    console.error('Error fetching reviews:', error);
+                    setFollowedPosts([]);
+                    setAllPosts([]);
+                } finally {
+                    // console.log('Finished fetching reviews, setting reviewsLoading to false');
+                    setReviewsLoading(false);
+                }
+            };
+            
+            fetchAllReviews();
+        }
+    }, [bookData]);
+
+    // Early returns after all hooks
     if (!fontsLoaded) {
         return <Text>Loading fonts...</Text>;
     }
 
-    if (loading) {
+    // console.log('Loading states - loading:', loading, 'reviewsLoading:', reviewsLoading);
+
+    if (loading || reviewsLoading) {
         return (
             <SafeAreaView style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#613F75" />
-                <Text style={styles.loadingText}>Loading book details...</Text>
+                <Text style={styles.loadingText}>
+                    {loading ? 'Loading book details...' : 'Loading reviews...'}
+                </Text>
             </SafeAreaView>
         );
     }
@@ -175,7 +283,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                 reviewData.description = description.trim();
             }
 
-            console.log('Sending review data:', reviewData); // Debug log
+            // console.log('Sending review data:', reviewData); // Debug log
 
             const response = await axios.post(
                 `${apiBaseUrl}/posts/add/`,
@@ -196,8 +304,8 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
             let errorMessage = 'Failed to add review.';
             
             if (error.response) {
-                console.log('Error response status:', error.response.status);
-                console.log('Error response data:', error.response.data);
+                // console.log('Error response status:', error.response.status);
+                // console.log('Error response data:', error.response.data);
                 
                 if (error.response.data) {
                     if (typeof error.response.data === 'string') {
@@ -260,7 +368,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                 id: bookData.id
             };
 
-            console.log('Sending create post data:', postData); // Debug log
+            // console.log('Sending create post data:', postData); // Debug log
 
             const response = await axios.post(
                 `${apiBaseUrl}/posts/add/`,
@@ -283,8 +391,8 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
             let errorMessage = 'Failed to create post.';
             
             if (error.response) {
-                console.log('Error response status:', error.response.status);
-                console.log('Error response data:', error.response.data);
+                // console.log('Error response status:', error.response.status);
+                // console.log('Error response data:', error.response.data);
                 
                 if (error.response.data) {
                     if (typeof error.response.data === 'string') {
@@ -450,9 +558,38 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                 errorMessage,
                 [{ text: 'OK' }]
             );
-        }
-    };
+        }    };
 
+    // console.log('Loading states - loading:', loading, 'reviewsLoading:', reviewsLoading);
+
+    // console.log(allPosts[0]);
+
+    if (loading || reviewsLoading) {
+        return (
+            <SafeAreaView style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#613F75" />
+                <Text style={styles.loadingText}>
+                    {loading ? 'Loading book details...' : 'Loading reviews...'}
+                </Text>
+            </SafeAreaView>
+        );
+    }
+
+    if (error) {
+        return (
+            <SafeAreaView style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+            </SafeAreaView>
+        );
+    }
+
+    if (!bookData) {
+        return (
+            <SafeAreaView style={styles.errorContainer}>
+                <Text style={styles.errorText}>Book not found</Text>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -484,7 +621,8 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                                         </Text>
                                     ))}
                                 </View>
-                            )}                              <TouchableNativeFeedback 
+                            )}
+                            <TouchableNativeFeedback 
                                 onPress={() => handleAddToLibrary()}
                             >
                                 <View style={styles.addButtonTouchable}>
@@ -572,30 +710,38 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {
                         </View>
                     )}
                 </View>
-
                 <View style={styles.reviewsContainer}>
                     <Text style={styles.reviewsTitle}>
                         Reviews from people you follow
                     </Text>
-                    {/* Aici o sa vina apelul catre review-urile cartii cand sunt gata postarile */}
                     <View style={styles.reviews}>
-                        <Text style={styles.reviewsPlaceholder}>
-                            Currently, there are no reviews
-                        </Text>
+                        {followedPosts.length > 0 ? (
+                            followedPosts.map((post, index) => (
+                                <PostPartial key={index} postData={JSON.stringify(post)} />
+                            ))
+                        ) : (
+                            <Text style={styles.reviewsPlaceholder}>
+                                Currently, there are no reviews
+                            </Text>
+                        )}
                     </View>
                 </View>
-
                 <View style={styles.reviewsContainer}>
                     <Text style={styles.reviewsTitle}>
                         All reviews
                     </Text>
-                    {/* Aici o sa vina apelul catre review-urile cartii cand sunt gata postarile */}
                     <View style={styles.reviews}>
-                        <Text style={styles.reviewsPlaceholder}>
-                            Currently, there are no reviews
-                        </Text>
+                        {allPosts.length > 0 ? (
+                            allPosts.map((post, index) => (
+                                <PostPartial key={index} postData={JSON.stringify(post)} />
+                            ))
+                        ) : (
+                            <Text style={styles.reviewsPlaceholder}>
+                                Currently, there are no reviews
+                            </Text>
+                        )}
                     </View>
-                </View>            
+                </View>
             </ScrollView>
               {/* Modal for Android pages input */}
             <Modal

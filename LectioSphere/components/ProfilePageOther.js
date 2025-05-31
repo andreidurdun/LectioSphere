@@ -70,45 +70,50 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
         }
     };
 
-    // const fetchProfileData = async () => {
-    //     try {
-    //         const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/read/`, {
-    //             headers: { Authorization: authToken }
-    //         });
-    //         setProfileData(response.data);
-    //     } catch (error) {
-    //         if (error.response?.status === 401) {
-    //             try {
-    //                 const response = await axios.post(`${apiBaseUrl}/auth/jwt/refresh/`, {
-    //                     refresh: refreshToken
-    //                 });
-    //                 const newToken = response.data.access;
+    const fetchProfileData = async () => {
+        if (!userId) {
+            console.error("No userId provided for profile fetch.");
+            return;
+        }
+        try {
+            const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/${userId}/details/`, {
+                headers: { Authorization: authToken }
+            });
+            setProfileData(response.data);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                try {
+                    const response = await axios.post(`${apiBaseUrl}/auth/jwt/refresh/`, {
+                        refresh: refreshToken
+                    });
+                    const newToken = response.data.access;
                     
-    //                 saveAuthToken(newToken, refreshToken);
+                    saveAuthToken(newToken, refreshToken);
                     
-    //                 const retryResponse = await axios.get(`${apiBaseUrl}/api/accounts/profile/read/${userId}`, {
-    //                     headers: { Authorization: `JWT ${newToken}` }
-    //                 });
-    //                 setProfileData(retryResponse.data);
-    //             } catch (refreshError) {
-    //                 console.error("Failed to refresh token:", refreshError);
-    //             }
-    //         } else {
-    //             console.error("Profile fetch error:", error.message);
-    //         }
-    //     }
-    // };
+                    const retryResponse = await axios.get(`${apiBaseUrl}/api/accounts/profile/read/${userId}`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    setProfileData(retryResponse.data);
+                } catch (refreshError) {
+                    console.error("Failed to refresh token:", refreshError);
+                }
+            } else {
+                console.error("Profile fetch error:", error.message);
+            }
+        }
+    };
 
-    // const checkFollowStatus = async () => {
-    //     try {
-    //         const response = await axios.get(`${apiBaseUrl}/api/accounts/follow/status/${userId}`, {
-    //             headers: { Authorization: authToken }
-    //         });
-    //         setIsFollowing(response.data.is_following);
-    //     } catch (error) {
-    //         console.error("Follow status check error:", error.message);
-    //     }
-    // };
+    const checkFollowStatus = async () => {
+        try {
+            const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/${userData.id}/is-following/`, {
+                headers: { Authorization: authToken }
+            });
+            setIsFollowing(response.data.is_following);
+            console.log(response.data);
+        } catch (error) {
+            console.error("Follow status check error:", error.message);
+        }
+    };
 
     const toggleFollow = async () => {
         if (followLoading) return;
@@ -116,10 +121,10 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
         setFollowLoading(true);
         try {
             // const endpoint = isFollowing 
-            //     ? `${apiBaseUrl}/api/accounts/unfollow/${userId}` 
-            //     : `${apiBaseUrl}/api/accounts/${userId}/follow`;
+            //     ? `${apiBaseUrl}/api/accounts/${userData.id}/unfollow/` 
+            //     : `${apiBaseUrl}/api/accounts/${userData.id}/follow`;
             
-            const endpoint = `${apiBaseUrl}/api/accounts/profile/${userData.id}/follow`;
+            const endpoint = `${apiBaseUrl}/api/accounts/profile/${userData.id}/unfollow`;
 
             // console.log(endpoint);
 
@@ -171,7 +176,10 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
     useEffect(() => {
         if (authToken && userId) {
             fetchUserData();
+            console.log(userData);
             // fetchProfileData();
+            // console.log(profileData);
+            
             // checkFollowStatus();
         }
     }, [authToken, userId]);
@@ -283,7 +291,8 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                     </View>
                 </View>
 
-                <Postings selection={selected} apiBaseUrl={apiBaseUrl} userId={userId} />
+                
+                <Postings selection={selected} apiBaseUrl={apiBaseUrl} userId={userData.id} />
             </ScrollView>
 
             <NavBar navigation={navigation} page="FollowPage" />

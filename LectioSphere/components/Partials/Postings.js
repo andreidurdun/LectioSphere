@@ -90,7 +90,9 @@ export default function Postings ({ apiBaseUrl, selection }) {
                 </View>
             </View>
         );
-    }    return (
+    }    
+    
+    return (
         <View style={styles.card}>
             {posts.map((post, index) => (
                 <PostPartial postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={`${selection}-${post.id || index}`} />

@@ -686,6 +686,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
     }
 
 
+    console.log(post);
 
     if (post.action == "finished_reading" || post.progress >= post.book.nr_pages)
     {

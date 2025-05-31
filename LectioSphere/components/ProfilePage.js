@@ -147,6 +147,8 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
 
     // console.log("Profile Data:", profileData);
 
+    console.log(profileData);
+
     return (
         <SafeAreaView style={styles.screen}>
             <TopBar pageName="ProfilePage" />
@@ -170,11 +172,11 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                             <View style={styles.textInfo}>
                                 <View style={styles.followersInfo}>
                                     <Text style={styles.followers}>
-                                        {profileData?.follower_count || 0} {'\n'}followers
+                                        {profileData?.profile.followers_count || 0} {'\n'}followers
                                     </Text>
                                     <View style={styles.verticalLine}></View>
                                     <Text style={styles.followers}>
-                                        {profileData?.following_count || 0} {'\n'}following
+                                        {profileData?.profile.following_count || 0} {'\n'}following
                                     </Text>
                                 </View>
                                 <View style={styles.nameAndEdit}>
