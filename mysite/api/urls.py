@@ -58,6 +58,8 @@ urlpatterns = [
    path('posts/reviews/followed/<str:book_id>/', PostsView.as_view({"get": "reviews_for_followed_users"}), name='reviews-for-followed-users'),
    path('posts/reviews/<str:book_id>/', PostsView.as_view({"get": "reviews_for_book"}), name='reviews-for-book'),
    path('posts/user/<int:profile_id>/', PostsView.as_view({"get": "posts_for_user"}), name='posts-for-user'),
+   path("posts/post_type/<int:profile_id>/", PostsView.as_view({"get": "post_type_posts_for_user"}), name="post-type-posts-for-user"),
+   path("posts/non_post_type/<int:profile_id>/", PostsView.as_view({"get": "non_post_type_posts_for_user"}), name="non-post-type-posts-for-user"),
 
 
 

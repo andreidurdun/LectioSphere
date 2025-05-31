@@ -235,6 +235,32 @@ class PostsView(ViewSet):
         return Response(serializer.data)
 
 
+    # Postarile de tip POST pentru un anumit profil
+    @action(detail=False, methods=["get"])
+    def post_type_posts_for_user(self, request, profile_id=None):
+        try:
+            profile = Profile.objects.get(pk=profile_id)
+            user = profile.user
+        except Profile.DoesNotExist:
+            return Response({"detail": "Profile not found."}, status=404)
+
+        posts = Post.objects.filter(user=user, action=Post.ActionChoices.POST).order_by('-date')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+    # Postarile NON-POST pentru un anumit profil
+    @action(detail=False, methods=["get"])
+    def non_post_type_posts_for_user(self, request, profile_id=None):
+        try:
+            profile = Profile.objects.get(pk=profile_id)
+            user = profile.user
+        except Profile.DoesNotExist:
+            return Response({"detail": "Profile not found."}, status=404)
+
+        posts = Post.objects.filter(user=user).exclude(action=Post.ActionChoices.POST).order_by('-date')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
 
 
 

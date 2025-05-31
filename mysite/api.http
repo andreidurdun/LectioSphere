@@ -215,6 +215,16 @@ Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWN
 
 
 
+### 7. Postari de tip post pentru un user
+GET http://localhost:8000/posts/post_type/1/
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4Njc5MjI5LCJpYXQiOjE3NDg2NzU2MjksImp0aSI6ImRkZWEzYjNlZjZjZDRjNjJhNmZlMTc3NTIxOTNjMGI4IiwidXNlcl9pZCI6M30.nV6v0NPOjnwPe6P3_cpDitlv4xKNdD4fOq4keZHTZzs
+
+
+
+### 8. postrai de top non-post pentru un user 
+GET http://localhost:8000/posts/non_post_type/1/
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4Njc5MjI5LCJpYXQiOjE3NDg2NzU2MjksImp0aSI6ImRkZWEzYjNlZjZjZDRjNjJhNmZlMTc3NTIxOTNjMGI4IiwidXNlcl9pZCI6M30.nV6v0NPOjnwPe6P3_cpDitlv4xKNdD4fOq4keZHTZzs
+
 
 
 
@@ -260,7 +270,7 @@ Content-Type: application/json
 ### 
 # facem o postare de tip "post" -OK
 POST http://localhost:8000/posts/add/
-Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ3NDc4ODIxLCJpYXQiOjE3NDc0NzUyMjEsImp0aSI6ImE1NzNhMTQwNDFjMTQxYzViYWRkOGViNzk4MThjZDhjIiwidXNlcl9pZCI6MX0.PuG1Q08DcUugGvqRm8iS9XsHfy1vH6QNQs1kON84PBA
+Authorization: JWT  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4Njc5MjY0LCJpYXQiOjE3NDg2NzU2NjQsImp0aSI6IjM5MTY0NDliNWRkNDRkNzdiNzgyY2I5ZDM0ZWUxYTI2IiwidXNlcl9pZCI6MX0.wiu8VFHhVyY2JyUhdTRioVleKUqV1SF9MSCsEydqAZs
 Content-Type: application/json
 
 {
