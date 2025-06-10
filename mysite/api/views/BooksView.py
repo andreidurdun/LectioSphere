@@ -9,13 +9,13 @@ class BooksView(ViewSet):
 
     @action(detail=False, methods=["post"])
     def add_to_currently_reading(self, request):
-        user = request.user  # Obține utilizatorul autentificat
-        book_data = request.data.get("book")  # Obține datele cărții din cerere
+        user = request.user  # obtine utilizatorul autentificat
+        book_data = request.data.get("book")  # obtine datele cartii din cerere
 
         if not book_data:
             return Response({"error": "Missing 'book' data in request"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verificăm dacă cartea există deja în baza de date
+        # verificam daca cartea exista deja in baza de date
         book, created = Book.objects.get_or_create(
             ISBN=book_data.get("ISBN"),
             defaults={
@@ -32,13 +32,13 @@ class BooksView(ViewSet):
             },
         )
 
-        # Verificăm dacă raftul "Currently Reading" există pentru utilizator
+        # verificam daca raftul "Currently Reading" exista pentru utilizator
         shelf, created = Shelf.objects.get_or_create(
             user=user,
             name="Currently Reading",
         )
 
-        # Adăugăm cartea în tabela de legătură ShelfBooks
+        # adaugam cartea in tabela de legatura ShelfBooks
         shelf_books, created = ShelfBooks.objects.get_or_create(shelf=shelf, book=book)
 
         if not created:
@@ -50,12 +50,12 @@ class BooksView(ViewSet):
     @action(detail=False, methods=["post"])
     def add_to_read(self, request):
         user = request.user  
-        book_data = request.data.get("book")  # Obține datele cărții din cerere
+        book_data = request.data.get("book")  # obtine datele cartii din cerere
 
         if not book_data:
             return Response({"error": "Missing 'book' data in request"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verificăm dacă cartea există deja în baza de date
+        # verificam daca cartea exista deja in baza de date
         book, created = Book.objects.get_or_create(
             ISBN=book_data.get("ISBN"),
             defaults={
@@ -72,13 +72,13 @@ class BooksView(ViewSet):
             },
         )
 
-        # Verificăm dacă raftul "Read" există pentru utilizator
+        # verificam daca raftul "Read" exista pentru utilizator
         shelf, created = Shelf.objects.get_or_create(
             user=user,
             name="Read",
         )
 
-        # Adăugăm cartea în tabela de legătură ShelfBooks
+        # adaugam cartea in tabela de legatura ShelfBooks
         shelf_books, created = ShelfBooks.objects.get_or_create(shelf=shelf, book=book)
 
         if not created:
@@ -90,12 +90,12 @@ class BooksView(ViewSet):
     @action(detail=False, methods=["post"])
     def add_to_read_list(self, request):
         user = request.user  
-        book_data = request.data.get("book")  # Obține datele cărții din cerere
+        book_data = request.data.get("book")  # obtine datele cartii din cerere
 
         if not book_data:
             return Response({"error": "Missing 'book' data in request"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verificăm dacă cartea există deja în baza de date
+        # verificam daca cartea exista deja in baza de date
         book, created = Book.objects.get_or_create(
             ISBN=book_data.get("ISBN"), #criteriul dupa care se cauta in bd
             defaults={
@@ -112,13 +112,13 @@ class BooksView(ViewSet):
             },
         )
 
-        # Verificăm dacă raftul "Want to Read" există pentru utilizator
+        # verificam daca raftul "Want to Read" exista pentru utilizator
         shelf, created = Shelf.objects.get_or_create(
             user=user,
             name="Read List",
         )
 
-        # Adăugăm cartea în tabela de legătură ShelfBooks
+        # adaugam cartea in tabela de legatura ShelfBooks
         shelf_books, created = ShelfBooks.objects.get_or_create(shelf=shelf, book=book)
 
         if not created:
@@ -130,87 +130,87 @@ class BooksView(ViewSet):
     @action(detail=False, methods=["delete"])
     def remove_from_currently_reading(self, request):
         user = request.user  
-        book_data = request.data.get("ISBN")  # Obține datele cărții din cerere
+        book_data = request.data.get("ISBN")  # obtine datele cartii din cerere
 
         if not book_data:
             return Response({"error": "Missing 'book' data in request"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verificăm dacă raftul "Currently Reading" există pentru utilizator
+        # verificam daca raftul "Currently Reading" exista pentru utilizator
         shelf = Shelf.objects.filter(user=user, name="Currently Reading").first()
 
         if not shelf:
             return Response({"error": "Shelf 'Currently Reading' does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Căutăm cartea în tabela de legătură ShelfBooks
+        # cautam cartea in tabela de legatura ShelfBooks
         shelf_books = ShelfBooks.objects.filter(shelf=shelf, book__ISBN=book_data).first()
 
         if not shelf_books:
             return Response({"error": "Book not found in 'currently reading'"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Ștergem cartea din tabela de legătură ShelfBooks
+        # stergem cartea din tabela de legatura ShelfBooks
         shelf_books.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     @action(detail=False, methods=["delete"])
     def remove_from_read(self, request):
         user = request.user  
-        book_data = request.data.get("ISBN")  # Obține datele cărții din cerere
+        book_data = request.data.get("ISBN")  # obtine datele cartii din cerere
 
         if not book_data:
             return Response({"error": "Missing 'book' data in request"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verificăm dacă raftul "Read" există pentru utilizator
+        # verificam daca raftul "Read" exista pentru utilizator
         shelf = Shelf.objects.filter(user=user, name="Read").first()
 
         if not shelf:
             return Response({"error": "Shelf 'Read' does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Căutăm cartea în tabela de legătură ShelfBooks
+        # cautam cartea in tabela de legatura ShelfBooks
         shelf_books = ShelfBooks.objects.filter(shelf=shelf, book__ISBN=book_data).first()
 
         if not shelf_books:
             return Response({"error": "Book not found in 'read'"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Ștergem cartea din tabela de legătură ShelfBooks
+        # stergem cartea din tabela de legatura ShelfBooks
         shelf_books.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     @action(detail=False, methods=["delete"])
     def remove_from_read_list(self, request):
         user = request.user  
-        book_data = request.data.get("ISBN")  # Obține datele cărții din cerere
+        book_data = request.data.get("ISBN")  # obtine datele cartii din cerere
 
         if not book_data:
             return Response({"error": "Missing 'book' data in request"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verificăm dacă raftul "Read List" există pentru utilizator
+        # verificam daca raftul "Read List" exista pentru utilizator
         shelf = Shelf.objects.filter(user=user, name="Read List").first()
 
         if not shelf:
             return Response({"error": "Shelf 'Read List' does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Căutăm cartea în tabela de legătură ShelfBooks
+        # cautam cartea in tabela de legatura ShelfBooks
         shelf_books = ShelfBooks.objects.filter(shelf=shelf, book__ISBN=book_data).first()
 
         if not shelf_books:
             return Response({"error": "Book not found in 'read list'"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Ștergem cartea din tabela de legătură ShelfBooks
+        # stergem cartea din tabela de legatura ShelfBooks
         shelf_books.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
     @action(detail=False, methods=["get"])
     def get_currently_reading(self, request):
-        user = request.user  # Obține utilizatorul autentificat
+        user = request.user  # obtine utilizatorul autentificat
 
-        # Verificăm dacă raftul "Currently Reading" există pentru utilizator
+        # verificam daca raftul "Currently Reading" exista pentru utilizator
         shelf = Shelf.objects.filter(user=user, name="Currently Reading").first()
 
         if not shelf:
             return Response({"error": "Shelf 'Currently Reading' does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Obținem toate cărțile din raftul "Currently Reading"
+        # obtinem toate cartile din raftul "Currently Reading"
         shelf_books = ShelfBooks.objects.filter(shelf=shelf)
         books = [shelf_book.book for shelf_book in shelf_books]
         serializer = BookSerializer(books, many=True)
@@ -218,15 +218,15 @@ class BooksView(ViewSet):
     
     @action(detail=False, methods=["get"])
     def get_read(self, request):
-        user = request.user  # Obține utilizatorul autentificat
+        user = request.user  # obtine utilizatorul autentificat
 
-        # Verificăm dacă raftul "Read" există pentru utilizator
+        # verificam daca raftul "Read" exista pentru utilizator
         shelf = Shelf.objects.filter(user=user, name="Read").first()
 
         if not shelf:
             return Response({"error": "Shelf 'Read' does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Obținem toate cărțile din raftul "Read"
+        # obtinem toate cartile din raftul "Read"
         shelf_books = ShelfBooks.objects.filter(shelf=shelf)
         books = [shelf_book.book for shelf_book in shelf_books]
         serializer = BookSerializer(books, many=True)
@@ -234,15 +234,15 @@ class BooksView(ViewSet):
     
     @action(detail=False, methods=["get"])
     def get_read_list(self, request):
-        user = request.user  # Obține utilizatorul autentificat
+        user = request.user  # obtine utilizatorul autentificat
 
-        # Verificăm dacă raftul "Read List" există pentru utilizator
+        # verificam daca raftul "Read List" exista pentru utilizator
         shelf = Shelf.objects.filter(user=user, name="Read List").first()
 
         if not shelf:
             return Response({"error": "Shelf 'Read List' does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Obținem toate cărțile din raftul "Read List"
+        # obtinem toate cartile din raftul "Read List"
         shelf_books = ShelfBooks.objects.filter(shelf=shelf)
         books = [shelf_book.book for shelf_book in shelf_books]
         serializer = BookSerializer(books, many=True)

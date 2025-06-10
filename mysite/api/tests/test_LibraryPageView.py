@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from django.contrib.auth import get_user_model
 from api.models import Shelf, ShelfBooks, Book
+from accounts.models import Profile  # <-- dacă folosești Profile
 
 User = get_user_model()
 
@@ -10,19 +11,18 @@ class LibraryPageViewTestCase(APITestCase):
         self.user = User.objects.create_user(
             email="reader@example.com",
             username="reader",
-            first_name="Reader",
-            last_name="User",
             password="testpass",
             goal_books=5,
             goal_pages=1000
         )
-
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        # Creează raftul "Read" manual dacă nu există
-        self.read_shelf, _ = Shelf.objects.get_or_create(user=self.user, name="Read")
+        # Asigură-te că profilul există (dacă nu se creează automat)
+        Profile.objects.get_or_create(user=self.user)
 
+        # Raft standard și carte
+        self.read_shelf = Shelf.objects.create(user=self.user, name="Read")
         self.book = Book.objects.create(
             title="Sample Book",
             author="Jane Author",
@@ -32,7 +32,6 @@ class LibraryPageViewTestCase(APITestCase):
             nr_pages=250,
             description="This is a test book"
         )
-
         ShelfBooks.objects.create(shelf=self.read_shelf, book=self.book)
 
     def test_reading_challenge_progress(self):
@@ -49,6 +48,10 @@ class LibraryPageViewTestCase(APITestCase):
             "goal_pages": 2000
         })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(int(response.data["goal_books"]), 10)
+        self.assertEqual(int(response.data["goal_pages"]), 2000)
+
+        # Verificăm și în user
         self.user.refresh_from_db()
         self.assertEqual(self.user.goal_books, 10)
         self.assertEqual(self.user.goal_pages, 2000)
