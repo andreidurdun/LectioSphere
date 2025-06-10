@@ -194,8 +194,68 @@ class LibraryPageView(ViewSet):
 
         shelf.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-            
-        
+    
+    
+    
+    #fara numele raftului in url
+    @action(detail=False, methods=["post"])
+    def add_book_to_shelf(self, request):
+        user = request.user
+        shelf_name = request.data.get("shelf_name")
+        book_data = request.data.get("book")
+
+        if not shelf_name or not book_data:
+            return Response({"error": "Both shelf_name and book data are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Găsim raftul (fără create)
+        shelf = Shelf.objects.filter(user=user, name__iexact=shelf_name).first()
+        if not shelf:
+            return Response({"error": f"Shelf '{shelf_name}' does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        isbn = book_data.get("ISBN")
+        if not isbn:
+            return Response({"error": "ISBN is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        from api.models import Book
+        book, _ = Book.objects.get_or_create(ISBN=isbn, defaults=book_data)
+
+        if ShelfBooks.objects.filter(shelf=shelf, book=book).exists():
+            return Response({"message": "Book is already in this shelf."}, status=status.HTTP_200_OK)
+
+        ShelfBooks.objects.create(shelf=shelf, book=book)
+        return Response({"message": f"Book added to shelf '{shelf.name}' successfully."}, status=status.HTTP_201_CREATED)
+
+              
+              
+    @action(detail=False, methods=["post"], url_path=r"add_book_to_shelf/(?P<shelf_name>[^/]+)")
+    def add_book_to_shelf_url(self, request, shelf_name=None):
+        user = request.user
+        book_data = request.data.get("book")
+
+        if not shelf_name or not book_data:
+            return Response({"error": "Shelf name (in URL) and book data (in body) are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        decoded_shelf_name = unquote(shelf_name)
+
+        shelf = Shelf.objects.filter(user=user, name__iexact=decoded_shelf_name).first()
+        if not shelf:
+            return Response({"error": f"Shelf '{decoded_shelf_name}' does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        isbn = book_data.get("ISBN")
+        if not isbn:
+            return Response({"error": "ISBN is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        from api.models import Book
+        book, _ = Book.objects.get_or_create(ISBN=isbn, defaults=book_data)
+
+        if ShelfBooks.objects.filter(shelf=shelf, book=book).exists():
+            return Response({"message": "Book is already in this shelf."}, status=status.HTTP_200_OK)
+
+        ShelfBooks.objects.create(shelf=shelf, book=book)
+        return Response({"message": f"Book added to shelf '{shelf.name}' successfully."}, status=status.HTTP_201_CREATED)
+
+    
+                
 
 
 

@@ -54,7 +54,7 @@ Content-Type: application/json
 
 {
 
-        "email" : "vacarumarta@gmail.com",
+    "email" : "vacarumarta@gmail.com",
     "password" : "NouaParola123!"
 
 }
@@ -425,4 +425,43 @@ Content-Type: application/json
 {
   "goal_books": 20,
   "goal_pages": 5000
+}
+
+
+
+#fara numele raftului in url
+###
+
+POST http://localhost:8000/library/add_book_to_shelf/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NTY5MDU5LCJpYXQiOjE3NDk1NjU0NTksImp0aSI6IjM1N2E2YmU1MjAzMTQ4ZDlhZmYzZDQwMDYxNjFiMDA0IiwidXNlcl9pZCI6MX0.qj2jKB4q6WCiyU6o5cii2Vs24JMZEyD8J5exzMx18yQ
+Content-Type: application/json
+
+{
+  "shelf_name": "Nefavorite",
+  "book": {
+    "ISBN": "9780143127741",
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "genre": "Science Fiction",
+    "rating": 4.7,
+    "nr_pages": 384,
+    "publication_year": 2014,
+    "series": "",
+    "description": "A story about survival on Mars."
+  }
+}
+
+#cu numele raftului in url
+###
+POST http://localhost:8000/library/add_book_to_shelf_url/Nefavorite/
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NTY5MDU5LCJpYXQiOjE3NDk1NjU0NTksImp0aSI6IjM1N2E2YmU1MjAzMTQ4ZDlhZmYzZDQwMDYxNjFiMDA0IiwidXNlcl9pZCI6MX0.qj2jKB4q6WCiyU6o5cii2Vs24JMZEyD8J5exzMx18yQ
+
+{
+    "book": {
+        "ISBN": "9780140449267",
+        "title": "uuu",
+        "author": "Leo Tolstoy",
+        "nr_pages": 1225
+    }
 }
