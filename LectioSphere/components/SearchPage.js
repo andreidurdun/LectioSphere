@@ -17,25 +17,25 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
     //Fiction
     const [adventure, setAdventure] = useState([]);
-    /*const [fantasy, setFantasy] = useState([]);
+    const [fantasy, setFantasy] = useState([]);
     const [romance, setRomance] = useState([]);
     const [thriller, setThriller] = useState([]);
-    const [scienceFiction, setScienceFiction] = useState([]);*/
+    const [scienceFiction, setScienceFiction] = useState([]);
 
     //Non-Fiction
-    /*const [biography, setBiography] = useState([]);
+    const [biography, setBiography] = useState([]);
     const [history, setHistory] = useState([]);
-    const [psychology, setPsychology] = useState([]);*/
+    const [psychology, setPsychology] = useState([]);
 
     //Professional & Technical
-    /*const [business, setBusiness] = useState([]);
+    const [business, setBusiness] = useState([]);
     const [economics, setEconomics] = useState([]);
     const [technology, setTechnology] = useState([]);
     
     //Lifestyle
     const [health, setHealth] = useState([]);
     const [nutrition, setNutrition] = useState([]);
-    const [travel, setTravel] = useState([]);*/
+    const [travel, setTravel] = useState([]);
 
     const [active, setActive] = useState(page);
 
@@ -131,21 +131,21 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
         if (isAuthenticated) {
             fetchUserData();
             fetchCategory('recent', setRecentlyPublishedItems);
-            // fetchCategory('popular', setPopularItems);
-            // fetchCategory('adventure', setAdventure);
-            // fetchCategory('fantasy', setFantasy);
-            // fetchCategory('romance', setRomance);
-            // fetchCategory('thriller', setThriller);
-            // fetchCategory('science fiction', setScienceFiction);
-            // fetchCategory('biography', setBiography);
-            // fetchCategory('history', setHistory);
-            // fetchCategory('psychology', setPsychology);
-            // fetchCategory('business', setBusiness);
-            // fetchCategory('economics', setEconomics);
-            // fetchCategory('technology', setTechnology);
-            // fetchCategory('health', setHealth);
-            // fetchCategory('nutrition', setNutrition);
-            // fetchCategory('travel', setTravel);
+            fetchCategory('popular', setPopularItems);
+            fetchCategory('adventure', setAdventure);
+            fetchCategory('fantasy', setFantasy);
+            fetchCategory('romance', setRomance);
+            fetchCategory('thriller', setThriller);
+            fetchCategory('science fiction', setScienceFiction);
+            fetchCategory('biography', setBiography);
+            fetchCategory('history', setHistory);
+            fetchCategory('psychology', setPsychology);
+            fetchCategory('business', setBusiness);
+            fetchCategory('economics', setEconomics);
+            fetchCategory('technology', setTechnology);
+            fetchCategory('health', setHealth);
+            fetchCategory('nutrition', setNutrition);
+            fetchCategory('travel', setTravel);
         }
     }, [isAuthenticated]);
 
@@ -228,7 +228,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         </ScrollView>
                     </View>
 
-                    {/* <View style={styles.container}>
+                    <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Fantasy' })}>
                             <View>
                                 <Text style={styles.textContainer}> Fantasy </Text>
@@ -307,11 +307,11 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                             ))}
                         </ScrollView>
                     </View>
-                    */}
+                   
                     
 
                     {/* Non-Fiction */}
-                    {/*
+                    
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategory}> Non-Fiction </Text>
                         <View style={styles.horizontalBar} />
@@ -376,10 +376,10 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                             ))}
                         </ScrollView>
                     </View>
-                    */}
+                   
                     
                     {/* Professional & Technology */}
-                    {/*
+                    
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategory}> Professional & Technology </Text>
                         <View style={styles.horizontalBar} />
@@ -444,10 +444,10 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                             ))}
                         </ScrollView>
                     </View>
-                    */}
+                   
 
                     {/* Lifestyle */}
-                    {/*
+                    
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategory}> Lifestyle </Text>
                         <View style={styles.horizontalBar} />
@@ -512,7 +512,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                             ))}
                         </ScrollView>
                     </View>
-                    */}
+                   
 
                 </View>
 

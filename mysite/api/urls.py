@@ -74,7 +74,7 @@ urlpatterns = [
     path("posts/<int:pk>/list_comments/", PostsView.as_view({"get": "list_comments"}), name="list-comments"),
     path("posts/<int:pk>/has_liked/", PostsView.as_view({"get": "has_liked"}), name="has-liked"),
 
-    
+    path("library/add_book_to_shelf/<str:shelf_name>/", LibraryPageView.as_view({"post": "add_book_to_shelf"}), name="add-book-to-shelf"),
    path("library/", LibraryPageView.as_view({'get': 'list'}), name="library-page"),
    path("library/delete_shelf/<str:name>/", LibraryPageView.as_view({"delete": "delete_shelf"}), name="delete-shelf"),
 
@@ -93,13 +93,12 @@ urlpatterns = [
    path("library/reading_challenge/", LibraryPageView.as_view({"get": "reading_challenge"})),
    path("library/shelves/", LibraryPageView.as_view({"get": "shelves"})),
    path("library/book_status/", LibraryPageView.as_view({"get": "book_status"})),
-   
      
      
      
      
   path("library/shelf/<str:name>/", ShelfByNameView.as_view(), name="shelf-by-name"),
-
+  
      
     path("api/", include(router2.urls)),  #pt rafturi
 

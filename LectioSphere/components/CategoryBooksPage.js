@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, Image, FlatList, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, Image, FlatList, TouchableWithoutFeedback, TouchableNativeFeedback } from 'react-native';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -87,7 +87,13 @@ const CategoryBooksPage = ({ route, navigation, removeAuthToken, isAuthenticated
                 }
             }
             // Filtrăm cărțile care au un `thumbnail` valid
-            const booksWithThumbnail = response.data.filter(book => book.thumbnail);
+            const booksWithThumbnail = response.data.filter(book => book.thumbnail).map(book => ({
+                ...book,
+                title: book.title ?? 'Unknown title',
+                author: book.author ?? (book.authors?.join(', ') ?? 'Unknown author'),
+                rating: book.rating ?? book.average_rating ?? 'N/A',
+                genre: book.genre ?? 'General',
+            }));
             setBooks(booksWithThumbnail);
         } catch (error) {
             if (error.response?.status === 401) {
@@ -111,7 +117,13 @@ const CategoryBooksPage = ({ route, navigation, removeAuthToken, isAuthenticated
                             });
                         }
                     }
-                    const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail);
+                    const booksWithThumbnail = retryResponse.data.filter(book => book.thumbnail).map(book => ({
+                        ...book,
+                        title: book.title ?? 'Unknown title',
+                        author: book.author ?? (book.authors?.join(', ') ?? 'Unknown author'),
+                        rating: book.rating ?? book.average_rating ?? 'N/A',
+                        genre: book.genre ?? 'General',
+                    }));
                     setBooks(booksWithThumbnail);
                 } else {
                     console.error(`Unable to refresh token for ${categoryName}.`);
@@ -123,15 +135,23 @@ const CategoryBooksPage = ({ route, navigation, removeAuthToken, isAuthenticated
     };
 
     const renderBook = ({ item }) => (
-        <TouchableWithoutFeedback onPress={() => console.log("Apasat")}>
+        <TouchableWithoutFeedback onPress={() => handleBookPress(item)}>
             <View style={styles.bookContainer}>
                 <Image source={{ uri: item.thumbnail }} style={styles.covers} />
                 <View style={styles.infoContainer}>
-                    <Text onPress={() => console.log("Apasat")} style={styles.textInfo}>{item.title}</Text>
+                    <Text style={styles.textInfoTitle}>{item.title}</Text>
+                    <Text style={styles.textInfoAuthor}>{item.author}</Text>
+                    <Text style={styles.textInfo}>{item.rating}</Text>
                 </View>
             </View>
         </TouchableWithoutFeedback>
-      );
+    );
+
+    const handleBookPress = (book) => {
+        navigation.navigate('BookShow', { 
+            bookData: JSON.stringify(book)
+        });
+    };
 
     const handleLogout = async () => {
         Alert.alert(
@@ -246,12 +266,26 @@ const styles = StyleSheet.create({
     infoContainer: {    
         backgroundColor: '#F7EDF1',  
         width: '65%',
+        marginLeft: 10,
     },
     textInfo: {
         flexWrap: 'wrap', 
-        fontFamily: 'Nunito_400Regular',
+        fontFamily: 'Nunito_500Medium',
         color: '#18101D',
     },
+    textInfoTitle: {
+        flexWrap: 'wrap', 
+        fontFamily: 'Nunito_500Medium',
+        color: '#613F75',
+        fontSize: 18,
+    },
+    textInfoAuthor: {
+        flexWrap: 'wrap', 
+        fontFamily: 'Nunito_600SemiBold',
+        color: '#18101D',
+        marginBottom: 8,
+    },
+    
 });
 
 export default CategoryBooksPage;

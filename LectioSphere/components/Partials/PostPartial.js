@@ -138,8 +138,9 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                 handleWantToRead();
                 break;
             case 'add_to_shelf':
-                console.log('Add to Shelf'); // AICI ANDREEA
-                break;            case 'create_post':
+                handleAddToShelf();
+                break;            
+            case 'create_post':
                 handleCreatePost();
                 break;
             case 'add_review':
@@ -351,6 +352,35 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                 }
             );
 
+            const bookPayload = {
+                book: {
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
+                    id: bookData.id, // poate fi Google ID
+                    title: bookData.title ?? 'Unknown Title',
+                    author: bookData.author ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
+                    genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
+                    rating: bookData.rating ?? bookData.average_rating ?? 0,
+                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
+                    publication_year: bookData.publication_year ?? (
+                        bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
+                    ),
+                    series: bookData.series ?? '',
+                    description: bookData.description ?? '',
+                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                }
+            };
+
+            const responseShelf = await axios.post(
+                `${apiBaseUrl}/books/read/add/`,
+                bookPayload,
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
             Alert.alert(
                 'Success',
                 `You finished reading this book!`,
@@ -398,9 +428,100 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                 }
             );
 
+            const bookPayload = {
+                book: {
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
+                    id: bookData.id, // poate fi Google ID
+                    title: bookData.title ?? 'Unknown Title',
+                    author: bookData.author ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
+                    genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
+                    rating: bookData.rating ?? bookData.average_rating ?? 0,
+                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
+                    publication_year: bookData.publication_year ?? (
+                        bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
+                    ),
+                    series: bookData.series ?? '',
+                    description: bookData.description ?? '',
+                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                }
+            };
+
+            const responseShelf = await axios.post(
+                `${apiBaseUrl}/books/read_list/add/`,
+                bookPayload,
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
             Alert.alert(
                 'Success',
                 `Your now want to read this book!`,
+                [{ text: 'OK' }]
+            );
+        } catch (error) {
+            let errorMessage = 'Failed to annotate book.';
+            if (error.response && error.response.data) {
+                if (typeof error.response.data === 'string') {
+                    errorMessage = error.response.data;
+                } else if (error.response.data.detail) {
+                    errorMessage = error.response.data.detail;
+                }
+            }
+            Alert.alert(
+                'Update Failed',
+                errorMessage,
+                [{ text: 'OK' }]
+            );
+        }
+    };
+
+    const handleAddToShelf= async () => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You are not logged in.');
+                return;
+            }
+
+            // Try refresh token if needed (optional, depends on your backend)
+            // await refreshAccessToken();
+
+            const bookPayload = {
+                book: {
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
+                    id: bookData.id, // poate fi Google ID
+                    title: bookData.title ?? 'Unknown Title',
+                    authors: bookData.authors ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
+                    genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
+                    rating: bookData.rating ?? bookData.average_rating ?? 0,
+                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
+                    publication_year: bookData.publication_year ?? (
+                        bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
+                    ),
+                    series: bookData.series ?? '',
+                    description: bookData.description ?? '',
+                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                }
+            };
+
+            const responseShelf = await axios.post(
+                `${apiBaseUrl}/books/read_list/add/`,
+                bookPayload,
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            Alert.alert(
+                'Success',
+                `You can find this book in your shelf!`,
                 [{ text: 'OK' }]
             );
         } catch (error) {
@@ -438,6 +559,35 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                     pages_read: pagesRead,
                     id: post.book.id // Most APIs expect 'book_id', not 'id'
                 },
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const bookPayload = {
+                book: {
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
+                    id: bookData.id, // poate fi Google ID
+                    title: bookData.title ?? 'Unknown Title',
+                    author: bookData.author ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
+                    genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
+                    rating: bookData.rating ?? bookData.average_rating ?? 0,
+                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
+                    publication_year: bookData.publication_year ?? (
+                        bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
+                    ),
+                    series: bookData.series ?? '',
+                    description: bookData.description ?? '',
+                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                }
+            };
+
+            const responseShelf = await axios.post(
+                `${apiBaseUrl}/books/currently_reading/add/`,
+                bookPayload,
                 {
                     headers: {
                         Authorization: `JWT ${token}`,

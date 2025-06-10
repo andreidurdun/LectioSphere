@@ -12,6 +12,9 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
     const [active, setActive] = useState(page);
 
     const [shelves, setShelves] = useState([]);
+    const [shelfRead, setShelfRead] = useState([]);
+    const [shelfReading, setShelfReading] = useState([]);
+    const [shelfReadlist, setShelfReadlist] = useState([]);
 
 
 
@@ -96,11 +99,92 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
             }
         }
     };
+
+    const fetchShelf = async (shelfName) => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/${shelfName}/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const {shelf_name, books} = response.data;
+            setShelfRead(books);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/${shelfName}/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const {shelf_name, books} = retryResponse.data;
+                    setShelfBooks(books);
+                } else {
+                    console.error(`Unable to refresh token for shelf.`);
+                }
+            } else {
+                console.error(`Error loading shelf:`, error.message);
+            }
+        }
+    };
+
+    const fetchShelfReading = async () => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const books = response.data;
+            setShelfReading(books);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const books = retryResponse.data;
+                    setShelfReading(books);
+                } else {
+                    console.error(`Unable to refresh token for shelf.`);
+                }
+            } else {
+                console.error(`Error loading shelf:`, error.message);
+            }
+        }
+    };
+
+    const fetchShelfReadlist = async () => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const books = response.data;
+            setShelfReadlist(books);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const books = retryResponse.data;
+                    setShelfReadlist(books);
+                } else {
+                    console.error(`Unable to refresh token for shelf.`);
+                }
+            } else {
+                console.error(`Error loading shelf:`, error.message);
+            }
+        }
+    };
     
     useEffect(() => {
         if (isAuthenticated) {
             fetchUserData();
             fetchShelves();
+            fetchShelf('Read');
+            fetchShelfReading();
+            fetchShelfReadlist();
         }
     }, [isAuthenticated]);
 
@@ -120,45 +204,12 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         <View style={styles.horizontalBar} />
                     </View>
 
-                    {/* {[...Object.entries(shelves.standard_shelves || {}), ...Object.entries(shelves.custom_shelves || {})].map(
-                    ([shelfName, books], index) => {
-                        const booksArray = Array.isArray(books) ? books : [];
-                        return (
-                        <View key={index} style={styles.container}>
-                            <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: String(shelfName)  })}>
-                                <View>
-                                    <Text style={styles.textContainer} > {shelfName}</Text>
-                                </View>
-                            </TouchableNativeFeedback>
-                            {booksArray.length === 0 ? (
-                                <View style={styles.noBooksContainer}>
-                                    <Text style={styles.noBooksText}>No books yet</Text>
-                                </View>
-                            ) : (
-                            <ScrollView
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                style={styles.containerImages}
-                            >
-                                {booksArray.slice(0, 15).map((book, idx) => (
-                                <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                    <View>
-                                        <Image source={{ uri: book.thumbnail }} style={styles.covers} />
-                                    </View>
-                                </TouchableNativeFeedback>
-                                ))}
-                            </ScrollView>
-                            )}
-                        </View>
-                    )
-                }
-                )} */}
                     {/* Standard Shelves (dictionary-based) */}
-                    {Object.entries(shelves.standard_shelves || {}).map(([shelfName, books], index) => (
+                    {/* {Object.entries(shelves.standard_shelves || {}).map(([shelfName, books], index) => (
                         <View key={`standard-${index}`} style={styles.container}>
                             <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName })}>
                                 <View>
-                                    <Text style={styles.textContainer}>{shelfName}</Text>
+                                    <Text style={styles.textContainer}>  {shelfName}</Text>
                                 </View>
                             </TouchableNativeFeedback>
                             {books.length === 0 ? (
@@ -177,14 +228,86 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                                 </ScrollView>
                             )}
                         </View>
-                    ))}
+                    ))} */}
+
+
+
+
+                    <View style={styles.container}>
+                        <View>
+                            <View>
+                                <Text style={styles.textContainer}>  Read</Text>
+                            </View>
+                        </View>
+                            {shelfRead.length === 0 ? (
+                                <View style={styles.noBooksContainer}>
+                                    <Text style={styles.noBooksText}>No books yet</Text>
+                                </View>
+                            ) : (
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
+                                    {shelfRead.slice(0, 15).map((book, idx) => (
+                                        <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
+                                            <View>
+                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            </View>
+                                        </TouchableNativeFeedback>
+                                    ))}
+                                </ScrollView>
+                            )}
+                    </View>
+
+                    <View style={styles.container}>
+                        <View>
+                            <View>
+                                <Text style={styles.textContainer}>  Reading </Text>
+                            </View>
+                        </View>
+                            {shelfReading.length === 0 ? (
+                                <View style={styles.noBooksContainer}>
+                                    <Text style={styles.noBooksText}>No books yet</Text>
+                                </View>
+                            ) : (
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
+                                    {shelfReading.slice(0, 15).map((book, idx) => (
+                                        <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
+                                            <View>
+                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            </View>
+                                        </TouchableNativeFeedback>
+                                    ))}
+                                </ScrollView>
+                            )}
+                    </View>
+
+                    <View style={styles.container}>
+                        <View>
+                            <View>
+                                <Text style={styles.textContainer}>  Readlist</Text>
+                            </View>
+                        </View>
+                            {shelfReadlist.length === 0 ? (
+                                <View style={styles.noBooksContainer}>
+                                    <Text style={styles.noBooksText}>No books yet</Text>
+                                </View>
+                            ) : (
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
+                                    {shelfReadlist.slice(0, 15).map((book, idx) => (
+                                        <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
+                                            <View>
+                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            </View>
+                                        </TouchableNativeFeedback>
+                                    ))}
+                                </ScrollView>
+                            )}
+                    </View>
 
                     {/* Custom Shelves (list-based) */}
-                    {(shelves.custom_shelves || []).map((shelf, index) => (
+                    {(shelves.custom_shelves || []).slice(2).map((shelf, index) => (
                         <View key={`custom-${index}`} style={styles.container}>
                             <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: shelf.shelf_name })}>
                                 <View>
-                                    <Text style={styles.textContainer}>{shelf.shelf_name}</Text>
+                                    <Text style={styles.textContainer}>  {shelf.shelf_name}</Text>
                                 </View>
                             </TouchableNativeFeedback>
                             {shelf.books.length === 0 ? (
@@ -196,7 +319,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                                     {shelf.books.slice(0, 15).map((book, idx) => (
                                         <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
                                             <View>
-                                                <Image source={{ uri: book.thumbnail }} style={styles.covers} />
+                                                <Image source={{ uri: book.cover }} style={styles.covers} />
                                             </View>
                                         </TouchableNativeFeedback>
                                     ))}

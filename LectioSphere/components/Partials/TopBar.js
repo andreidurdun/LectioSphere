@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import UserSearchResult from '../UserSearchResult';
+import SearchResult from '../SearchResult';
+
 
 const icon = require('../../assets/favicon.png');
 const searchPurpleIcon = require('../../assets/searchPurple.png');
@@ -16,8 +18,13 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
     const [followSearchVal, setFollowSearchVal] = React.useState('');
     const [searchSearchVal, setSearchSearchVal] = React.useState('');
     const navigation = useNavigation();    
-      const handleFollowSearchTextChange = (text) => {
+
+    const apiBaseUrl1 = 'http://192.168.1.134:8000';
+    const handleFollowSearchTextChange = (text) => {
         setFollowSearchVal(text);
+    };
+    const handleSearchTextChange = (text) => {
+        setSearchSearchVal(text);
     };
 
     const handleFollowSearchSubmit = async () => {
@@ -50,9 +57,42 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
         }
     };
 
-    const handleSearchSearchInput = (text) => {
-        setSearchSearchVal(text);
-    }
+    const handleSearchSubmit = async () => {
+        const text1 = searchSearchVal;
+        
+        if (text1.trim() === '') return;
+        
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You need to be logged in to search for users');
+                return;
+            }
+            
+            const response = await axios.get(`${apiBaseUrl1}/books/search/`, {
+                headers: { Authorization: `JWT ${token}` },
+                params: { title: text1 }
+            });
+            
+            // console.log(response.data);
+
+            navigation.navigate('SearchResult', {
+                books: response.data, searchQuery: text1, apiBaseUrl1
+            });
+        } catch (error) {
+            console.error('Search error full:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+                url: `${apiBaseUrl}/books/search/?title=${text1}`
+            });
+            Alert.alert(
+                'Error',
+                `Search failed: ${error.response?.status || ''} ${error.response?.data?.detail || error.message}`
+            );
+        }
+        
+    };
 
     const handleLibraryAddReadingSheet = () => {
         Alert.alert('Add reading sheet');
@@ -127,15 +167,15 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
                     <TextInput 
                         style={styles.searchInput2} 
                         placeholder="Look for a book, author, genre" 
-                        value={followSearchVal}
+                        value={searchSearchVal}
                         placeholderTextColor="#613F75"
-                        onChangeText={(text) => handleSearchSearchInput(text)} // Update state on text input
-                        onSubmitEditing={() => handleSearchSearchInput(followSearchVal)} // Trigger handle on Enter
+                        onChangeText={(text) => handleSearchTextChange(text)} // Update state on text input
+                        onSubmitEditing={() => handleSearchSubmit()} // Trigger handle on Enter
                     />
                     <Image 
                         source={searchPurpleIcon} // Replace with your search icon path
                         style={styles.searchIcon}
-                        onTouchEnd={() => handleSearchSearchInput(followSearchVal)} // Trigger search on image press
+                        onTouchEnd={() => handleSearchSubmit()} // Trigger search on image press
                     />
                 </View>
             </SafeAreaView>

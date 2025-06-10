@@ -22,10 +22,11 @@ import ChangeGoalBooks from './components/ChangeGoalBooks';
 import ChangeGoalPages from './components/ChangeGoalPages';
 import AddShelf from './components/AddShelf';
 import UserSearchResult from './components/UserSearchResult';
+import SearchResult from './components/SearchResult';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
-const API_BASE_URL = 'http://192.168.1.133:8000';
+const API_BASE_URL = 'http://192.168.1.134:8000';
 
 // Configurare interceptor global pentru axios
 const setupAxiosInterceptors = (refresh) => {
@@ -183,6 +184,17 @@ export default function App() {
         <Stack.Screen name="SearchPage" options={{ headerShown: false }}>
           {(props) => (
             <SearchPage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="SearchResult" options={{ headerShown: false }}>
+          {(props) => (
+            <SearchResult
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}

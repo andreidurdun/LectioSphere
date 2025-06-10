@@ -75,9 +75,16 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
                 headers: { Authorization: `JWT ${token}` }
             });
             const data = response.data;
-            setCurrentBooks(data.books_read);
-            setTotalBooks(data.goal_books);
-            setProgressBooks(data.progress_books_percent);
+            if (data.books_read > data.goal_books) {
+                setTotalBooks(data.goal_books);
+                setCurrentBooks(data.goal_books);
+                setProgressBooks(100);
+            }
+            else {
+                setCurrentBooks(data.books_read);
+                setTotalBooks(data.goal_books);
+                setProgressBooks(data.progress_books_percent);
+            }
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
@@ -85,10 +92,17 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
                     const retryResponse = await axios.get(`${apiBaseUrl}/library/reading_challenge/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const data = response.data;
-                    setCurrentBooks(data.books_read);
-                    setTotalBooks(data.goal_books);
-                    setProgressBooks(data.progress_books_percent);
+                    const data = retryResponse.data;
+                    if (data.books_read > data.goal_books) {
+                        setTotalBooks(data.goal_books);
+                        setCurrentBooks(totalBooks);
+                        setProgressBooks(100);
+                    }
+                    else {
+                        setCurrentBooks(data.books_read);
+                        setTotalBooks(data.goal_books);
+                        setProgressBooks(data.progress_books_percent);
+                    }
                 } else {
                     console.error(`Unable to refresh token for reading challenge items.`);
                 }

@@ -30,11 +30,18 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
     // All reviews state
     const [allPosts, setAllPosts] = useState([]);
 
+    const [shelves, setShelves] = useState([]);              
+    const [showShelfModal, setShowShelfModal] = useState(false);
+
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
         Nunito_500Medium,
         Nunito_600SemiBold,
         Nunito_700Bold    });
+
+    useEffect(() => {
+        fetchShelves();
+    }, []);
       
     // useEffect for parsing book data
     useEffect(() => {
@@ -57,6 +64,32 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
     }, [route.params]);
 
     // Fetch functions
+    const fetchShelves = async () => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/library/shelves/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const shelves = response.data.custom_shelves.slice(2);
+            setShelves(shelves);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelves/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const shelves = retryResponse.data.custom_shelves.slice(2);
+                    setShelves(shelves);
+                } else {
+                    console.error(`Unable to refresh token for shelves.`);
+                }
+            } else {
+                console.error(`Error loading shelves:`, error.message);
+            }
+        }
+    };
+
     const fetchReviewFollowed = async (bookId) => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
@@ -154,9 +187,9 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
     }, [bookData]);
 
     // Early returns after all hooks
-    if (!fontsLoaded) {
-        return <Text>Loading fonts...</Text>;
-    }
+    // if (!fontsLoaded) {
+    //     return <Text>Loading fonts...</Text>;
+    // }
 
     // console.log('Loading states - loading:', loading, 'reviewsLoading:', reviewsLoading);
 
@@ -231,8 +264,9 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                 handleWantToRead();
                 break;
             case 'add_to_shelf':
-                console.log('Add to Shelf'); // AICI ANDREEA
-                break;            case 'create_post':
+                handleAddToShelf();
+                break;            
+            case 'create_post':
                 handleCreatePost();
                 break;
             case 'add_review':
@@ -419,6 +453,8 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
         }
     };
 
+
+    //MERGE
     const handleFinishReading = async () => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
@@ -430,12 +466,41 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
             // Try refresh token if needed (optional, depends on your backend)
             // await refreshAccessToken();
 
-            const response = await axios.post(
+            const responsePost = await axios.post(
                 `${apiBaseUrl}/posts/add/`,
                 {
                     action: 'finished_reading',
                     id: bookData.id // Most APIs expect 'book_id', not 'id'
                 },
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const bookPayload = {
+                book: {
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
+                    id: bookData.id, // poate fi Google ID
+                    title: bookData.title ?? 'Unknown Title',
+                    author: bookData.author ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
+                    genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
+                    rating: bookData.rating ?? bookData.average_rating ?? 0,
+                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
+                    publication_year: bookData.publication_year ?? (
+                        bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
+                    ),
+                    series: bookData.series ?? '',
+                    description: bookData.description ?? '',
+                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                }
+            };
+
+            const responseShelf = await axios.post(
+                `${apiBaseUrl}/books/read/add/`,
+                bookPayload,
                 {
                     headers: {
                         Authorization: `JWT ${token}`,
@@ -466,6 +531,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
         }
     };
     
+    //MERGE
     const handleWantToRead = async () => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
@@ -483,6 +549,35 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                     action: 'want_to_read',
                     id: bookData.id // Most APIs expect 'book_id', not 'id'
                 },
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const bookPayload = {
+                book: {
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
+                    id: bookData.id, // poate fi Google ID
+                    title: bookData.title ?? 'Unknown Title',
+                    author: bookData.author ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
+                    genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
+                    rating: bookData.rating ?? bookData.average_rating ?? 0,
+                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
+                    publication_year: bookData.publication_year ?? (
+                        bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
+                    ),
+                    series: bookData.series ?? '',
+                    description: bookData.description ?? '',
+                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                }
+            };
+
+            const responseShelf = await axios.post(
+                `${apiBaseUrl}/books/read_list/add/`,
+                bookPayload,
                 {
                     headers: {
                         Authorization: `JWT ${token}`,
@@ -512,7 +607,70 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
             );
         }
     };
+
+    const handleAddToShelf= async (shelfName) => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            if (!token) {
+                Alert.alert('Error', 'You are not logged in.');
+                return;
+            }
+
+            // Try refresh token if needed (optional, depends on your backend)
+            // await refreshAccessToken();
+
+            const bookPayload = {
+                book: {
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
+                    id: bookData.id, // poate fi Google ID
+                    title: bookData.title ?? 'Unknown Title',
+                    authors: bookData.authors ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
+                    genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
+                    rating: bookData.rating ?? bookData.average_rating ?? 0,
+                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
+                    publication_year: bookData.publication_year ?? (
+                        bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
+                    ),
+                    series: bookData.series ?? '',
+                    description: bookData.description ?? '',
+                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                }
+            };
+
+            const responseShelf = await axios.post(
+                `${apiBaseUrl}/library/add_book_to_shelf/${encodeURIComponent(shelfName)}/`,
+                bookPayload,
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            Alert.alert(
+                'Success',
+                `You can find this book in your shelf!`,
+                [{ text: 'OK' }]
+            );
+        } catch (error) {
+            let errorMessage = 'Failed to annotate book.';
+            if (error.response && error.response.data) {
+                if (typeof error.response.data === 'string') {
+                    errorMessage = error.response.data;
+                } else if (error.response.data.detail) {
+                    errorMessage = error.response.data.detail;
+                }
+            }
+            Alert.alert(
+                'Update Failed',
+                errorMessage,
+                [{ text: 'OK' }]
+            );
+        }
+    };
     
+    //MERGE
     const updateBookProgress = async (pagesRead) => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
@@ -531,6 +689,35 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                     pages_read: pagesRead,
                     id: bookData.id // Most APIs expect 'book_id', not 'id'
                 },
+                {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            const bookPayload = {
+                book: {
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
+                    id: bookData.id, // poate fi Google ID
+                    title: bookData.title ?? 'Unknown Title',
+                    author: bookData.author ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
+                    genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
+                    rating: bookData.rating ?? bookData.average_rating ?? 0,
+                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
+                    publication_year: bookData.publication_year ?? (
+                        bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
+                    ),
+                    series: bookData.series ?? '',
+                    description: bookData.description ?? '',
+                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                }
+            };
+
+            const responseShelf = await axios.post(
+                `${apiBaseUrl}/books/currently_reading/add/`,
+                bookPayload,
                 {
                     headers: {
                         Authorization: `JWT ${token}`,
@@ -558,7 +745,8 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                 errorMessage,
                 [{ text: 'OK' }]
             );
-        }    };
+        }    
+    };
 
     // console.log('Loading states - loading:', loading, 'reviewsLoading:', reviewsLoading);
 
@@ -600,6 +788,13 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                 contentContainerStyle={styles.scrollContainer}>
 
                 <View style={[styles.infoContainer]}>
+                        {bookData.cover && (
+                            <Image 
+                                source={{ uri: bookData.cover }} 
+                                style={styles.coverImage} 
+                                resizeMode="cover"
+                            />
+                        )}
                         {bookData.thumbnail && (
                             <Image 
                                 source={{ uri: bookData.thumbnail }} 
@@ -818,7 +1013,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                             </View>
                         </TouchableNativeFeedback>
                         
-                        <TouchableNativeFeedback onPress={() => handleLibraryAction('add_to_shelf')}>
+                        <TouchableNativeFeedback onPress={() => setShowShelfModal(true)}>
                             <View style={styles.libraryOption}>
                                 <Text style={styles.libraryOptionText}>Add to Shelf</Text>
                             </View>
@@ -845,6 +1040,41 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                 </View>
             </Modal>
             
+
+            {/* Shelf Selection Modal */}
+            <Modal
+            visible={showShelfModal}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowShelfModal(false)}
+            >
+            <View style={styles.modalOverlay}>
+                <View style={styles.libraryModalContainer}>
+                <Text style={styles.modalTitle}>Choose a Shelf</Text>
+                <ScrollView>
+                    {shelves.map((shelf, idx) => (
+                    <TouchableNativeFeedback
+                        key={idx}
+                        onPress={() => {
+                        setShowShelfModal(false);
+                        handleAddToShelf(shelf.shelf_name);
+                        }}
+                    >
+                        <View style={styles.libraryOption}>
+                        <Text style={styles.libraryOptionText}>{shelf.shelf_name}</Text>
+                        </View>
+                    </TouchableNativeFeedback>
+                    ))}
+                </ScrollView>
+                <TouchableNativeFeedback onPress={() => setShowShelfModal(false)}>
+                    <View style={[styles.libraryOption, styles.cancelOption]}>
+                    <Text style={[styles.libraryOptionText, styles.cancelOptionText]}>Cancel</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                </View>
+            </View>
+            </Modal>
+
             {/* Review Submission Modal */}
             <Modal
                 visible={showReviewModal}

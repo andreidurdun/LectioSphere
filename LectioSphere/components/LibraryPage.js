@@ -93,12 +93,26 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                 headers: { Authorization: `JWT ${token}` }
             });
             const data = response.data;
-            setCurrentBooks(data.books_read);
-            setTotalBooks(data.goal_books);
-            setProgressBooks(data.progress_books_percent);
-            setCurrentPages(data.pages_read);
-            setTotalPages(data.goal_pages);
-            setProgressPages(data.progress_pages_percent);
+            if (data.books_read > data.goal_books) {
+                setTotalBooks(data.goal_books);
+                setCurrentBooks(data.goal_books);
+                setProgressBooks(100);
+            }
+            else {
+                setCurrentBooks(data.books_read);
+                setTotalBooks(data.goal_books);
+                setProgressBooks(data.progress_books_percent);
+            }
+            if (data.pages_read > data.goal_pages) {
+                setTotalPages(data.goal_pages);
+                setCurrentPages(data.goal_pages);
+                setProgressPages(100);
+            }
+            else {
+                setCurrentPages(data.pages_read);
+                setTotalPages(data.goal_pages);
+                setProgressPages(data.progress_pages_percent);
+            }
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
@@ -106,13 +120,27 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                     const retryResponse = await axios.get(`${apiBaseUrl}/library/reading_challenge/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const data = response.data;
-                    setCurrentBooks(data.books_read);
-                    setTotalBooks(data.goal_books);
-                    setProgressBooks(data.progress_books_percent);
-                    setCurrentPages(data.pages_read);
-                    setTotalPages(data.goal_pages);
-                    setProgressPages(data.progress_pages_percent);
+                    const data = retryResponse.data;
+                    if (data.books_read > data.goal_books) {
+                        setTotalBooks(data.goal_books);
+                        setCurrentBooks(totalBooks);
+                        setProgressBooks(100);
+                    }
+                    else {
+                        setCurrentBooks(data.books_read);
+                        setTotalBooks(data.goal_books);
+                        setProgressBooks(data.progress_books_percent);
+                    }
+                    if (data.pages_read > data.goal_pages) {
+                        setTotalPages(data.goal_pages);
+                        setCurrentPages(totalPages);
+                        setProgressPages(100);
+                    }
+                    else {
+                        setCurrentPages(data.pages_read);
+                        setTotalPages(data.goal_pages);
+                        setProgressPages(data.progress_pages_percent);
+                    }
                 } else {
                     console.error(`Unable to refresh token for reading sheets items.`);
                 }
@@ -129,7 +157,8 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                 headers: { Authorization: `JWT ${token}` }
             });
             const books = response.data.standard_shelves[shelfName];
-            setShelf(books.slice(0, numberOfBooks));
+            const normalizedBooks = books.slice(0, numberOfBooks);
+            setShelf(normalizedBooks);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
@@ -148,6 +177,62 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
         }
     };
 
+    const fetchShelfReading = async (setShelf) => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const books = response.data;
+            const normalizedBooks = books.slice(0, 4);
+            setShelf(normalizedBooks);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const books = retryResponse.data;
+                    const normalizedBooks = books.slice(0, 4);
+                    setShelf(normalizedBooks);
+                } else {
+                    console.error(`Unable to refresh token for shelf.`);
+                }
+            } else {
+                console.error(`Error loading shelf:`, error.message);
+            }
+        }
+    };
+
+    const fetchShelfReadlist = async (setShelf) => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const books = response.data;
+            const normalizedBooks = books.slice(0, 4);
+            setShelf(normalizedBooks);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const books = retryResponse.data;
+                    const normalizedBooks = books.slice(0, 4);
+                    setShelf(normalizedBooks);
+                } else {
+                    console.error(`Unable to refresh token for shelf.`);
+                }
+            } else {
+                console.error(`Error loading shelf:`, error.message);
+            }
+        }
+    };
+
     const [loading, setLoading] = useState(true);
 
     const fetchData = async () => {
@@ -155,8 +240,8 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
         await fetchUserData();
         await fetchReadingChallenge();
         await fetchShelf("Read", setRead, 6);
-        await fetchShelf("Reading", setReading, 4);
-        await fetchShelf("Readlist", setReadlist, 4);
+        await fetchShelfReading(setReading);
+        await fetchShelfReadlist(setReadlist);
         await fetchShelf("Favourites", setFavourites, 4);
         setLoading(false);
     };
@@ -215,7 +300,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                                         </View>
                                         <View style={styles.progressContainer}>
                                             <ProgressBar progress={progressBooks} color="#613F75" style={styles.progressBarChallenge} />
-                                            <Text style={styles.percentage}>{Math.round(progressBooks * 100)}%</Text>
+                                            <Text style={styles.percentage}>{Math.round(progressBooks)}%</Text>
                                         </View>
                                     </View>
                                 </TouchableNativeFeedback>
@@ -234,7 +319,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                                         </View>
                                         <View style={styles.progressContainer}>
                                             <ProgressBar progress={progressPages} color="#613F75" style={styles.progressBarChallenge} />
-                                            <Text style={styles.percentage}>{Math.round(progressPages * 100)}%</Text>
+                                            <Text style={styles.percentage}>{Math.round(progressPages)}%</Text>
                                         </View>
                                     </View>
                                 </TouchableNativeFeedback>
@@ -256,78 +341,88 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                     <View style={styles.shelvesContainer}>
                         <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Read'})}>
                             <View style={styles.shelf}>
-                                {read[0] && read[1] && (
-                                    <Image source={{ uri: read[0].thumbnail }} style={styles.coversBig} />
+                                {read[0] && read[1] ? (
+                                    <Image source={{ uri: read[0].cover }} style={styles.coversBig} />
+                                ) : (
+                                    <View style={styles.coversBig} />
                                 )}
-                                {read[2] && read[3] && (
-                                    <Image source={{ uri: read[2].thumbnail }} style={styles.coversMedium} />
+                                {read[2] && read[3] ? (
+                                    <Image source={{ uri: read[2].cover }} style={styles.coversMedium} />
+                                ): (
+                                    <View style={styles.coversMedium} />
                                 )}
-                                {read[4] && read[5] && (
-                                    <Image source={{ uri: read[4].thumbnail }} style={styles.coversSmall} />
+                                {read[4] && read[5] ? (
+                                    <Image source={{ uri: read[4].cover }} style={styles.coversSmall} />
+                                ): (
+                                    <View style={styles.coversSmall} />
                                 )}
                                 <Text style={styles.textShelf}>Read</Text>
-                                {read[5] && (
-                                    <Image source={{ uri: read[5].thumbnail }} style={styles.coversSmall} />
+                                {read[5] ? (
+                                    <Image source={{ uri: read[5].cover }} style={styles.coversSmall} />
+                                ): (
+                                    <View style={styles.coversSmall} />
                                 )}
-                                {read[3] && (
-                                    <Image source={{ uri: read[3].thumbnail }} style={styles.coversMedium} />
+                                {read[3] ? (
+                                    <Image source={{ uri: read[3].cover }} style={styles.coversMedium} />
+                                ): (
+                                    <View style={styles.coversMedium} />
                                 )}
-                                {read[1] && (
-                                    <Image source={{ uri: read[1].thumbnail }} style={styles.coversBig} />
+                                {read[1] ? (
+                                    <Image source={{ uri: read[1].cover }} style={styles.coversBig} />
+                                ): (
+                                    <View style={styles.coversBig} />
                                 )}
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
                         <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Reading'})}>
                             <View style={styles.shelf}>
-                                {reading[0] && reading[1] && (
-                                    <Image source={{ uri: reading[0].thumbnail }} style={styles.coversBig} />
+                                {reading[0] && reading[1] ? (
+                                    <Image source={{ uri: reading[0].cover }} style={styles.coversBig} />
+                                ) : (
+                                    <View style={styles.coversBig} />
                                 )}
-                                {reading[2] && reading[3] && (
-                                    <Image source={{ uri: reading[2].thumbnail }} style={styles.coversMedium} />
+                                {reading[2] && reading[3] ? (
+                                    <Image source={{ uri: reading[2].cover }} style={styles.coversMedium} />
+                                ): (
+                                    <View style={styles.coversMedium} />
                                 )}
                                 <Text style={styles.textShelf}>Reading</Text>
-                                {reading[3] && (
-                                    <Image source={{ uri: reading[3].thumbnail }} style={styles.coversMedium} />
+                                {reading[3] ? (
+                                    <Image source={{ uri: reading[3].cover }} style={styles.coversMedium} />
+                                ): (
+                                    <View style={styles.coversMedium} />
                                 )}
-                                {reading[1] && (
-                                    <Image source={{ uri: reading[1].thumbnail }} style={styles.coversBig} />
+                                {reading[1] ? (
+                                    <Image source={{ uri: reading[1].cover }} style={styles.coversBig} />
+                                ): (
+                                    <View style={styles.coversBig} />
                                 )}
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
                         <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Readlist'})}>
                             <View style={styles.shelf}>
-                                {readlist[0] && readlist[1] && (
-                                    <Image source={{ uri: readlist[0].thumbnail }} style={styles.coversBig} />
+                                {readlist[0] && readlist[1] ? (
+                                    <Image source={{ uri: readlist[0].cover }} style={styles.coversBig} />
+                                ): (
+                                    <View style={styles.coversBig} />
                                 )}
-                                {readlist[2] && readlist[3] && (
-                                    <Image source={{ uri: readlist[2].thumbnail }} style={styles.coversMedium} />
+                                {readlist[2] && readlist[3] ? (
+                                    <Image source={{ uri: readlist[2].cover }} style={styles.coversMedium} />
+                                ): (
+                                    <View style={styles.coversMedium} />
                                 )}
                                 <Text style={styles.textShelf}>Readlist</Text>
-                                {readlist[3] && (
-                                    <Image source={{ uri: readlist[3].thumbnail }} style={styles.coversMedium} />
+                                {readlist[3] ? (
+                                    <Image source={{ uri: readlist[3].cover }} style={styles.coversMedium} />
+                                ): (
+                                    <View style={styles.coversMedium} />
                                 )}
-                                {readlist[1] && (
-                                    <Image source={{ uri: readlist[1].thumbnail }} style={styles.coversBig} />
-                                )}
-                            </View>
-                        </TouchableNativeFeedback>
-                        <View style={styles.shelfBar} />
-                        <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', {shelfName: 'Favourites'})}>
-                            <View style={styles.shelf}>
-                                {favourites[0] && favourites[1] && (
-                                    <Image source={{ uri: favourites[0].thumbnail }} style={styles.coversBig} />
-                                )}
-                                {favourites[2] && favourites[3] && (
-                                    <Image source={{ uri: favourites[2].thumbnail }} style={styles.coversMedium} />
-                                )}
-                                <Text style={styles.textShelf}>Favourites</Text>
-                                {favourites[3] && (
-                                    <Image source={{ uri: favourites[3].thumbnail }} style={styles.coversMedium} />
-                                )}
-                                {favourites[1] && (
-                                    <Image source={{ uri: favourites[1].thumbnail }} style={styles.coversBig} />
+                                {readlist[1] ? (
+                                    <Image source={{ uri: readlist[1].cover }} style={styles.coversBig} />
+                                ): (
+                                    <View style={styles.coversBig} />
                                 )}
                             </View>
                         </TouchableNativeFeedback>
@@ -521,12 +616,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     shelf: {
+        flexDirection: 'row',
         height: 106,
         justifyContent: 'center',
+        alignItems: 'center',
     },
     textShelf: {
         fontFamily: 'Nunito_500Medium',
-        fontSize: 32,
+        fontSize: 28,
         color: '#18101D',
     },
     shelfBar: {
@@ -537,26 +634,29 @@ const styles = StyleSheet.create({
         marginTop: 4,
     },
     coversBig: {
-        height: 72,
-        width: 48,
-        borderRadius: 4,
-        marginRight: 12,
-    },
-    coversMedium: {
         height: 60,
         width: 40,
         borderRadius: 4,
-        marginRight: 12,
+        marginRight: 6,
+        marginLeft: 6,
     },
-    coversSmall: {
+    coversMedium: {
         height: 42,
         width: 28,
         borderRadius: 4,
-        marginRight: 12,
+        marginRight: 6,
+        marginLeft: 6,
+    },
+    coversSmall: {
+        height: 30,
+        width: 18,
+        borderRadius: 4,
+        marginRight: 6,
+        marginLeft: 6,
     },
     textShelfMore: {
         fontFamily: 'Nunito_500Medium',
-        fontSize: 32,
+        fontSize: 28,
         color: '#E5C3D1',
     },
     sheet: {
