@@ -17,7 +17,7 @@ from rest_framework.routers import DefaultRouter
 from .views import PostsView  # asigură-te că importul e corect
 router = DefaultRouter()
 router.register(r"posts", PostsView, basename="posts")
-router.register(r"library", LibraryPageView, basename="library")
+
 
 
 
@@ -75,8 +75,17 @@ urlpatterns = [
     path("posts/<int:pk>/has_liked/", PostsView.as_view({"get": "has_liked"}), name="has-liked"),
 
     
+    
+  path("library/reading_challenge/", LibraryPageView.as_view({"get": "reading_challenge"})),
+path("library/update_reading_goals/", LibraryPageView.as_view({"post": "update_reading_goals"})),
+path("library/shelves/", LibraryPageView.as_view({"get": "shelves"})),
+path("library/create_shelf/", LibraryPageView.as_view({"post": "create_shelf"})),
+path("library/delete_shelf/<str:name>/", LibraryPageView.as_view({"delete": "delete_shelf"})),
+path("library/shelf/<str:name>/", LibraryPageView.as_view({"get": "get_shelf_by_name"})),
+path("library/book_status/", LibraryPageView.as_view({"get": "book_status"})),
    path("library/", LibraryPageView.as_view({'get': 'list'}), name="library-page"),
    path("library/delete_shelf/<str:name>/", LibraryPageView.as_view({"delete": "delete_shelf"}), name="delete-shelf"),
+   path("library/create_shelf/", LibraryPageView.as_view({"post": "create_shelf"}), name="create-shelf"),
 
    path("api/", include(router.urls)),
 
@@ -95,8 +104,14 @@ urlpatterns = [
    path("library/book_status/", LibraryPageView.as_view({"get": "book_status"})),
    
      
-     
-     
+     path("library/add_book_to_shelf/", LibraryPageView.as_view({"post": "add_book_to_shelf"}), name="add-book-to-shelf"),
+
+     path(
+    "library/add_book_to_shelf_url/<str:shelf_name>/",
+    LibraryPageView.as_view({"post": "add_book_to_shelf_url"}),
+    name="add-book-to-shelf_url",
+),
+
      
   path("library/shelf/<str:name>/", ShelfByNameView.as_view(), name="shelf-by-name"),
 
