@@ -95,7 +95,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     console.error(`Unable to refresh token for shelves.`);
                 }
             } else {
-                console.error(`Error loading shelves:`, error.message);
+                // console.error(`Error loading shelves:`, error.message);
             }
         }
     };
@@ -121,7 +121,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -147,7 +147,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -173,7 +173,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -191,6 +191,8 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
     if (!fontsLoaded) {
         return <Text>Loading fonts...</Text>;
     }
+
+    console.log(shelves.custom_shelves);
 
     return (
         <SafeAreaView style={styles.screen}>

@@ -128,7 +128,7 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                 setRead(false);
             }
             else {
-                console.error("You May Like error:", error.message);
+                // console.error("You May Like error:", error.message);
             }
         }
     };
@@ -370,7 +370,6 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                             </View>
                         ) : null 
                     }
-
                     {
                         Read ? (
                             <View style={styles.container}>
@@ -379,18 +378,22 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                                         <Text style={styles.textContainer}>  You May Like </Text>
                                     </View>
                                 </View>
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
-                                    {youMayLikeItems.map((book, index) => (
-                                        <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image
-                                                    source={{ uri: book.thumbnail }}
-                                                    style={styles.covers}
-                                                />
-                                            </View>
-                                        </TouchableNativeFeedback>
-                                    ))}
-                                </ScrollView>
+                                {youMayLikeItems.length > 0 ? (
+                                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
+                                        {youMayLikeItems.map((book, index) => (
+                                            <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                                <View>
+                                                    <Image
+                                                        source={{ uri: book.thumbnail }}
+                                                        style={styles.covers}
+                                                    />
+                                                </View>
+                                            </TouchableNativeFeedback>
+                                        ))}
+                                    </ScrollView>
+                                ) : (
+                                    <Text style={styles.textAdvice}>   Read more to give us an idea about your favourite books</Text>
+                                )}
                             </View>
                         ) : null 
                     }

@@ -168,7 +168,7 @@ const BooksChallenge = ({ navigation, page, removeAuthToken, isAuthenticated, ap
 
                     <Text style={styles.changeText} onPress={() => handlePageClick('ChangeGoalBooks', {totalBooks})}> Change goal </Text>
 
-                    <Text style={styles.booksReadText}> The books you read: </Text>
+                    {/* <Text style={styles.booksReadText}> The books you read: </Text> */}
                         
                 </View>
 

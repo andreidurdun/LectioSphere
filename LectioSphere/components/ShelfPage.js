@@ -88,7 +88,7 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -114,7 +114,7 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -140,7 +140,7 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -180,6 +180,7 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
     if (!fontsLoaded) {
         return <Text>Loading fonts...</Text>;
     }
+
 
     return (
         <SafeAreaView style={styles.screen}>

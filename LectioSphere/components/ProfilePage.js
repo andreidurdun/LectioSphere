@@ -147,7 +147,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
 
     // console.log("Profile Data:", profileData);
 
-    console.log(profileData);
+    // console.log(profileData);
 
     return (
         <SafeAreaView style={styles.screen}>

@@ -54,13 +54,13 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                 }
             };
             
-            console.log("Sending registration request to:", `${apiBaseUrl}/auth/users/`);
-            console.log("Registration data:", JSON.stringify(userData));
+            // console.log("Sending registration request to:", `${apiBaseUrl}/auth/users/`);
+            // console.log("Registration data:", JSON.stringify(userData));
             
             // Folosim URL-ul API din props
             const response = await axiosInstance.post(`${apiBaseUrl}/auth/users/`, userData, config);
             
-            console.log('Registration successful:', response.data);
+            // console.log('Registration successful:', response.data);
             
             // Display success message and redirect to login
             Alert.alert(

@@ -638,7 +638,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
             };
 
             const responseShelf = await axios.post(
-                `${apiBaseUrl}/library/add_book_to_shelf/${encodeURIComponent(shelfName)}/`,
+                `${apiBaseUrl}/library/add_book_to_shelf/${(shelfName)}/`,
                 bookPayload,
                 {
                     headers: {

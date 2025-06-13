@@ -173,6 +173,9 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
     }
 
     if (selection === 'closedBook') {
+
+        
+
         return (
             <View style={styles.card}>
                 {/* {Object.entries(shelves).map(([shelfName, books]) => (

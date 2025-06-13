@@ -92,23 +92,44 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
             );
         }
         
-    };
-
-    const handleLibraryAddReadingSheet = () => {
+    };    const handleLibraryAddReadingSheet = () => {
         Alert.alert('Add reading sheet');
-    }
-
-    const handleLibraryAddShelf = (page) => {
+    };    const handleLibraryAddShelf = (page) => {
         navigation.navigate(page); 
-    }
-
+    };
+    
     const handleNotificationsButton = () => {
         Alert.alert('Notifications menu');
-    }
+    };
 
-    const handleSettingsButton = () => {
-        Alert.alert('Settings menu');
-    }
+    const handleSettingsButton = async () => {
+        Alert.alert(
+            'Logout',
+            'Are you sure you want to logout?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { 
+                    text: 'Logout', 
+                    onPress: async () => {                        try {
+                            // Remove tokens from AsyncStorage
+                            await AsyncStorage.removeItem('auth_token');
+                            await AsyncStorage.removeItem('refresh_token');
+                            await AsyncStorage.removeItem('user_id');
+                            
+                            // Navigate to login screen
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'LoginMenu' }],
+                            });
+                        } catch (error) {
+                            console.error('Error during logout:', error);
+                            Alert.alert('Error', 'Failed to logout properly');
+                        }
+                    }
+                }
+            ]
+        );
+    };
 
 
     if (pageName === 'HomePage')
@@ -215,11 +236,11 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
                     />
     
                     <View style={styles.libraryButtonsContainer}>
-                        <Image 
+                        {/* <Image 
                             source={envelope} // Replace with your search icon path
                             style={styles.envelopeIcon}
                             onTouchEnd={() => handleNotificationsButton()} // Trigger search on image press
-                        />
+                        /> */}
                         <Image 
                             source={threeDots} // Replace with your search icon path
                             style={styles.threeDotsIcon}

@@ -20,9 +20,15 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
     // Review modal states
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [reviewRating, setReviewRating] = useState(0);
-    const [reviewDescription, setReviewDescription] = useState('');    // Create post modal states
+    const [reviewDescription, setReviewDescription] = useState('');    
+    // Create post modal states
     const [showCreatePostModal, setShowCreatePostModal] = useState(false);
     const [postDescription, setPostDescription] = useState('');
+    
+    // Like functionality states
+    const [isLiked, setIsLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
+    const [likeLoading, setLikeLoading] = useState(false);
     
 
 
@@ -32,14 +38,16 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
         Nunito_600SemiBold
     });
         
-
-
     useEffect(() => {
         if (postData) {
             try {
                 const parsedPost = JSON.parse(postData);
                 setPost(parsedPost);
                 setLoading(false);
+                
+                // Initialize like states
+                setLikeCount(parsedPost.like_count || 0);
+                setIsLiked(parsedPost.is_liked || false);
             } catch (err) {
                 console.error('Error parsing post data:', err);
                 setPost(null);
@@ -50,19 +58,31 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
             setLoading(false);
         }
 
-    }, [postData]);
-
-    if (loading) return <ActivityIndicator size="large" style={styles.centered} />;
+    }, [postData]);    if (loading) return <ActivityIndicator size="large" style={styles.centered} />;
     if (!post) return <Text style={styles.centered}>Post not found.</Text>;
 
     // console.log('Post data:', post)
 
-
-      const handleLikePress = async (id) => {
+    const handleLikePress = async (id) => {
+        if (likeLoading) return; // Prevent multiple requests
+        
+        setLikeLoading(true);
+        
+        // Optimistic update
+        const wasLiked = isLiked;
+        const previousCount = likeCount;
+        
+        setIsLiked(!wasLiked);
+        setLikeCount(wasLiked ? previousCount - 1 : previousCount + 1);
+        
         try {
             const token = await AsyncStorage.getItem('auth_token');
             if (!token) {
                 console.error('No token found');
+                // Revert optimistic update
+                setIsLiked(wasLiked);
+                setLikeCount(previousCount);
+                setLikeLoading(false);
                 return;
             }
 
@@ -77,10 +97,20 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                 }
             );
 
-            // console.log('Post like toggled successfully:', response.data);
-            // Alert.alert('Success', 'You liked the post!', [{ text: 'OK' }]);
+            // Update with server response if available
+            if (response.data && typeof response.data.like_count !== 'undefined') {
+                setLikeCount(response.data.like_count);
+                setIsLiked(response.data.is_liked || false);
+            }
+            
+            console.log('Post like toggled successfully:', response.data);
         } catch (error) {
             console.error('Error toggling like:', error);
+            
+            // Revert optimistic update on error
+            setIsLiked(wasLiked);
+            setLikeCount(previousCount);
+            
             let errorMessage = 'Failed to toggle like.';
             if (error.response && error.response.data) {
                 errorMessage = typeof error.response.data === 'string'
@@ -88,6 +118,8 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                     : JSON.stringify(error.response.data);
             }
             Alert.alert('Like Failed', errorMessage, [{ text: 'OK' }]);
+        } finally {
+            setLikeLoading(false);
         }
     }
 
@@ -858,7 +890,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
 
 
 
-    console.log(post);
+    // console.log(post);
 
     if (post.action == "finished_reading" || post.progress >= post.book.nr_pages)
     {
@@ -920,14 +952,14 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                 </View>
                 <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-                    <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                        <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
                         <Image
-                        source={require('../../assets/heartFull.png')}
+                        source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                         style={{ width: 25, height: 22, marginRight: 6 }}
                         />
                     </TouchableNativeFeedback>
                     <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
-                        {post.like_count || 0} 
+                        {likeCount} 
                     </Text>
                     </View>
                 </View>
@@ -1016,12 +1048,12 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                         <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
                             <Image
-                            source={require('../../assets/heartFull.png')}
+                            source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                             style={{ width: 25, height: 22, marginRight: 6 }}
                             />
                         </TouchableNativeFeedback>
                         <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
-                            {post.like_count || 0} 
+                            {likeCount} 
                         </Text>
                     </View>
                 </View>
@@ -1090,15 +1122,15 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                 </View>
                 <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-                    <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
-                        <Image
-                        source={require('../../assets/heartFull.png')}
-                        style={{ width: 25, height: 22, marginRight: 6 }}
-                        />
-                    </TouchableNativeFeedback>
-                    <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
-                        {post.like_count || 0} 
-                    </Text>
+                        <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                            <Image
+                            source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
+                            style={{ width: 25, height: 22, marginRight: 6 }}
+                            />
+                        </TouchableNativeFeedback>
+                        <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                            {likeCount} 
+                        </Text>
                     </View>
                 </View>
                 {modalAddToLibrary()}
@@ -1190,12 +1222,12 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
                                     <Image
-                                    source={require('../../assets/heartFull.png')}
+                                    source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                                     style={{ width: 25, height: 22, marginRight: 6 }}
                                     />
                                 </TouchableNativeFeedback>
                                 <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
-                                    {post.like_count || 0} 
+                                    {likeCount} 
                                 </Text>
                             </View>
                             
@@ -1267,12 +1299,12 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
                                     <Image
-                                    source={require('../../assets/heartFull.png')}
+                                    source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                                     style={{ width: 25, height: 22, marginRight: 6 }}
                                     />
                                 </TouchableNativeFeedback>
                                 <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
-                                    {post.like_count || 0} 
+                                    {likeCount} 
                                 </Text>
                             </View>
                             
@@ -1351,12 +1383,12 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                         <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
                             <Image
-                            source={require('../../assets/heartFull.png')}
+                            source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                             style={{ width: 25, height: 22, marginRight: 6 }}
                             />
                         </TouchableNativeFeedback>
                         <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
-                            {post.like_count || 0} 
+                            {likeCount} 
                         </Text>
                     </View>
                 </View>

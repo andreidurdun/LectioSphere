@@ -172,7 +172,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                     console.error(`Unable to refresh token for ${shelfName}.`);
                 }
             } else {
-                console.error(`Error loading ${shelfName}:`, error.message);
+                // console.error(`Error loading ${shelfName}:`, error.message);
             }
         }
     };
@@ -200,7 +200,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -228,7 +228,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
