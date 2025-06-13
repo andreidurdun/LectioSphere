@@ -243,7 +243,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                     </View>
                 </View>
 
-                <Postings selection={selected} apiBaseUrl={apiBaseUrl} key={selected}/>
+                <Postings selection={selected} apiBaseUrl={apiBaseUrl} key={selected} navigation={navigation}/>
             </ScrollView>
 
             <NavBar navigation={navigation} page="ProfilePage" />

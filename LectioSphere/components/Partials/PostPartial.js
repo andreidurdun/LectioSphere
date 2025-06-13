@@ -9,7 +9,7 @@ import axios from 'axios';
 const purpleStarFull = require('../../assets/purpleStarFull.png');
 const purpleStarEmpty = require('../../assets/purpleStarEmpty.png');
 
-const PostPartial = ({ apiBaseUrl, postData }) => {
+const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
     const defaultPicture = require('../../assets/defaultProfilePic.jpg');
@@ -89,6 +89,19 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
             }
             Alert.alert('Like Failed', errorMessage, [{ text: 'OK' }]);
         }
+    }
+
+
+    // handle redirectionare la carte
+    const handleBookPress = (book) => {
+        navigation.navigate('BookShow', { 
+            bookData: JSON.stringify(book)
+        });
+    };
+
+    // handle redirectionare la profil
+    const handleUsernamePress = (userId) => {
+        navigation.navigate('ProfilePageOther', { userId });
     }
 
 
@@ -836,7 +849,16 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
     }
 
 
-    // console.log(post);
+
+
+    ///////////////////////////////////////////////////////////
+    // aici incep postarile propriu-zise
+
+
+
+
+
+    console.log(post);
 
     if (post.action == "finished_reading" || post.progress >= post.book.nr_pages)
     {
@@ -856,7 +878,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                             /> */}
 
                             <View style={styles.profileText}>
-                            <Text style={styles.username}>
+                            <Text style={styles.username} onPress={() => handleUsernamePress(post.user.id)}>
                                 @{post?.user?.username || 'Unknown User'}
                             </Text>
                             <Text style={styles.normalText}>
@@ -886,11 +908,13 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                     
                     <View style={styles.headerBookContainer}>
                         {post.book.cover && (
-                        <Image 
-                            source={{ uri: post.book.cover}} 
-                            style={styles.coverImage} 
-                            resizeMode="cover"
-                        />
+                            <TouchableNativeFeedback onPress={() => handleBookPress(post.book)}>
+                                <Image 
+                                    source={{ uri: post.book.cover}} 
+                                    style={styles.coverImage} 
+                                    resizeMode="cover"
+                                />
+                            </TouchableNativeFeedback>
                         )}
                     </View>
                 </View>
@@ -935,7 +959,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                         /> */}
 
                         <View style={styles.profileText}>
-                            <Text style={styles.username}>
+                            <Text style={styles.username} onPress={() => handleUsernamePress(post.user.id)}>
                                 @{post?.user?.username || 'Unknown User'}
                             </Text>
                             <Text style={styles.normalText}>
@@ -965,11 +989,13 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                     </View>
                     <View style={styles.headerBookContainer}>
                         {post.book.cover && (
-                        <Image 
-                            source={{ uri: post.book.cover}} 
-                            style={styles.coverImage} 
-                            resizeMode="cover"
-                        />
+                            <TouchableNativeFeedback onPress={() => handleBookPress(post.book)}>
+                                <Image 
+                                    source={{ uri: post.book.cover}} 
+                                    style={styles.coverImage} 
+                                    resizeMode="cover"
+                                />
+                            </TouchableNativeFeedback>
                         )}
                     </View>
                 </View>
@@ -1022,7 +1048,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                             /> */}
 
                             <View style={styles.profileText}>
-                            <Text style={styles.username}>
+                            <Text style={styles.username} onPress={() => handleUsernamePress(post.user.id)}>
                                 @{post?.user?.username || 'Unknown User'}
                             </Text>
                             <Text style={styles.normalText}>
@@ -1052,11 +1078,13 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                     
                     <View style={styles.headerBookContainer}>
                         {post.book.cover && (
-                        <Image 
-                            source={{ uri: post.book.cover}} 
-                            style={styles.coverImage} 
-                            resizeMode="cover"
-                        />
+                            <TouchableNativeFeedback onPress={() => handleBookPress(post.book)}>
+                                <Image 
+                                    source={{ uri: post.book.cover}} 
+                                    style={styles.coverImage} 
+                                    resizeMode="cover"
+                                />
+                            </TouchableNativeFeedback>
                         )}
                     </View>
                 </View>
@@ -1107,7 +1135,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                                 /> */}
 
                                 <View style={styles.profileText}>
-                                <Text style={styles.username}>
+                                <Text style={styles.username} onPress={() => handleUsernamePress(post.user.id)}>
                                     @{post?.user?.username || 'Unknown User'}
                                 </Text>
                                 <Text style={styles.normalText}>
@@ -1137,11 +1165,13 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                         
                         <View style={styles.headerBookContainer}>
                             {post.book.cover && (
-                            <Image 
-                                source={{ uri: post.book.cover}} 
-                                style={styles.coverImage} 
-                                resizeMode="cover"
-                            />
+                                <TouchableNativeFeedback onPress={() => handleBookPress(post.book)}>
+                                    <Image 
+                                        source={{ uri: post.book.cover}} 
+                                        style={styles.coverImage} 
+                                        resizeMode="cover"
+                                    />
+                                </TouchableNativeFeedback>
                             )}
                         </View>
                     </View>
@@ -1191,7 +1221,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                                 /> */}
 
                                 <View style={styles.profileText}>
-                                <Text style={styles.username}>
+                                <Text style={styles.username} onPress={() => handleUsernamePress(post.user.id)}>
                                     @{post?.user?.username || 'Unknown User'}
                                 </Text>
                                 <Text style={styles.normalText}>
@@ -1221,11 +1251,13 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                         
                         <View style={styles.headerBookContainer}>
                             {post.book.cover && (
-                            <Image 
-                                source={{ uri: post.book.cover}} 
-                                style={styles.coverImage} 
-                                resizeMode="cover"
-                            />
+                                <TouchableNativeFeedback onPress={() => handleBookPress(post.book)}>
+                                    <Image 
+                                        source={{ uri: post.book.cover}} 
+                                        style={styles.coverImage} 
+                                        resizeMode="cover"
+                                    />
+                                </TouchableNativeFeedback>
                             )}
                         </View>
                     </View>
@@ -1267,7 +1299,7 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                             /> */}
 
                             <View style={styles.profileText}>
-                            <Text style={styles.username}>
+                            <Text style={styles.username} onPress={() => handleUsernamePress(post.user.id)}>
                                 @{post?.user?.username || 'Unknown User'}
                             </Text>
                             <Text style={styles.normalText}>
@@ -1297,11 +1329,13 @@ const PostPartial = ({ apiBaseUrl, postData }) => {
                     
                     <View style={styles.headerBookContainer}>
                         {post.book.cover && (
-                        <Image 
-                            source={{ uri: post.book.cover}} 
-                            style={styles.coverImage} 
-                            resizeMode="cover"
-                        />
+                            <TouchableNativeFeedback onPress={() => handleBookPress(post.book)}>
+                                <Image 
+                                    source={{ uri: post.book.cover}} 
+                                    style={styles.coverImage} 
+                                    resizeMode="cover"
+                                />
+                            </TouchableNativeFeedback>
                         )}
                     </View>
                 </View>

@@ -296,7 +296,7 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                         </TouchableOpacity>
                     </View>
                 </View>                
-                {userId && <PostingsOther selection={selected} apiBaseUrl={apiBaseUrl} userId={userId} />}
+                {userId && <PostingsOther navigation={navigation} selection={selected} apiBaseUrl={apiBaseUrl} userId={userId} />}
             </ScrollView>
 
             <NavBar navigation={navigation} page="FollowPage" />

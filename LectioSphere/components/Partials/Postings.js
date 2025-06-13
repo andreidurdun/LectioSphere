@@ -6,7 +6,7 @@ import PostPartial from './PostPartial'; // Adjust the import path as necessary
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export default function Postings ({ apiBaseUrl, selection }) {
+export default function Postings ({ navigation, apiBaseUrl, selection }) {
 
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -66,7 +66,7 @@ export default function Postings ({ apiBaseUrl, selection }) {
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -91,7 +91,7 @@ export default function Postings ({ apiBaseUrl, selection }) {
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -116,7 +116,7 @@ export default function Postings ({ apiBaseUrl, selection }) {
                     console.error(`Unable to refresh token for shelf.`);
                 }
             } else {
-                console.error(`Error loading shelf:`, error.message);
+                // console.error(`Error loading shelf:`, error.message);
             }
         }
     };
@@ -347,7 +347,7 @@ export default function Postings ({ apiBaseUrl, selection }) {
     return (
         <View style={styles.card}>
             {posts.map((post, index) => (
-                <PostPartial postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={`${selection}-${post.id || index}`} />
+                <PostPartial navigation={navigation} postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={`${selection}-${post.id || index}`} />
             ))}
         </View>
     );

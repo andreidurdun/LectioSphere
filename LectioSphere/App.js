@@ -23,6 +23,7 @@ import ChangeGoalPages from './components/ChangeGoalPages';
 import AddShelf from './components/AddShelf';
 import UserSearchResult from './components/UserSearchResult';
 import SearchResult from './components/SearchResult';
+import PostPartial from './components/Partials/PostPartial';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -157,7 +158,7 @@ export default function App() {
               apiBaseUrl={API_BASE_URL}
             />
           )}
-        </Stack.Screen>          
+        </Stack.Screen>
         
         <Stack.Screen name="FollowPage" options={{ headerShown: false }}>
           {(props) => (
@@ -184,6 +185,17 @@ export default function App() {
         <Stack.Screen name="SearchPage" options={{ headerShown: false }}>
           {(props) => (
             <SearchPage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="PostPartial" options={{ headerShown: false }}>
+          {(props) => (
+            <PostPartial
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}

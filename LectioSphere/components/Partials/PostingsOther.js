@@ -5,7 +5,7 @@ import axios from 'axios';
 import PostPartial from './PostPartial'; // Adjust the import path as necessary
 
 
-export default function Postings ({ apiBaseUrl, selection, userId }) {
+export default function Postings ({ navigation, apiBaseUrl, selection, userId }) {
 
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -97,7 +97,7 @@ export default function Postings ({ apiBaseUrl, selection, userId }) {
     return (
         <View style={styles.card}>
             {posts.map((post, index) => (
-                <PostPartial postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={`${selection}-${post.id || index}`} />
+                <PostPartial navigation={navigation} postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={`${selection}-${post.id || index}`} />
             ))}
         </View>
     );
