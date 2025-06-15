@@ -40,21 +40,28 @@
 
 ## Source control cu git (branch creation, merge/rebase, pull requests, commits)
 
-    Proiectul este încărcat pe GitHub, iar detaliile legate de source control se găsesc [aici](https://github.com/andreidurdun/LectioSphere).
-    Repozitoriul conține istoricul complet al modificărilor, branch-urilor, pull request-urilor și commit-urilor efectuate pe parcursul dezvoltării.
+Proiectul este încărcat pe GitHub, iar detaliile legate de source control se găsesc [aici](https://github.com/andreidurdun/LectioSphere).
+Repozitoriul conține istoricul complet al modificărilor, branch-urilor, pull request-urilor și commit-urilor efectuate pe parcursul dezvoltării.
 
 ## Teste automate
 
-    TBA
+Au fost realizate teste automate pentru acțiuni precum:
+- motorul de recomandări
+- preluarea cărților de la prietenii unui utilizator
+- adăugarea diferitor tipuri de postări (want to read, post, review)
+- crearea unui utilizator si autentificarea cu token JWT
+- rafturi customizate si adăugare de cărți în rafturi
+- obiective/provocări de lectură (atât după numărul de cărți, cât și după numărul de pagini)
+Testele detaliate (codul Python) pot fi găsite [aici](./mysite/api/tests/).
 
 ## Raportare bug și rezolvare cu pull request 
 
-    Precum source control, detaliile se găsesc aici [aici](https://github.com/andreidurdun/LectioSphere/pulls?q=is%3Apr+is%3Aclosed).
+Precum source control, detaliile se găsesc [aici](https://github.com/andreidurdun/LectioSphere/pulls?q=is%3Apr+is%3Aclosed).
 
 ## Comentarii cod și respectarea code standards 
 
-    Comentariile au fost majoritar scrise de noi, însă unele (de obicei cele care explicau codul de la sine, fără acțiuni complexe) au fost scrise prin prompt engineering.
-    Code standards aplicate: convențiile de denumire (camelCase, PascalCase, snake_case) în funcție de limbaj și context, indentare coerentă, nume descriptive pentru funcții și variabile, unicitatea funcționalității funcțiilor, etc.
+Comentariile au fost majoritar scrise de noi, însă unele (de obicei cele care explicau codul de la sine, fără acțiuni complexe) au fost scrise prin prompt engineering.
+Code standards aplicate: convențiile de denumire (camelCase, PascalCase, snake_case) în funcție de limbaj și context, indentare coerentă, nume descriptive pentru funcții și variabile, unicitatea funcționalității funcțiilor, etc.
 
 ## Design patterns
 
