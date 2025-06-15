@@ -1,115 +1,73 @@
-from rest_framework.test import APITestCase, APIClient
-from rest_framework import status
-from django.contrib.auth import get_user_model
-from api.models import Shelf, ShelfBooks, Book
+from rest_framework.test import APITestCase
+from django.urls import reverse
+from rest_framework_simplejwt.tokens import RefreshToken
+from accounts.models import UserAccount 
 
-User = get_user_model()
-
-class LibraryPageViewTestCase(APITestCase):
+class MadeProgressPostTestCase(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            email="reader@example.com",
-            username="reader",
-            first_name="Reader",
-            last_name="User",
-            password="testpass",
-            goal_books=5,
-            goal_pages=1000
+        self.user = UserAccount.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass123'
         )
+        refresh = RefreshToken.for_user(self.user)
+        self.client.credentials(HTTP_AUTHORIZATION=f'JWT {str(refresh.access_token)}')
+        self.url = reverse('add-post') 
 
-        self.client = APIClient()
-        self.client.force_authenticate(user=self.user)
+    def test_want_to_read_post(self):
+        data = {
+            "action": "want_to_read",
+            "id": "yow0EAAAQBAJ"
+        }
 
-        # Creează raftul "Read" manual dacă nu există
-        self.read_shelf, _ = Shelf.objects.get_or_create(user=self.user, name="Read")
+        response = self.client.post(self.url, data, format='json')
+        
+        print(response.data)  
+        
+        self.assertEqual(response.status_code, 201)
+        self.assertIn("action", response.data)
+        self.assertEqual(response.data["action"], "want_to_read")
+       
 
-        self.book = Book.objects.create(
-            title="Sample Book",
-            author="Jane Author",
-            ISBN="1111222233334",
-            genre="Adventure",
-            rating=4.2,
-            nr_pages=250,
-            description="This is a test book"
-        )
+    
+        
+    def test_post_action_post(self):
+        data = {
+            "action": "post",
+            "description": "Mi-a plăcut cum arată coperta!",
+            "id": "yow0EAAAQBAJ"
+        }
 
-        ShelfBooks.objects.create(shelf=self.read_shelf, book=self.book)
+        response = self.client.post(self.url, data, format='json')
+        
+        print(response.data)  
+        
+        self.assertEqual(response.status_code, 201)
+        self.assertIn("action", response.data)
+        self.assertEqual(response.data["action"], "post")
+        self.assertIn("description", response.data)
+        self.assertEqual(response.data["description"], "Mi-a plăcut cum arată coperta!")
+       
 
-    def test_reading_challenge_progress(self):
-        response = self.client.get("/library/reading_challenge/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["books_read"], 1)
-        self.assertEqual(response.data["pages_read"], 250)
-        self.assertEqual(response.data["progress_books_percent"], 20)
-        self.assertEqual(response.data["progress_pages_percent"], 25)
 
-    def test_update_reading_goals(self):
-        response = self.client.post("/library/update_reading_goals/", {
-            "goal_books": 10,
-            "goal_pages": 2000
-        })
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.goal_books, 10)
-        self.assertEqual(self.user.goal_pages, 2000)
+    def test_post_action_review(self):
+        data = {
+            "action": "review",
+            "rating": 3,
+            "description": "SUPERR!",
+            "id": "yow0EAAAQBAJ"
+        }
 
-    def test_shelves_structure(self):
-        response = self.client.get("/library/shelves/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("standard_shelves", response.data)
-        self.assertIn("Read", response.data["standard_shelves"])
-        self.assertEqual(len(response.data["standard_shelves"]["Read"]), 1)
+        response = self.client.post(self.url, data, format='json')
+        
+        print(response.data)  #
+        
+        self.assertEqual(response.status_code, 201)
+        self.assertIn("action", response.data)
+        self.assertEqual(response.data["action"], "review")
+        self.assertIn("rating", response.data)
+        self.assertEqual(response.data["rating"], 3)
+        self.assertIn("description", response.data)
+        self.assertEqual(response.data["description"], "SUPERR!")
+      
 
-    def test_book_status_found(self):
-        response = self.client.get("/library/book_status/?isbn=1111222233334")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data["in_read"])
-        self.assertFalse(response.data["in_reading"])
-
-    def test_book_status_missing_isbn(self):
-        response = self.client.get("/library/book_status/")
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("ISBN is required", response.data["error"])
-
-    def test_get_shelf_by_name_success(self):
-        response = self.client.get("/library/shelf/Read/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["shelf_name"], "Read")
-        self.assertEqual(len(response.data["books"]), 1)
-
-    def test_get_shelf_by_name_not_found(self):
-        response = self.client.get("/library/shelf/Nonexistent/")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_create_shelf_success(self):
-        response = self.client.post("/library/create_shelf/", {"name": "MyCustomShelf"})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["shelf"]["name"], "MyCustomShelf")
-
-    def test_create_shelf_duplicate(self):
-        Shelf.objects.create(user=self.user, name="DuplicateShelf")
-        response = self.client.post("/library/create_shelf/", {"name": "DuplicateShelf"})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_shelf_missing_name(self):
-        response = self.client.post("/library/create_shelf/", {})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_delete_custom_shelf_success(self):
-        shelf = Shelf.objects.create(user=self.user, name="DeleteMe")
-        response = self.client.delete(f"/library/delete_shelf/{shelf.name}/")
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-    def test_delete_standard_shelf_forbidden(self):
-        response = self.client.delete("/library/delete_shelf/Read/")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertIn("Cannot delete standard shelf", response.data["error"])
-
-    def test_delete_shelf_not_found(self):
-        response = self.client.delete("/library/delete_shelf/NoSuchShelf/")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_reading_challenge_unauthenticated(self):
-        self.client.force_authenticate(user=None)
-        response = self.client.get("/library/reading_challenge/")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
