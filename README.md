@@ -52,6 +52,7 @@ Au fost realizate teste automate pentru acțiuni precum:
 - crearea unui utilizator si autentificarea cu token JWT
 - rafturi customizate si adăugare de cărți în rafturi
 - obiective/provocări de lectură (atât după numărul de cărți, cât și după numărul de pagini)
+
 Testele detaliate (codul Python) pot fi găsite [aici](./mysite/api/tests/).
 
 ## Raportare bug și rezolvare cu pull request 
