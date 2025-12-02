@@ -2,6 +2,7 @@
   "expo": {
     "name": "LectioSphere",
     "slug": "LectioSphere",
+    "scheme": "lectiosphere", 
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,6 +21,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "package": "com.andreidurdun.lectiosphere",
       "permissions": [
         "INTERNET"
       ],
@@ -30,7 +32,13 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
-    ]
+      "expo-font",
+      "expo-web-browser"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f6d629a2-7550-495d-9c9f-4524079066bf"
+      }
+    }
   }
 }

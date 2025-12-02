@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import { makeRedirectUri } from 'expo-auth-session';
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
 
@@ -14,6 +19,54 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
         Nunito_500Medium,
         Nunito_600SemiBold
     });
+
+    // Google Authentication Setup
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        expoClientId: '833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com',
+        androidClientId: '833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com',
+        webClientId: '833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com',
+        redirectUri: 'https://auth.expo.io/@lectiosphere/LectioSphere',
+        
+        useProxy: true,
+        
+        
+    });
+
+    // ADAUGĂ ACEASTĂ LINIE PENTRU DEBUGGING
+    console.log('Request details sent to Google:', request);
+
+    useEffect(() => {
+        if (response?.type === 'success') {
+            const { authentication } = response;
+            if (authentication?.accessToken) {
+                const googleLogin = async (token) => {
+                    try {
+                        // Make a POST request to your backend's Google login endpoint
+                        const res = await axios.post(`${apiBaseUrl}/api/accounts/google/`, {
+                            access_token: token,
+                        });
+
+                        // Assuming the backend returns access and refresh tokens
+                        const { access, refresh } = res.data;
+
+                        // Save the refresh token
+                        await AsyncStorage.setItem('refresh_token', refresh);
+
+                        // Save the access token and update auth state
+                        saveAuthToken(access);
+
+                        // Navigate to the home page
+                        navigation.replace('HomePage');
+                    } catch (err) {
+                        console.error('Google Login Error:', err.response?.data || err.message);
+                        Alert.alert('Google Login Error', 'An error occurred during Google login.');
+                    }
+                };
+
+                googleLogin(authentication.accessToken);
+            }
+        }
+    }, [response]);
 
     if (!fontsLoaded) {
         return <Text>Loading fonts...</Text>;
@@ -57,7 +110,11 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
             
             Alert.alert('Login Error', errorMessage);
         }
-    };    return (
+    };    
+
+
+    
+    return (
         <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView 
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -124,6 +181,14 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
                             Register Now!
                         </Text>
                     </Text>
+
+                    <Button
+                        disabled={!request}
+                        title={!request ? "Loading Google Sign-In..." : "Login with Google"}
+                        onPress={() => {
+                            promptAsync();
+                        }}
+                    />
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
