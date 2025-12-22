@@ -12,7 +12,7 @@ class MadeProgressPostTestCase(APITestCase):
         )
         refresh = RefreshToken.for_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f'JWT {str(refresh.access_token)}')
-        self.url = reverse('add-post') `
+        self.url = reverse('add-post')
 
     def test_want_to_read_post(self):
         data = {
