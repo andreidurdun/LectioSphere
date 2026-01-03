@@ -4,8 +4,10 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
 from django.utils.html import strip_tags
+from accounts.models import UserAccount
 
 from api.models import Event
+from api.models import Notification
 from webscrappingdemo.sources.carturesti import get_carturesti_events
 from webscrappingdemo.sources.humanitas import get_humanitas_events
 
@@ -72,10 +74,12 @@ class Command(BaseCommand):
 
         # 4) If there are NEW events -> send digest email to all users
         if new_events:
+            created_n = self.create_notifications_for_all_users(new_events)
             sent_to = self.send_digest_email(new_events)
-            self.stdout.write(self.style.SUCCESS(f"Digest email sent to {sent_to} recipients (BCC)."))
+            self.stdout.write(self.style.SUCCESS(f"Digest email sent to {sent_to} recipients (BCC) and notifications created."))
         else:
             self.stdout.write(self.style.WARNING("No new events. No email sent."))
+
 
     def _all_user_emails(self):
         return list(
@@ -85,6 +89,30 @@ class Command(BaseCommand):
             .values_list("email", flat=True)
             .distinct()
         )
+    
+
+    # notificari app
+    def create_notifications_for_all_users(self, new_events) -> int:
+      users = list(User.objects.all().only("id"))
+      if not users:
+          return 0
+
+      existing = set(
+          Notification.objects.filter(event__in=new_events, user__in=users)
+          .values_list("user_id", "event_id")
+      )
+
+      to_create = []
+      for u in users:
+          for ev in new_events:
+              key = (u.id, ev.id)
+              if key in existing:
+                  continue
+              to_create.append(Notification(user=u, event=ev))
+
+      Notification.objects.bulk_create(to_create, batch_size=1000)
+      return len(to_create)
+
 
     def _html_wrapper(self, inner_html: str) -> str:
         """
