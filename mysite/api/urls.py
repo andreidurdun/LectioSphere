@@ -107,6 +107,9 @@ urlpatterns = [
 
     path('scrape-books/', BooksWebScrapperView.as_view(), name='scrape_books'),
     path('scrape-events/', EventsScapperView.scrape_events),
+  
+
+    path("scrape-events/<int:event_id>/",EventsScapperView.scrape_event_by_id)
 
 ]
 

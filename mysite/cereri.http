@@ -22,7 +22,7 @@ Content-Type: application/json
 //activare contul
 //uid = in url-ul din email, dupa activate/
 //token = in url dupa uid
-
+//http://192.168.199.240:8000/activate/MQ/d0io73-818797aae30e79043dbf5f68adffcace //6 dec
 //http://192.168.1.134:8000/activate/MQ/cpc38i-6feaad66c8877ac2b0bfef95321c296e
 ###
 POST http://localhost:8000/auth/users/activation/ HTTP/1.1
@@ -31,7 +31,7 @@ Content-Type: application/json
 {
    
   "uid": "MQ",
-  "token": "cpc38i-6feaad66c8877ac2b0bfef95321c296e"
+  "token": "d0io73-818797aae30e79043dbf5f68adffcace"
   //cp89va-a86a8b4c727b2e61e98b8884355b629a
 }
 
@@ -465,3 +465,18 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
         "nr_pages": 1225
     }
 }
+
+### Testare evenimente literare
+##toate evenimentele literare
+GET http://localhost:8000/scrape-events/
+Accept: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NDU1MTUzLCJpYXQiOjE3Njc0NTE1NTQsImp0aSI6IjhhZjQyMzAwNDk1YTQ5NTQ4NDE3NmQzMzMyYzUxZmUzIiwidXNlcl9pZCI6IjEifQ.Sgj7PsTvVCJ-tKYd7CmJWklBzoXErJZB6oVzGBL4_YM
+
+##un singur eveniment dupa id 
+###
+GET http://localhost:8000/scrape-events/24/
+Accept: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NDU1MTUzLCJpYXQiOjE3Njc0NTE1NTQsImp0aSI6IjhhZjQyMzAwNDk1YTQ5NTQ4NDE3NmQzMzMyYzUxZmUzIiwidXNlcl9pZCI6IjEifQ.Sgj7PsTvVCJ-tKYd7CmJWklBzoXErJZB6oVzGBL4_YM
+
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1MjM1MzA1LCJpYXQiOjE3NjUyMzE3MDUsImp0aSI6IjI1OGIwNjJiYjMxYjQwZThhYjEzMDhjNWJiMGQyODIyIiwidXNlcl9pZCI6IjEifQ.aFXKLJzjpkGrZwQyAfjZQoERfBXFTPrmR5ruU-tA9A0
