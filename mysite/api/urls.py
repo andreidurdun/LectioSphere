@@ -4,6 +4,7 @@ from .views import GoogleBooksAPIView
 from .views import BooksView
 from .views import PostsView
 from .views import EventsScapperView
+from api.views.NotificationsView import NotificationsView
 from api.views.ShelfByNameView import ShelfByNameView  # ✅ corect
 from api.views.BooksWebScrapperView import BooksWebScrapperView  # Import the missing view
 
@@ -61,6 +62,12 @@ urlpatterns = [
    path('posts/user/<int:profile_id>/', PostsView.as_view({"get": "posts_for_user"}), name='posts-for-user'),
    path("posts/post_type/<int:profile_id>/", PostsView.as_view({"get": "post_type_posts_for_user"}), name="post-type-posts-for-user"),
    path("posts/non_post_type/<int:profile_id>/", PostsView.as_view({"get": "non_post_type_posts_for_user"}), name="non-post-type-posts-for-user"),
+
+
+
+   # urls notificari 
+   path("notifications/", NotificationsView.as_view({"get": "list"}), name="list-notifications"),
+   path("notifications/<int:pk>/", NotificationsView.as_view({"delete": "destroy"}), name="delete-notification"),
 
 
 
