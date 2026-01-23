@@ -267,6 +267,7 @@ Content-Type: application/json
   "action": "want_to_read",
   "id": "yow0EAAAQBAJ"
 }
+
 ### 
 # facem o postare de tip "post" -OK
 POST http://localhost:8000/posts/add/

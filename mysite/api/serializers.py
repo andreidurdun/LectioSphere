@@ -233,3 +233,16 @@ class ShelfBooksSerializer(serializers.ModelSerializer):
 
 
 
+class ReadingSheetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReadingSheet
+        fields = [
+            "id",
+            "user",
+            "book",
+            "shelf",
+            "model_type",   # ✅ LIPSEA
+            "text",
+            "data",  
+            "date",
+        ]

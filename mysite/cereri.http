@@ -98,6 +98,81 @@ POST http://localhost:8000/auth/users/reset_password_confirm/
 Content-Type: application/json
 
 {
+
+
+###
+//Add a book to Currently Reading
+POST http://localhost:8000/api/books/currently_reading/add/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NzUzNTk2LCJpYXQiOjE3NDU3NDk5OTYsImp0aSI6ImM1ZjJlMTg3ZDc3ZjQzZjBhMWY3YWI3OTgxMzdlY2Y2IiwidXNlcl9pZCI6Mn0.AqKl1TkwWx3V9p8ToFbb7wAr8QVkD7fqy3qj5d-LnFs
+Content-Type: application/json
+
+{
+    "book": {
+        "ISBN": "9780544003415",
+        "id": "sample_book_id",
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "genre": "Fantasy",
+        "rating": 4.5,
+        "nr_pages": 310,
+        "publication_year": 1937,
+        "series": "Middle-earth",
+        "description": "A fantasy novel about a hobbit's adventure to win a share of treasure guarded by a dragon.",
+        "thumbnail": "https://example.com/hobbit-cover.jpg"
+    }
+}
+
+###
+//Add a book to Read
+POST http://localhost:8000/api/books/read/add/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NzUzNTk2LCJpYXQiOjE3NDU3NDk5OTYsImp0aSI6ImM1ZjJlMTg3ZDc3ZjQzZjBhMWY3YWI3OTgxMzdlY2Y2IiwidXNlcl9pZCI6Mn0.AqKl1TkwWx3V9p8ToFbb7wAr8QVkD7fqy3qj5d-LnFs
+Content-Type: application/json
+
+{
+    "book": {
+        "ISBN": "9780544003415",
+        "id": "sample_book_id",
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "genre": "Fantasy",
+        "rating": 4.5,
+        "nr_pages": 310,
+        "publication_year": 1937,
+        "series": "Middle-earth",
+        "description": "A fantasy novel about a hobbit's adventure to win a share of treasure guarded by a dragon.",
+        "thumbnail": "https://example.com/hobbit-cover.jpg"
+    }
+}
+
+###
+//Add a book to Read List
+POST http://localhost:8000/api/books/read_list/add/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1NzUzNTk2LCJpYXQiOjE3NDU3NDk5OTYsImp0aSI6ImM1ZjJlMTg3ZDc3ZjQzZjBhMWY3YWI3OTgxMzdlY2Y2IiwidXNlcl9pZCI6Mn0.AqKl1TkwWx3V9p8ToFbb7wAr8QVkD7fqy3qj5d-LnFs
+Content-Type: application/json
+
+{
+    "book": {
+        "ISBN": "9780544003415",
+        "id": "sample_book_id",
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "genre": "Fantasy",
+        "rating": 4.5,
+        "nr_pages": 310,
+        "publication_year": 1937,
+        "series": "Middle-earth",
+        "description": "A fantasy novel about a hobbit's adventure to win a share of treasure guarded by a dragon.",
+        "thumbnail": "https://example.com/hobbit-cover.jpg"
+    }
+}
+
+
+
+###
+POST http://localhost:8000/auth/users/reset_password_confirm/
+Content-Type: application/json
+
+{
   "uid": "MQ",
   "token": "cp8bjm-a2eaa51ddc790ec689d457d7a954dfea",
   "new_password": "NouaParola123!"
@@ -123,7 +198,7 @@ Content-Type: application/json
 POST http://localhost:8000/api/books/read/add/
 
 
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjQyNzAxLCJpYXQiOjE3Njc2MzkxMDIsImp0aSI6IjRmOGI3NDkwNWQzYzQwMDM5NDBiNmM0YzRlYjE0NzgyIiwidXNlcl9pZCI6IjEifQ.wau5MSnuyQUyKakvcytXHBpl5KcWYl9BeRCt0aAY-BU
 
 Content-Type: application/json
 
@@ -369,7 +444,7 @@ Content-Type: application/json
 ##pt fisele de lectura
 ###
 GET http://localhost:8000/api/reading-sheets/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTE0NzI1LCJpYXQiOjE3NDgxMTExMjUsImp0aSI6ImIzNDQ5YmU5NWEyNzRjZGY4OTljNDBjZTgzYmI2ZjBjIiwidXNlcl9pZCI6MX0.e2SQ8mD01p6LhOJE0HyKb5E6S77oYOBjfXMM_2tDOYA
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjQyNzAxLCJpYXQiOjE3Njc2MzkxMDIsImp0aSI6IjRmOGI3NDkwNWQzYzQwMDM5NDBiNmM0YzRlYjE0NzgyIiwidXNlcl9pZCI6IjEifQ.wau5MSnuyQUyKakvcytXHBpl5KcWYl9BeRCt0aAY-BU
 Accept: application/json
 
 
@@ -419,7 +494,7 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 
 ### Act biectivele permanente pentru utilizator
 POST http://localhost:8000/api/library/update_reading_goals/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4MTIyOTExLCJpYXQiOjE3NDgxMTkzMTEsImp0aSI6IjNmMDUwOWM1NmZmZTRkZWZhOTc4MGI5MDBjNTMyYzMwIiwidXNlcl9pZCI6MX0.yjHp_7tiyTa6EYQz3ZZeX4doaB3GQ_N58Az1QjlTZzA
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjQyNzAxLCJpYXQiOjE3Njc2MzkxMDIsImp0aSI6IjRmOGI3NDkwNWQzYzQwMDM5NDBiNmM0YzRlYjE0NzgyIiwidXNlcl9pZCI6IjEifQ.wau5MSnuyQUyKakvcytXHBpl5KcWYl9BeRCt0aAY-BU
 Content-Type: application/json
 
 {
@@ -433,7 +508,7 @@ Content-Type: application/json
 ###
 
 POST http://localhost:8000/library/add_book_to_shelf/
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NTY5MDU5LCJpYXQiOjE3NDk1NjU0NTksImp0aSI6IjM1N2E2YmU1MjAzMTQ4ZDlhZmYzZDQwMDYxNjFiMDA0IiwidXNlcl9pZCI6MX0.qj2jKB4q6WCiyU6o5cii2Vs24JMZEyD8J5exzMx18yQ
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjQyNzAxLCJpYXQiOjE3Njc2MzkxMDIsImp0aSI6IjRmOGI3NDkwNWQzYzQwMDM5NDBiNmM0YzRlYjE0NzgyIiwidXNlcl9pZCI6IjEifQ.wau5MSnuyQUyKakvcytXHBpl5KcWYl9BeRCt0aAY-BU
 Content-Type: application/json
 
 {
@@ -466,6 +541,8 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
     }
 }
 
+
+
 ### Testare evenimente literare
 ##toate evenimentele literare
 GET http://localhost:8000/scrape-events/
@@ -480,3 +557,166 @@ Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNj
 
 
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1MjM1MzA1LCJpYXQiOjE3NjUyMzE3MDUsImp0aSI6IjI1OGIwNjJiYjMxYjQwZThhYjEzMDhjNWJiMGQyODIyIiwidXNlcl9pZCI6IjEifQ.aFXKLJzjpkGrZwQyAfjZQoERfBXFTPrmR5ruU-tA9A0
+
+
+
+### 1) LIST - toate reading sheets grupate pe raft (GET /reading-sheets/)
+GET http://localhost:8000/reading-sheets/
+Accept: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjQyNzAxLCJpYXQiOjE3Njc2MzkxMDIsImp0aSI6IjRmOGI3NDkwNWQzYzQwMDM5NDBiNmM0YzRlYjE0NzgyIiwidXNlcl9pZCI6IjEifQ.wau5MSnuyQUyKakvcytXHBpl5KcWYl9BeRCt0aAY-BU
+
+
+
+
+
+
+##pt fisele de lectura
+
+
+
+
+
+
+
+### CREATE ReadingSheet de tipul 
+POST http://localhost:8000/reading-sheets/book-review/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjkzMzUwLCJpYXQiOjE3Njc2ODk3NTAsImp0aSI6IjkxNTQzYWMzOGM3ODQxY2E4NThkODkyMTYwYmI2MTA0IiwidXNlcl9pZCI6IjEifQ.RhsuU7hHPEyCKHMZqK7uQMcXVDKAABT7SjN-uckocYo
+Content-Type: application/json
+Accept: application/json
+
+{
+  "book": 1,
+  "shelf": 1,
+  "data": 
+  {
+    "summary": "Rezumat acestei carti este",
+    "rating": 5,
+    "favorite_quote": "Citat...",
+    "themes": "Teme...",
+    "characters": "Personaje..."
+  }
+}
+###
+
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjQ2MzU1LCJpYXQiOjE3Njc2NDI3NTUsImp0aSI6Ijg4Mzk4YjkzMjI1NDRiOGE4YTZiOWQyMjU5ZDI4ZmNlIiwidXNlcl9pZCI6IjEifQ.5yfpd-NJ6zhaysHQ164_ZLmlBTSFxkbef_qKZvRfTEU
+
+
+
+#afiseaza toate fisele
+### (by id)
+GET http://localhost:8000/reading-sheets/
+Accept: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjkzMzUwLCJpYXQiOjE3Njc2ODk3NTAsImp0aSI6IjkxNTQzYWMzOGM3ODQxY2E4NThkODkyMTYwYmI2MTA0IiwidXNlcl9pZCI6IjEifQ.RhsuU7hHPEyCKHMZqK7uQMcXVDKAABT7SjN-uckocYo
+
+
+
+
+### update
+PATCH http://localhost:8000/reading-sheets/2/update/
+Accept: application/json
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjkzMzUwLCJpYXQiOjE3Njc2ODk3NTAsImp0aSI6IjkxNTQzYWMzOGM3ODQxY2E4NThkODkyMTYwYmI2MTA0IiwidXNlcl9pZCI6IjEifQ.RhsuU7hHPEyCKHMZqK7uQMcXVDKAABT7SjN-uckocYo
+
+{
+  "text": "Text actualizat pentru fisa de lectura numarul 2"
+}
+
+
+
+
+### update
+DELETE  http://localhost:8000/reading-sheets/1/delete/
+Accept: application/json
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjkzMzUwLCJpYXQiOjE3Njc2ODk3NTAsImp0aSI6IjkxNTQzYWMzOGM3ODQxY2E4NThkODkyMTYwYmI2MTA0IiwidXNlcl9pZCI6IjEifQ.RhsuU7hHPEyCKHMZqK7uQMcXVDKAABT7SjN-uckocYo
+
+#add pt o fisa simpla
+###
+POST http://localhost:8000/reading-sheets/basic/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjkzMzUwLCJpYXQiOjE3Njc2ODk3NTAsImp0aSI6IjkxNTQzYWMzOGM3ODQxY2E4NThkODkyMTYwYmI2MTA0IiwidXNlcl9pZCI6IjEifQ.RhsuU7hHPEyCKHMZqK7uQMcXVDKAABT7SjN-uckocYo
+Content-Type: application/json
+
+{
+  "book": 1,
+  "shelf": 1,
+  "text": "Note simple despre carte."
+}
+
+
+
+###
+POST http://localhost:8000/reading-sheets/reading-notes/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjkzMzUwLCJpYXQiOjE3Njc2ODk3NTAsImp0aSI6IjkxNTQzYWMzOGM3ODQxY2E4NThkODkyMTYwYmI2MTA0IiwidXNlcl9pZCI6IjEifQ.RhsuU7hHPEyCKHMZqK7uQMcXVDKAABT7SjN-uckocYo
+Content-Type: application/json
+
+{
+  "book": 1,
+  "shelf": 1,
+  "data": {
+    "notes": "Capitolul 1 este introductiv.",
+    "takeaways": ["Curajul vine treptat"],
+    "questions": ["De ce acceptă Bilbo aventura?"],
+    "vocabulary": ["hobbit", "shire"]
+  }
+}
+
+
+
+###
+POST http://localhost:8000/reading-sheets/reading-reflections/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjkzMzUwLCJpYXQiOjE3Njc2ODk3NTAsImp0aSI6IjkxNTQzYWMzOGM3ODQxY2E4NThkODkyMTYwYmI2MTA0IiwidXNlcl9pZCI6IjEifQ.RhsuU7hHPEyCKHMZqK7uQMcXVDKAABT7SjN-uckocYo
+Content-Type: application/json
+
+{
+  "book": 1,
+  "shelf": 1,
+  "data": {
+    "days": 7,
+    "progress": "50%",
+    "rewards": "Pauză de cafea ☕",
+    "reflection": "Mi-a plăcut ritmul poveștii."
+  }
+}
+
+
+###
+PATCH http://localhost:8000/reading-sheets/10/update/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjkzMzUwLCJpYXQiOjE3Njc2ODk3NTAsImp0aSI6IjkxNTQzYWMzOGM3ODQxY2E4NThkODkyMTYwYmI2MTA0IiwidXNlcl9pZCI6IjEifQ.RhsuU7hHPEyCKHMZqK7uQMcXVDKAABT7SjN-uckocYo
+Content-Type: application/json
+
+{
+  "shelf": 2,
+  "data": {
+    "rating": 4
+  }
+}
+
+
+# afiseaza o fisa dupa id 
+###
+GET  http://localhost:8000//reading-sheets/3/
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjkzMzUwLCJpYXQiOjE3Njc2ODk3NTAsImp0aSI6IjkxNTQzYWMzOGM3ODQxY2E4NThkODkyMTYwYmI2MTA0IiwidXNlcl9pZCI6IjEifQ.RhsuU7hHPEyCKHMZqK7uQMcXVDKAABT7SjN-uckocYo
+
+
+
+###
+//Add a book with id=1 to Currently Reading
+POST http://localhost:8000/books/currently_reading/add/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY3NjUwMDA3LCJpYXQiOjE3Njc2NDY0MDcsImp0aSI6IjdjODRkNmY3ZTNjZjQ0MmRiNzFhYTk2ZDA2YzJjMTlkIiwidXNlcl9pZCI6IjEifQ.9RvMcLuI-85ny2xv9NrwQqsLGH7bWLFo6KOd-5V5sF8
+Content-Type: application/json
+
+{
+    "book": {
+        "id": "1",
+        "ISBN": "9780544003415",
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "genre": "Fantasy",
+        "rating": 4.5,
+        "nr_pages": 310,
+        "publication_year": 1937,
+        "series": "Middle-earth",
+        "description": "A fantasy novel about a hobbit's adventure to win a share of treasure guarded by a dragon.",
+        "thumbnail": "https://example.com/hobbit-cover.jpg"
+    }
+}
