@@ -1,7 +1,13 @@
-from django.urls import path, include
-from .views import GoogleBooksAPIView, BooksView, PostsView, EventsScapperView
-from api.views.ShelfByNameView import ShelfByNameView
-from api.views.BooksWebScrapperView import BooksWebScrapperView
+from django.urls import path, re_path, include
+#from .views import views
+from .views import GoogleBooksAPIView
+from .views import BooksView
+from .views import PostsView
+from .views import EventsScapperView
+from api.views.NotificationsView import NotificationsView
+from api.views.ShelfByNameView import ShelfByNameView  # ✅ corect
+from api.views.BooksWebScrapperView import BooksWebScrapperView  # Import the missing view
+
 from api.views.ReadingSheetsView import ReadingSheetsView
 from api.views.LibraryPageView import LibraryPageView
 
@@ -29,20 +35,38 @@ urlpatterns = [
     path("books/get/<str:isbn>/", BooksView.as_view({"get": "get_book"}), name="get-book"),
     path("books/get_friends_books/", BooksView.as_view({"get": "get_friends_books"}), name="get-friends-books"),
 
-    # --- POSTS (manual ca in proiectul tau) ---
-    path("posts/add/", PostsView.as_view({"post": "add_post"}), name="add-post"),
-    path("posts/<int:pk>/", PostsView.as_view({"get": "read_post"}), name="read-post"),
-    path("posts/<int:pk>/delete/", PostsView.as_view({"delete": "delete_post"}), name="delete-post"),
-    path("posts/<int:pk>/update/", PostsView.as_view({"put": "update_post", "patch": "update_post"}), name="update-post"),
-    path("posts/", PostsView.as_view({"get": "list_posts"}), name="list-posts"),
-    path("posts/feed/", PostsView.as_view({"get": "feed"}), name="feed"),
-    path("posts/post_type/", PostsView.as_view({"get": "list_post_type_posts"}), name="list-post-type-posts"),
-    path("posts/non_post_type/", PostsView.as_view({"get": "list_non_post_type_posts"}), name="list-non-post-type-posts"),
-    path("posts/reviews/followed/<str:book_id>/", PostsView.as_view({"get": "reviews_for_followed_users"}), name="reviews-for-followed-users"),
-    path("posts/reviews/<str:book_id>/", PostsView.as_view({"get": "reviews_for_book"}), name="reviews-for-book"),
-    path("posts/user/<int:profile_id>/", PostsView.as_view({"get": "posts_for_user"}), name="posts-for-user"),
-    path("posts/post_type/<int:profile_id>/", PostsView.as_view({"get": "post_type_posts_for_user"}), name="post-type-posts-for-user"),
-    path("posts/non_post_type/<int:profile_id>/", PostsView.as_view({"get": "non_post_type_posts_for_user"}), name="non-post-type-posts-for-user"),
+
+   #urls pentru postari + feed
+   path("posts/add/", PostsView.as_view({"post": "add_post"}), name="add-post"),
+   path("posts/<int:pk>/", PostsView.as_view({"get": "read_post"}), name="read-post"),
+   path("posts/<int:pk>/delete/", PostsView.as_view({"delete": "delete_post"}), name="delete-post"),
+   path("posts/<int:pk>/update/", PostsView.as_view({"put": "update_post", "patch": "update_post"}), name="update-post"),
+   path("posts/", PostsView.as_view({"get": "list_posts"}), name="list-posts"),
+   path("posts/feed/", PostsView.as_view({"get": "feed"}), name="feed"),
+   
+   path("posts/post_type/", PostsView.as_view({"get": "list_post_type_posts"}), name="list-post-type-posts"),
+   path("posts/non_post_type/", PostsView.as_view({"get": "list_non_post_type_posts"}), name="list-non-post-type-posts"),
+
+   path('posts/reviews/followed/<str:book_id>/', PostsView.as_view({"get": "reviews_for_followed_users"}), name='reviews-for-followed-users'),
+   path('posts/reviews/<str:book_id>/', PostsView.as_view({"get": "reviews_for_book"}), name='reviews-for-book'),
+   path('posts/user/<int:profile_id>/', PostsView.as_view({"get": "posts_for_user"}), name='posts-for-user'),
+   path("posts/post_type/<int:profile_id>/", PostsView.as_view({"get": "post_type_posts_for_user"}), name="post-type-posts-for-user"),
+   path("posts/non_post_type/<int:profile_id>/", PostsView.as_view({"get": "non_post_type_posts_for_user"}), name="non-post-type-posts-for-user"),
+
+
+
+   # urls notificari 
+   path("notifications/", NotificationsView.as_view({"get": "list"}), name="list-notifications"),
+   path("notifications/<int:pk>/", NotificationsView.as_view({"delete": "destroy"}), name="delete-notification"),
+
+
+
+
+
+
+
+
+    
     path("posts/<int:pk>/add_comment/", PostsView.as_view({"post": "add_comment"}), name="add-comment"),
     path("posts/<int:pk>/list_comments/", PostsView.as_view({"get": "list_comments"}), name="list-comments"),
     path("posts/<int:pk>/has_liked/", PostsView.as_view({"get": "has_liked"}), name="has-liked"),

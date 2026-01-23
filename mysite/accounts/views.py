@@ -16,6 +16,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.db.models import Q
 from IPADDRESS import getIP
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.views import SocialLoginView
 
 
 def get_object(self):
@@ -219,3 +222,9 @@ class ProfileSearchView(APIView):
         ordered_profiles = mutuals + following_only + others
         serializer = ProfileSerializer(ordered_profiles, many=True)
         return Response({"results": serializer.data}, status=status.HTTP_200_OK)
+
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    callback_url = 'http://localhost:8000'
+    client_class = OAuth2Client

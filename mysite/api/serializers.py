@@ -10,6 +10,7 @@ from .models.ReadingSheet import ReadingSheet
 from .models.Shelf import Shelf
 from .models.ShelfBooks import ShelfBooks
 from accounts.serializers import UserAccountSerializer
+from api.models import Notification
 
 
 
@@ -233,16 +234,12 @@ class ShelfBooksSerializer(serializers.ModelSerializer):
 
 
 
-class ReadingSheetSerializer(serializers.ModelSerializer):
+class NotificationSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(source="event.title")
+    link = serializers.CharField(source="event.link")
+    date = serializers.DateField(source="event.date")
+    source = serializers.CharField(source="event.source")
+
     class Meta:
-        model = ReadingSheet
-        fields = [
-            "id",
-            "user",
-            "book",
-            "shelf",
-            "model_type",   # ✅ LIPSEA
-            "text",
-            "data",  
-            "date",
-        ]
+        model = Notification
+        fields = ["id", "title", "link", "date", "source", "created_at"]

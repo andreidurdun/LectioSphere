@@ -47,19 +47,24 @@ INSTALLED_APPS = [
 
     'djoser',
     #'accounts',
-    'social_django',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework_simplejwt',
     'accounts.apps.AccountsConfig',  #  'accounts'
 
-
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 
@@ -69,22 +74,10 @@ AUTHENTICATION_BACKENDS = (
 
 
 
+
 # ACCOUNT_LOGIN_METHOD = {'email'}
 # ACCOUNT_SIGNUP_FIELDS = ['email', 'name', 'password1', 'password2']
 
-
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email', 
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
-)
 
 
 MIDDLEWARE = [
@@ -96,15 +89,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
-
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5173", # aplicatia react va trebui sa fie pe acest port
-#     'http://192.168.1.131:8000',
-#     'exp://192.168.1.131:8081'
-# ]
-
 CORS_ALLOW_ALL_ORIGINS = True
 
 
@@ -121,13 +107,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
             ],
         },
     },
 ]
-
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
@@ -203,14 +186,17 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ]
-    
 }
 
-REST_USE_JWT = True
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_HTTPONLY': False,
+}
 
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
@@ -218,24 +204,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-
 AUTH_USER_MODEL = 'accounts.UserAccount'  # Setam modelul de utilizator personalizat
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com"
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'openid',
-]
-SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
-
-# SOCIAL_AUTH_ALLOWED_REDIRECT_URIS = [
-#     'http://localhost:8000',
-#     'http://127.0.0.1:8000',
-#     'http://localhost:8000/complete/google-oauth2/',
-#     'http://127.0.0.1:8000/complete/google-oauth2/',
-#     'http://localhost:5173',  # Dacă folosești un frontend separat
 
 # ]
 # SOCIAL_AUTH_REDIRECT_IS_HTTPS = False
@@ -256,7 +225,7 @@ DJOSER = {
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': [
         'http://localhost:8000',
-        'http://127.0.0.1:8000',
+        'http://127.0.0.1:8000/complete/google-oauth2/',
         'http://localhost:8000/complete/google-oauth2/',
         'http://192.168.1.129:8000'
     ],
@@ -275,6 +244,22 @@ DJOSER = {
         'user_create': ['rest_framework.permissions.AllowAny'],
         'user_list': ['rest_framework.permissions.IsAdminUser'],
         'user': ['rest_framework.permissions.IsAuthenticated'],
+    }
+}
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
     }
 }
 

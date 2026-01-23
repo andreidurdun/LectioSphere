@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/accounts/', include('accounts.urls')),
     path('activate/<str:uid>/<str:token>/', ActivateAccountView.as_view(), name='activate-account'),  # Endpoint pentru activarea contului
 
+    path('accounts/', include('allauth.urls')),
 ]
 
 #urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]
