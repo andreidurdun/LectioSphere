@@ -227,7 +227,7 @@ DJOSER = {
         'http://localhost:8000',
         'http://127.0.0.1:8000/complete/google-oauth2/',
         'http://localhost:8000/complete/google-oauth2/',
-        'http://192.168.1.129:8000'
+        'http://192.168.1.138:8000'
     ],
     'SERIALIZERS': {
         'user_create': 'accounts.serializers.UserCreateSerializer',
@@ -235,7 +235,7 @@ DJOSER = {
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
         'current_user': 'accounts.serializers.UserCreateSerializer',
     },
-    'DOMAIN': '192.168.1.129:8000',  # Modificat pentru a se potrivi cu domeniul de backend
+    'DOMAIN': '192.168.1.138:8000',  # Modificat pentru a se potrivi cu domeniul de backend
     'SITE_NAME': 'LectioSphere',
     'EMAIL': {
         'activation': 'accounts.email.CustomActivationEmail',

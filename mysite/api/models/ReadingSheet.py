@@ -26,13 +26,19 @@ class ReadingSheet(models.Model):
     # obligatoriu
     user = models.ForeignKey(
         UserAccount,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=False, 
+        blank=False,
+        verbose_name="User"
     )
 
     # obligatoriu
     book = models.ForeignKey(
         Book,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name="Book"
     )
 
     # ce tip de fisa e
