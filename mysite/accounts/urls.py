@@ -2,6 +2,7 @@ from django.urls import path, include
 from django.conf import settings
 from rest_framework.routers import DefaultRouter
 from .views import ProfileUpdateView, ProfileReadView, DeleteAccountView, AddFollowerView, ActivateAccountView, ProfileSearchView, RemoveFollowerView, IsFollowingView, ProfileDetailView, GoogleLogin
+from .views import GoogleExchangeView
 
 
 # Router pentru ViewSet
@@ -20,6 +21,7 @@ urlpatterns = [
     path('profile/<int:pk>/is-following/', IsFollowingView.as_view(), name='is-following'),
     path('profile/<int:pk>/details/', ProfileDetailView.as_view(), name='profile-detail'),
     path('google/', GoogleLogin.as_view(), name='google_login'),
+    path('google-exchange/', GoogleExchangeView.as_view(), name='google_exchange'),
 
 
 ]

@@ -1,8 +1,9 @@
 {
   "expo": {
     "name": "LectioSphere",
-    "slug": "LectioSphere",
-    "scheme": "lectiosphere", 
+    "slug": "lectiosphere",
+    "owner": "minglelito",
+    "scheme": "lectiosphere",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.andreidurdun.lectiosphere",
+      "package": "com.nedelcudaniel.lectiosphere",
       "permissions": [
         "INTERNET"
       ],
@@ -37,7 +38,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "f6d629a2-7550-495d-9c9f-4524079066bf"
+        "projectId": "9f09310f-e485-48b7-8007-85cc4714a48a"
       }
     }
   }

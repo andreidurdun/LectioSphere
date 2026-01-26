@@ -19,6 +19,13 @@ from IPADDRESS import getIP
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
+import os
+import logging
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+
+logger = logging.getLogger(__name__)
 
 
 def get_object(self):
@@ -228,3 +235,136 @@ class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     callback_url = 'http://localhost:8000'
     client_class = OAuth2Client
+
+
+class GoogleExchangeView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        # Accept either an access_token, an id_token, or an authorization code
+        code = request.data.get('code')
+        redirect_uri = request.data.get('redirect_uri')
+        access_token = request.data.get('access_token')
+        id_token = request.data.get('id_token')
+
+        client_id = os.environ.get('GOOGLE_CLIENT_ID')
+        client_secret = os.environ.get('GOOGLE_CLIENT_SECRET')
+
+        if not client_id:
+            return Response({'error': 'Server misconfiguration: missing Google client id'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        userinfo = None
+
+        # 1) If id_token is provided, validate it via Google's tokeninfo endpoint
+        if id_token:
+            try:
+                tokeninfo_resp = requests.get('https://oauth2.googleapis.com/tokeninfo', params={'id_token': id_token})
+            except requests.exceptions.RequestException as e:
+                logger.exception('Error validating id_token with Google: %s', e)
+                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            if tokeninfo_resp.status_code != 200:
+                logger.warning('Google id_token validation failed: status=%s body=%s', tokeninfo_resp.status_code, tokeninfo_resp.text)
+                return Response(tokeninfo_resp.json(), status=tokeninfo_resp.status_code)
+
+            tokeninfo = tokeninfo_resp.json()
+            # Verify audience matches our client_id
+            aud = tokeninfo.get('aud') or tokeninfo.get('azp')
+            if aud != client_id:
+                logger.warning('id_token audience mismatch: expected=%s got=%s', client_id, aud)
+                return Response({'error': 'Invalid id_token audience'}, status=status.HTTP_400_BAD_REQUEST)
+
+            userinfo = {
+                'email': tokeninfo.get('email'),
+                'given_name': tokeninfo.get('given_name'),
+                'family_name': tokeninfo.get('family_name')
+            }
+
+        # 2) If access_token is provided, fetch userinfo
+        elif access_token:
+            try:
+                userinfo_resp = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers={'Authorization': f'Bearer {access_token}'})
+            except requests.exceptions.RequestException as e:
+                logger.exception('Error requesting userinfo from Google: %s', e)
+                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            if userinfo_resp.status_code != 200:
+                logger.warning('Google userinfo fetch failed: status=%s body=%s', userinfo_resp.status_code, userinfo_resp.text)
+                return Response(userinfo_resp.json(), status=userinfo_resp.status_code)
+
+            userinfo = userinfo_resp.json()
+
+        # 3) Otherwise, fall back to exchanging authorization code for tokens
+        elif code:
+            if not client_secret:
+                return Response({'error': 'Server misconfiguration: missing Google client secret for code exchange'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            token_url = 'https://oauth2.googleapis.com/token'
+            data = {
+                'code': code,
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'redirect_uri': redirect_uri,
+                'grant_type': 'authorization_code'
+            }
+
+            try:
+                token_resp = requests.post(token_url, data=data)
+            except requests.exceptions.RequestException as e:
+                logger.exception('Error requesting token from Google: %s', e)
+                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            if token_resp.status_code != 200:
+                logger.warning('Google token exchange failed: status=%s body=%s', token_resp.status_code, token_resp.text)
+                return Response(token_resp.json(), status=token_resp.status_code)
+
+            token_json = token_resp.json()
+            logger.debug('Google token response: %s', token_json)
+            access_token = token_json.get('access_token')
+
+            if not access_token:
+                return Response({'error': 'No access token returned by Google', 'details': token_json}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                userinfo_resp = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers={'Authorization': f'Bearer {access_token}'})
+            except requests.exceptions.RequestException as e:
+                logger.exception('Error requesting userinfo from Google after token exchange: %s', e)
+                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            if userinfo_resp.status_code != 200:
+                logger.warning('Google userinfo fetch failed after token exchange: status=%s body=%s', userinfo_resp.status_code, userinfo_resp.text)
+                return Response(userinfo_resp.json(), status=userinfo_resp.status_code)
+
+            userinfo = userinfo_resp.json()
+
+        else:
+            logger.warning('GoogleExchangeView called without credentials; request.data=%s', request.data)
+            return Response({'error': 'Missing credentials: provide id_token, access_token, or code'}, status=status.HTTP_400_BAD_REQUEST)
+
+        email = userinfo.get('email')
+        first_name = userinfo.get('given_name', '')
+        last_name = userinfo.get('family_name', '')
+
+        if not email:
+            return Response({'error': 'No email returned from Google', 'userinfo': userinfo}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Find or create user
+        try:
+            user = UserAccount.objects.get(email=email)
+        except UserAccount.DoesNotExist:
+            # Ensure unique username
+            base_username = email.split('@')[0]
+            username = base_username
+            counter = 1
+            while UserAccount.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
+
+            user = UserAccount.objects.create_user(email=email, password=None, username=username, first_name=first_name or username, last_name=last_name or '')
+
+        # Ensure profile exists
+        Profile.objects.get_or_create(user=user)
+
+        # Create JWT tokens for the user
+        refresh = RefreshToken.for_user(user)
+        return Response({'access': str(refresh.access_token), 'refresh': str(refresh)}, status=status.HTTP_200_OK)

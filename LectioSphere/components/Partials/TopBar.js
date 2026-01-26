@@ -19,7 +19,8 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
     const [searchSearchVal, setSearchSearchVal] = React.useState('');
     const navigation = useNavigation();    
 
-    const apiBaseUrl1 = 'http://192.168.1.134:8000';
+    const HOST_IP = process.env.EXPO_PUBLIC_HOST_IP || '192.168.1.138';
+    const apiBaseUrl1 = `http://${HOST_IP}:8000`;
     const handleFollowSearchTextChange = (text) => {
         setFollowSearchVal(text);
     };

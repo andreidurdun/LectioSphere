@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
+from environs import Env
+
+# Load environment variables
+env = Env()
+env.read_env()
+HOST_IP = env.str('HOST_IP', default='192.168.1.138')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -227,7 +233,7 @@ DJOSER = {
         'http://localhost:8000',
         'http://127.0.0.1:8000/complete/google-oauth2/',
         'http://localhost:8000/complete/google-oauth2/',
-        'http://192.168.1.138:8000'
+        f'http://{HOST_IP}:8000'
     ],
     'SERIALIZERS': {
         'user_create': 'accounts.serializers.UserCreateSerializer',
@@ -235,7 +241,7 @@ DJOSER = {
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
         'current_user': 'accounts.serializers.UserCreateSerializer',
     },
-    'DOMAIN': '192.168.1.138:8000',  # Modificat pentru a se potrivi cu domeniul de backend
+    'DOMAIN': f'{HOST_IP}:8000',  # Modificat pentru a se potrivi cu domeniul de backend
     'SITE_NAME': 'LectioSphere',
     'EMAIL': {
         'activation': 'accounts.email.CustomActivationEmail',
