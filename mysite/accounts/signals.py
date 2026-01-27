@@ -25,7 +25,7 @@ from api.models import Shelf
 def create_default_shelves(sender, instance, created, **kwargs):
     if created:
         try:
-            default_names = ["Read", "Reading", "ReadList", "Favourites"]
+            default_names = ["Read", "Reading", "Readlist", "Favourites"]
             for name in default_names:
                 Shelf.objects.get_or_create(user=instance, name=name)
             logger.info(f'Default shelves created for user: {instance.email}')
