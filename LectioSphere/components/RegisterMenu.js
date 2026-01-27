@@ -287,6 +287,7 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 16,
         width: '100%', // Ensure inputs take full width
+        color: '#613F75', // Text and password bullet color
     },
     bigIcon: {
         maxWidth: '100%',

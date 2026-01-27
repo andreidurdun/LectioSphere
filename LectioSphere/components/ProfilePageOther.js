@@ -15,6 +15,7 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
     const [refreshToken, setRefreshToken] = useState(null);
     const [isFollowing, setIsFollowing] = useState(false);
     const [followLoading, setFollowLoading] = useState(false);
+    const [currentUserId, setCurrentUserId] = useState(null);
 
     const [selected, setSelected] = useState('photo');
 
@@ -103,6 +104,18 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
         }
     };
 
+    const fetchCurrentUser = async () => {
+        try {
+            const token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/auth/users/me/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            setCurrentUserId(response.data.id);
+        } catch (error) {
+            console.error("Error fetching current user:", error.message);
+        }
+    };
+
     const checkFollowStatus = async () => {
         try {
             const response = await axios.get(`${apiBaseUrl}/api/accounts/profile/${userId}/is-following/`, {
@@ -174,13 +187,12 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
             }
         };
         
-        getTokensAndFetchData();
-    }, []);    
+        getTokensAndFetchData();        fetchCurrentUser();    }, []);    
     
     useEffect(() => {
         if (authToken && userId) {
             fetchUserData();
-            console.log('User ID:', userId);
+            // console.log('User ID:', userId);
             // Note: userData will be null here since fetchUserData is async
             fetchProfileData();
             // console.log(profileData);
@@ -193,8 +205,8 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
         return null; // or a loading indicator
     }
 
-    console.log(userData);
-    console.log(profileData);
+    // console.log(userData);
+    // console.log(profileData);
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -218,13 +230,27 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                             /> */}
                             <View style={styles.textInfo}>
                                 <View style={styles.followersInfo}>
-                                    <Text style={styles.followers}>
-                                        {profileData?.followers_count || 0} {'\n'}followers
-                                    </Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('FollowersFollowingList', {
+                                        profileId: userId,
+                                        listType: 'followers',
+                                        username: userData?.username,
+                                        apiBaseUrl
+                                    })}>
+                                        <Text style={styles.followers}>
+                                            {profileData?.followers_count || 0} {'\n'}followers
+                                        </Text>
+                                    </TouchableOpacity>
                                     <View style={styles.verticalLine}></View>
-                                    <Text style={styles.followers}>
-                                        {profileData?.following_count || 0} {'\n'}following
-                                    </Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('FollowersFollowingList', {
+                                        profileId: userId,
+                                        listType: 'following',
+                                        username: userData?.username,
+                                        apiBaseUrl
+                                    })}>
+                                        <Text style={styles.followers}>
+                                            {profileData?.following_count || 0} {'\n'}following
+                                        </Text>
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={styles.nameAndFollow}>
                                     <View style={styles.nameInfo}>
@@ -239,21 +265,23 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                                             </Text>
                                         </View>
                                     </View>
-                                    <TouchableOpacity 
-                                        onPress={toggleFollow}
-                                        disabled={followLoading}
-                                        style={[
-                                            styles.followButton,
-                                            isFollowing ? styles.followingButton : styles.notFollowingButton
-                                        ]}
-                                    >
-                                        <Text style={[
-                                            styles.followButtonText,
-                                            isFollowing ? styles.followingButtonText : styles.notFollowingButtonText
-                                        ]}>
-                                            {followLoading ? '...' : (isFollowing ? 'Following' : 'Follow')}
-                                        </Text>
-                                    </TouchableOpacity>
+                                    {userId !== currentUserId && (
+                                        <TouchableOpacity 
+                                            onPress={toggleFollow}
+                                            disabled={followLoading}
+                                            style={[
+                                                styles.followButton,
+                                                isFollowing ? styles.followingButton : styles.notFollowingButton
+                                            ]}
+                                        >
+                                            <Text style={[
+                                                styles.followButtonText,
+                                                isFollowing ? styles.followingButtonText : styles.notFollowingButtonText
+                                            ]}>
+                                                {followLoading ? '...' : (isFollowing ? 'Following' : 'Follow')}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}
                                 </View>
                             </View>
                         </View>

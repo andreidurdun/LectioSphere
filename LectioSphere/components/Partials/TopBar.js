@@ -100,7 +100,7 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
     };
     
     const handleNotificationsButton = () => {
-        Alert.alert('Notifications menu');
+        navigation.navigate('NotificationsMenu');
     };
 
     const handleSettingsButton = async () => {
@@ -179,7 +179,7 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
     else if (pageName == 'SearchPage')
     {
         return (
-            <SafeAreaView style={styles.container}>
+            <SafeAreaView style={styles.containerJustified}>
                 <Image 
                     source={icon} // Replace with your icon path
                     style={styles.icon}
@@ -237,11 +237,11 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
                     />
     
                     <View style={styles.libraryButtonsContainer}>
-                        {/* <Image 
+                        <Image 
                             source={envelope} // Replace with your search icon path
                             style={styles.envelopeIcon}
                             onTouchEnd={() => handleNotificationsButton()} // Trigger search on image press
-                        /> */}
+                        />
                         <Image 
                             source={threeDots} // Replace with your search icon path
                             style={styles.threeDotsIcon}
@@ -344,8 +344,8 @@ const styles = StyleSheet.create({
     },
     libraryButtonsContainer: {
         flexDirection: 'row',
-        width: 70,
-        justifyContent: 'space-around',
+        width: 80,
+        justifyContent: 'space-between',
         alignItems: 'center'
     },
     addReadingSheetIcon: {

@@ -162,6 +162,84 @@ class IsFollowingView(APIView):
         return Response({"is_following": is_following}, status=status.HTTP_200_OK)
 
 
+# obtinem lista de followers
+class FollowersListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk=None):
+        # If pk is provided, get followers of that profile, else get followers of current user
+        if pk:
+            try:
+                profile = Profile.objects.get(id=pk)
+            except Profile.DoesNotExist:
+                return Response({"detail": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            profile = request.user.profile
+        
+        followers = profile.followers.all()
+        current_user_profile = request.user.profile
+        
+        # Add is_following_back field to each follower
+        followers_data = []
+        for follower in followers:
+            follower_serialized = ProfileSerializer(follower).data
+            # Check if current user follows them back
+            is_following_back = follower in current_user_profile.following.all()
+            follower_serialized['is_following_back'] = is_following_back
+            followers_data.append(follower_serialized)
+        
+        return Response({"followers": followers_data}, status=status.HTTP_200_OK)
+
+
+# obtinem lista de following
+class FollowingListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk=None):
+        # If pk is provided, get following of that profile, else get following of current user
+        if pk:
+            try:
+                profile = Profile.objects.get(id=pk)
+            except Profile.DoesNotExist:
+                return Response({"detail": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            profile = request.user.profile
+        
+        following = profile.following.all()
+        current_user_profile = request.user.profile
+        
+        # Add is_following field to each user being followed
+        following_data = []
+        for followed_user in following:
+            followed_serialized = ProfileSerializer(followed_user).data
+            # Check if current user follows them
+            is_following = followed_user in current_user_profile.following.all()
+            followed_serialized['is_following'] = is_following
+            following_data.append(followed_serialized)
+        
+        return Response({"following": following_data}, status=status.HTTP_200_OK)
+
+
+# obtinem lista de mutual friends (friends = people who follow each other)
+class MutualFriendsListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        current_user_profile = request.user.profile
+        
+        # Get users that current user follows
+        following = current_user_profile.following.all()
+        
+        # Filter to get only mutual friends (those who follow back)
+        mutual_friends = []
+        for profile in following:
+            if current_user_profile in profile.following.all():
+                mutual_friends.append(profile)
+        
+        serializer = ProfileSerializer(mutual_friends, many=True)
+        return Response({"friends": serializer.data}, status=status.HTTP_200_OK)
+
+
 # vedem info despre un profil dat dupa id 
 class ProfileDetailView(APIView):
     permission_classes = [IsAuthenticated]
@@ -349,6 +427,7 @@ class GoogleExchangeView(APIView):
             return Response({'error': 'No email returned from Google', 'userinfo': userinfo}, status=status.HTTP_400_BAD_REQUEST)
 
         # Find or create user
+        user_created = False
         try:
             user = UserAccount.objects.get(email=email)
         except UserAccount.DoesNotExist:
@@ -360,11 +439,40 @@ class GoogleExchangeView(APIView):
                 username = f"{base_username}{counter}"
                 counter += 1
 
-            user = UserAccount.objects.create_user(email=email, password=None, username=username, first_name=first_name or username, last_name=last_name or '')
+            try:
+                user = UserAccount.objects.create_user(
+                    email=email, 
+                    password=None, 
+                    username=username, 
+                    first_name=first_name or username, 
+                    last_name=last_name or ''
+                )
+                user_created = True
+                logger.info(f'Created new user via Google: {email}')
+            except Exception as e:
+                logger.exception(f'Error creating user via Google: {e}')
+                return Response({'error': 'Failed to create user account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        # Ensure profile exists
-        Profile.objects.get_or_create(user=user)
+        # The profile and shelves are created by signals, but let's ensure they exist
+        # Wait a moment for signals to complete if user was just created
+        if user_created:
+            import time
+            time.sleep(0.1)  # Small delay to let signals complete
+        
+        # Verify profile exists (should be created by signal)
+        try:
+            profile = Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            logger.warning(f'Profile not found for user {email}, creating manually')
+            profile = Profile.objects.create(user=user)
 
         # Create JWT tokens for the user
-        refresh = RefreshToken.for_user(user)
-        return Response({'access': str(refresh.access_token), 'refresh': str(refresh)}, status=status.HTTP_200_OK)
+        try:
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'access': str(refresh.access_token), 
+                'refresh': str(refresh)
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.exception(f'Error creating JWT tokens: {e}')
+            return Response({'error': 'Failed to generate authentication tokens'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

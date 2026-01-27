@@ -688,6 +688,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 value={pagesInput}
                                 onChangeText={setPagesInput}
                                 placeholder="Enter number of pages"
+                                placeholderTextColor="#613F75"
                                 keyboardType="numeric"
                                 autoFocus={true}
                             />
@@ -806,6 +807,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 value={reviewDescription}
                                 onChangeText={setReviewDescription}
                                 placeholder="Write your review here..."
+                                placeholderTextColor="#613F75"
                                 multiline={true}
                                 numberOfLines={4}
                                 textAlignVertical="top"
@@ -851,6 +853,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 value={postDescription}
                                 onChangeText={setPostDescription}
                                 placeholder="Write your post here... (required)"
+                                placeholderTextColor="#613F75"
                                 multiline={true}
                                 numberOfLines={4}
                                 textAlignVertical="top"

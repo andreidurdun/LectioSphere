@@ -7,6 +7,7 @@ from .views import EventsScapperView
 from api.views.NotificationsView import NotificationsView
 from api.views.ShelfByNameView import ShelfByNameView  # ✅ corect
 from api.views.BooksWebScrapperView import BooksWebScrapperView  # Import the missing view
+from api.views.BookShareView import ShareBookView
 
 from api.views.ReadingSheetsView import ReadingSheetsView
 from api.views.LibraryPageView import LibraryPageView
@@ -58,6 +59,9 @@ urlpatterns = [
    # urls notificari 
    path("notifications/", NotificationsView.as_view({"get": "list"}), name="list-notifications"),
    path("notifications/<int:pk>/", NotificationsView.as_view({"delete": "destroy"}), name="delete-notification"),
+   
+   # urls book sharing
+   path("books/share/", ShareBookView.as_view(), name="share-book"),
 
 
 

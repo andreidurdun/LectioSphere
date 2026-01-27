@@ -7,10 +7,12 @@ import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold, Nuni
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import PostPartial from './Partials/PostPartial';
+import ShareBookModal from './ShareBookModal';
 import { Alert } from 'react-native';
 
 const purpleStarFull = require('../assets/purpleStarFull.png');
 const purpleStarEmpty = require('../assets/purpleStarEmpty.png');
+const shareIcon = require('../assets/share.png');
 
 const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, setBookData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -32,6 +34,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
 
     const [shelves, setShelves] = useState([]);              
     const [showShelfModal, setShowShelfModal] = useState(false);
+    const [showShareModal, setShowShareModal] = useState(false);
 
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -809,7 +812,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                             </Text>
 
                             {bookData.authors && bookData.authors.length > 0 && (
-                                <View style={[styles.authorsContainer, { alignItems: 'center' }]}>
+                                <View style={[styles.authorsContainer, { alignItems: 'center', marginBottom: 4 }]}>
                                     {bookData.authors.map((author, index) => (
                                         <Text key={index} style={styles.author}>
                                             {author}
@@ -817,15 +820,28 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                                     ))}
                                 </View>
                             )}
-                            <TouchableNativeFeedback 
-                                onPress={() => handleAddToLibrary()}
-                            >
-                                <View style={styles.addButtonTouchable}>
-                                    <Text style={styles.addButtonText}>
-                                        Add to Library
-                                    </Text>
-                                </View>
-                            </TouchableNativeFeedback>
+                            <View style={styles.buttonsRow}>
+                                <TouchableNativeFeedback 
+                                    onPress={() => handleAddToLibrary()}
+                                >
+                                    <View style={styles.addButtonTouchable}>
+                                        <Text style={styles.addButtonText}>
+                                            Add to Library
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                
+                                <TouchableNativeFeedback 
+                                    onPress={() => setShowShareModal(true)}
+                                >
+                                    <View style={styles.shareButtonTouchable}>
+                                        <Image source={shareIcon} style={styles.shareIcon} />
+                                        <Text style={styles.shareButtonText}>
+                                            Share
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                            </View>
                     </View>
 
                 </View>
@@ -1183,6 +1199,17 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                 </View>
             </Modal>
             
+            {/* Share Book Modal */}
+            <ShareBookModal
+                visible={showShareModal}
+                onClose={() => setShowShareModal(false)}
+                bookId={bookData?.id}
+                bookTitle={bookData?.title}
+                bookCover={bookData?.cover || bookData?.thumbnail}
+                bookAuthor={bookData?.authors?.join(', ') || bookData?.author || 'Unknown Author'}
+                apiBaseUrl={apiBaseUrl}
+            />
+            
             <NavBar navigation={navigation} page="SearchPage" />
         </SafeAreaView>
     );
@@ -1232,7 +1259,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 16,
+        marginBottom: 8,
         fontFamily: 'Nunito_700Bold',
         flexWrap: 'wrap',
         color: '#18101D',
@@ -1245,6 +1272,13 @@ const styles = StyleSheet.create({
         color: '#613F75',
         textAlign: 'center'
     },
+    buttonsRow: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        gap: 10,
+    },
     addButtonTouchable: {
         backgroundColor: '#613F75',
         width: 120,
@@ -1252,10 +1286,30 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 16,
     },
     addButtonText: {
         color: '#FCF8FA',
+        fontFamily: 'Nunito_500Medium',
+    },
+    shareButtonTouchable: {
+        backgroundColor: '#E5C3D1',
+        flexDirection: 'row',
+        width: 90,
+        height: 30,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 6,
+    },
+    shareIcon: {
+        width: 16,
+        height: 16,
+        tintColor: '#613F75',
+    },
+    shareButtonText: {
+        color: '#613F75',
+        fontFamily: 'Nunito_500Medium',
+        fontSize: 13,
     },
     ratingContainer: {
         flexDirection: 'row',

@@ -171,13 +171,27 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                             /> */}
                             <View style={styles.textInfo}>
                                 <View style={styles.followersInfo}>
-                                    <Text style={styles.followers}>
-                                        {profileData?.profile.followers_count || 0} {'\n'}followers
-                                    </Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('FollowersFollowingList', {
+                                        profileId: profileData?.profile.id,
+                                        listType: 'followers',
+                                        username: userData?.username,
+                                        apiBaseUrl
+                                    })}>
+                                        <Text style={styles.followers}>
+                                            {profileData?.profile.followers_count || 0} {'\n'}followers
+                                        </Text>
+                                    </TouchableOpacity>
                                     <View style={styles.verticalLine}></View>
-                                    <Text style={styles.followers}>
-                                        {profileData?.profile.following_count || 0} {'\n'}following
-                                    </Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('FollowersFollowingList', {
+                                        profileId: profileData?.profile.id,
+                                        listType: 'following',
+                                        username: userData?.username,
+                                        apiBaseUrl
+                                    })}>
+                                        <Text style={styles.followers}>
+                                            {profileData?.profile.following_count || 0} {'\n'}following
+                                        </Text>
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={styles.nameAndEdit}>
                                     <View style={styles.nameInfo}>

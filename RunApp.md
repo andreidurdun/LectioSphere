@@ -28,8 +28,10 @@ docker start backendContainer
 
 Frontend:
 
-npx expo start --offline
+npx expo start
 
 For cloud version:
-
+- first time:
 npx eas-cli build --profile development --platform android
+- from second onwards:
+npx expo start --dev-client --clear

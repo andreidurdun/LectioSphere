@@ -7,7 +7,7 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 
 export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
 
-    console.log('LoginMenu: rendered');
+    // console.log('LoginMenu: rendered');
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -239,6 +239,7 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 16,
         width: '100%', // Ensure inputs take full width
+        color: '#613F75', // Text and password bullet color
     },
     bigIcon: {
         maxWidth: '100%',

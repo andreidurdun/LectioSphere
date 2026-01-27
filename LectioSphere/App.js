@@ -24,6 +24,8 @@ import AddShelf from './components/AddShelf';
 import UserSearchResult from './components/UserSearchResult';
 import SearchResult from './components/SearchResult';
 import PostPartial from './components/Partials/PostPartial';
+import NotificationsMenu from './components/NotificationsMenu';
+import FollowersFollowingList from './components/FollowersFollowingList';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -241,6 +243,28 @@ export default function App() {
           )}
         </Stack.Screen>
         
+        <Stack.Screen name="NotificationsMenu" options={{ headerShown: false }}>
+          {(props) => (
+            <NotificationsMenu
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="FollowersFollowingList" options={{ headerShown: false }}>
+          {(props) => (
+            <FollowersFollowingList
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
         <Stack.Screen name="ProfileEdit" options={{ headerShown: false }}>
           {(props) => (
             <ProfileEdit
