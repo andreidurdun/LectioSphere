@@ -179,20 +179,15 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
             const response = await axios.get(`${apiBaseUrl}/scrape-books/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            console.log('FreeItems:', response.data);
             let books = [];
 
             if (Array.isArray(response.data)) {
-                // Dacă API trimite direct o listă de cărți
                 books = response.data;
             } else if (response.data.books) {
-                // Dacă API trimite { books: [...] }
                 books = response.data.books;
             } else if (response.data.amazon || response.data.freebooksy) {
-                // Dacă totuși are amazon/freebooksy
                 books = [...(response.data.amazon||[]), ...(response.data.freebooksy||[])];
             } else {
-                // fallback generic
                 console.warn('scrape-books returned unexpected format');
                 books = [];
                 setFree(false);
@@ -208,16 +203,12 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                     let books = [];
 
                     if (Array.isArray(retryResponse.data)) {
-                        // Dacă API trimite direct o listă de cărți
                         books = retryResponse.data;
                     } else if (retryResponse.data.books) {
-                        // Dacă API trimite { books: [...] }
                         books = retryResponse.data.books;
                     } else if (retryResponse.data.amazon || retryResponse.data.freebooksy) {
-                        // Dacă totuși are amazon/freebooksy
                         books = [...(retryResponse.data.amazon||[]), ...(retryResponse.data.freebooksy||[])];
                     } else {
-                        // fallback generic
                         console.warn('scrape-books returned unexpected format');
                         books = [];
                         setFree(false);
@@ -264,7 +255,6 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
             const response = await axios.get(`${apiBaseUrl}/scrape-events/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            console.log('Events response:', response.data);
             if (Array.isArray(response.data) && response.data.length > 0) {
                 const normalizedEvents = response.data.map(event => ({
                     title: event.title ?? 'Untitled Event',
@@ -285,9 +275,6 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                     return 0;
                 });
                 
-                console.log('Normalized events:', normalizedEvents);
-                console.log('Setting events to true with', normalizedEvents.length, 'events');
-                
                 // Cache the events
                 await AsyncStorage.setItem('cached_events', JSON.stringify(normalizedEvents));
                 await AsyncStorage.setItem('cached_events_timestamp', Date.now().toString());
@@ -303,7 +290,6 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
             console.error('Events fetch error:', error.message, error.response?.status);
             // Don't set events to false if we already have events loaded
             if (eventsItems.length === 0) {
-                // For 500 errors, events scraping is not working - skip silently
                 if (error.response?.status === 500) {
                     console.log('Events scraping service unavailable (500)');
                     setEvents(false);
@@ -557,7 +543,6 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                                                             source={{ uri: event.image }}
                                                             style={styles.eventImage}
                                                             onError={() => {
-                                                                console.log('Failed to load image:', event.image);
                                                                 setFailedImages(prev => new Set([...prev, originalIndex]));
                                                             }}
                                                         />

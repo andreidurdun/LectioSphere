@@ -16,6 +16,8 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
 
     const [selected, setSelected] = useState('photo');
     const [drawerVisible, setDrawerVisible] = useState(false);
+    const [sheetTypeModalVisible, setSheetTypeModalVisible] = useState(false);
+    const [selectedSheetType, setSelectedSheetType] = useState('book_review');
 
     const defaultPicture = require('../assets/defaultProfilePic.jpg');
     const editPen = require('../assets/editPen.png');
@@ -116,6 +118,12 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                     fetchUserData();
                     fetchProfileData();
                 }
+
+                // Load preferred sheet type
+                const storedSheetType = await AsyncStorage.getItem('preferred_model');
+                if (storedSheetType) {
+                    setSelectedSheetType(storedSheetType);
+                }
             } catch (error) {
                 console.error("Error retrieving tokens:", error);
             }
@@ -156,13 +164,24 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
 
     const handleChangeReadingSheets = () => {
         setDrawerVisible(false);
-        // Add your navigation or logic here
-        Alert.alert('Change Reading Sheets Type', 'This feature will be implemented');
+        setSheetTypeModalVisible(true);
     };
 
-    // console.log("Profile Data:", profileData);
+    const handleSaveSheetType = async () => {
+        try {
+            await AsyncStorage.setItem('preferred_model', selectedSheetType);
+            setSheetTypeModalVisible(false);
+            Alert.alert('Success', 'Reading sheet type preference updated!');
+        } catch (error) {
+            console.error('Error saving sheet type:', error);
+            Alert.alert('Error', 'Failed to save preference');
+        }
+    };
 
-    // console.log(profileData);
+    const SHEET_TYPES = [
+        { value: 'book_review', label: 'Book Review', description: 'Rating, themes, quotes, summary, characters' },
+        { value: 'reading_notes', label: 'Reading Notes', description: 'Notes, takeaways, questions, vocabulary' }
+    ];
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -276,6 +295,61 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
             </ScrollView>
 
             <NavBar navigation={navigation} page="ProfilePage" />
+
+            {/* Sheet Type Selection Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={sheetTypeModalVisible}
+                onRequestClose={() => setSheetTypeModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.modalTitle}>Choose Reading Sheet Type</Text>
+                        <Text style={styles.modalSubtitle}>
+                            Select your preferred type for new reading sheets
+                        </Text>
+                        
+                        <ScrollView style={styles.sheetTypesContainer}>
+                            {SHEET_TYPES.map((type) => (
+                                <TouchableOpacity
+                                    key={type.value}
+                                    style={[
+                                        styles.sheetTypeOption,
+                                        selectedSheetType === type.value && styles.sheetTypeOptionSelected
+                                    ]}
+                                    onPress={() => setSelectedSheetType(type.value)}
+                                >
+                                    <View style={styles.sheetTypeRadio}>
+                                        {selectedSheetType === type.value && (
+                                            <View style={styles.sheetTypeRadioInner} />
+                                        )}
+                                    </View>
+                                    <View style={styles.sheetTypeInfo}>
+                                        <Text style={styles.sheetTypeLabel}>{type.label}</Text>
+                                        <Text style={styles.sheetTypeDescription}>{type.description}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+
+                        <View style={styles.modalButtons}>
+                            <TouchableOpacity
+                                style={[styles.modalButton, styles.modalButtonCancel]}
+                                onPress={() => setSheetTypeModalVisible(false)}
+                            >
+                                <Text style={styles.modalButtonTextCancel}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.modalButton, styles.modalButtonSave]}
+                                onPress={handleSaveSheetType}
+                            >
+                                <Text style={styles.modalButtonTextSave}>Save</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
 
             {/* Drawer Menu Modal */}
             <Modal
@@ -519,6 +593,120 @@ const styles = StyleSheet.create({    screen: {
         height: 1,
         backgroundColor: '#E5E5E5',
         marginHorizontal: 10,
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    modalContainer: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 12,
+        width: '100%',
+        maxWidth: 400,
+        maxHeight: '80%',
+        padding: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 8,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontFamily: 'Nunito_600SemiBold',
+        color: '#18101D',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    modalSubtitle: {
+        fontSize: 14,
+        fontFamily: 'Nunito_400Regular',
+        color: '#666',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    sheetTypesContainer: {
+        maxHeight: 400,
+        marginBottom: 20,
+    },
+    sheetTypeOption: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 16,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#E5E5E5',
+        marginBottom: 12,
+        backgroundColor: '#FAFAFA',
+    },
+    sheetTypeOptionSelected: {
+        borderColor: '#613F75',
+        backgroundColor: '#F7EDF1',
+    },
+    sheetTypeRadio: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: '#613F75',
+        marginRight: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    sheetTypeRadioInner: {
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        backgroundColor: '#613F75',
+    },
+    sheetTypeInfo: {
+        flex: 1,
+    },
+    sheetTypeLabel: {
+        fontSize: 16,
+        fontFamily: 'Nunito_600SemiBold',
+        color: '#18101D',
+        marginBottom: 4,
+    },
+    sheetTypeDescription: {
+        fontSize: 13,
+        fontFamily: 'Nunito_400Regular',
+        color: '#666',
+        lineHeight: 18,
+    },
+    modalButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        gap: 12,
+    },
+    modalButton: {
+        flex: 1,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    modalButtonCancel: {
+        backgroundColor: '#F0F0F0',
+    },
+    modalButtonSave: {
+        backgroundColor: '#613F75',
+    },
+    modalButtonTextCancel: {
+        fontSize: 16,
+        fontFamily: 'Nunito_600SemiBold',
+        color: '#666',
+    },
+    modalButtonTextSave: {
+        fontSize: 16,
+        fontFamily: 'Nunito_600SemiBold',
+        color: '#FFFFFF',
     },
 });
 
