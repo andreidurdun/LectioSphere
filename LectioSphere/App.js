@@ -24,6 +24,11 @@ import AddShelf from './components/AddShelf';
 import UserSearchResult from './components/UserSearchResult';
 import SearchResult from './components/SearchResult';
 import PostPartial from './components/Partials/PostPartial';
+import AllReadingSheetsPage from './components/AllReadingSheetsPage';
+import CreateReadingSheetPage from './components/CreateReadingSheetPage';
+import SelectBookForSheetPage from './components/SelectBookForSheetPage';
+import ReadingSheetPage from './components/ReadingSheetPage';
+import EventPage from './components/EventPage';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -351,6 +356,61 @@ export default function App() {
         <Stack.Screen name="AddShelf" options={{ headerShown: false }}>
           {(props) => (
             <AddShelf
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="AllReadingSheetsPage" options={{ headerShown: false }}>
+          {(props) => (
+            <AllReadingSheetsPage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="SelectBookForSheetPage" options={{ headerShown: false }}>
+          {(props) => (
+            <SelectBookForSheetPage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="CreateReadingSheetPage" options={{ headerShown: false }}>
+          {(props) => (
+            <CreateReadingSheetPage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="ReadingSheetPage" options={{ headerShown: false }}>
+          {(props) => (
+            <ReadingSheetPage
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="EventPage" options={{ headerShown: false }}>
+          {(props) => (
+            <EventPage
               {...props}
               removeAuthToken={removeAuthToken}
               isAuthenticated={isAuthenticated}

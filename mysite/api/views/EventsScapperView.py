@@ -39,7 +39,13 @@ def scrape_exclusivebooks(driver, list_url):
             location_tag = block.select_one("div.ma-location")
             location = location_tag.get_text(strip=True) if location_tag else "Unknown"
 
-            description = f"{time_tag.get_text(strip=True)} at {location}" if time_tag else location
+            # Build description with newlines
+            description_parts = []
+            if time_tag:
+                description_parts.append(time_tag.get_text(strip=True))
+            if location:
+                description_parts.append(f"at {location}")
+            description = "\n".join(description_parts) if description_parts else location
 
             events.append({
                 "title": title,
@@ -102,8 +108,9 @@ def scrape_bookscouter_events(driver, list_url):
                 image = img_tag["src"]
 
             # parcurge blocul pana la urmatorul h2
+            description_parts = []
             while parent and parent.name != "h2":
-                text = parent.get_text(" ", strip=True)
+                text = parent.get_text("\n", strip=True)
 
                 if "When:" in text:
                     match = re.search(r"(?<=When:\s).*", text)
@@ -114,12 +121,12 @@ def scrape_bookscouter_events(driver, list_url):
                     if match:
                         location = match.group(0).strip()
                 else:
-                    if text:
-                        description += text + " "
+                    if text and not text.startswith(("When:", "Where:")):
+                        description_parts.append(text.strip())
 
                 parent = parent.find_next_sibling()
 
-            description = description.strip()
+            description = "\n\n".join(description_parts)
 
             # limita ca inainte
             if len(description) > 1000:
@@ -166,11 +173,21 @@ def collect_all_events():
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-software-rasterizer")
+    options.add_argument("--remote-debugging-port=9222")
 
-    driver = webdriver.Chrome(
-        service=Service(ChromeDriverManager().install()),
-        options=options
-    )
+    # Use system chromium-driver instead of ChromeDriverManager
+    try:
+        # Try to use system chromium-driver first (for Docker)
+        driver = webdriver.Chrome(options=options)
+    except Exception as e:
+        # Fallback to ChromeDriverManager if system driver not found
+        driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()),
+            options=options
+        )
 
     all_events = []
     try:

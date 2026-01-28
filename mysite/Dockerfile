@@ -24,4 +24,11 @@ RUN python manage.py makemigrations api
 RUN python manage.py makemigrations
 RUN python manage.py migrate
 
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    unzip \
+    chromium \
+    chromium-driver
+
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

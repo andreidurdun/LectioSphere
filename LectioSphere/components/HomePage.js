@@ -20,6 +20,8 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
     const [free, setFree] = useState(true);
     const [eventsItems, setEventsItems] = useState([]);
     const [events, setEvents] = useState(false);
+    const [eventsLoading, setEventsLoading] = useState(true);
+    const [failedImages, setFailedImages] = useState(new Set());
 
 
     const [fontsLoaded] = useFonts({
@@ -236,54 +238,129 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
 
     const fetchEvents = async () => {
         try {
+            // Check if we have cached events
+            const cachedEvents = await AsyncStorage.getItem('cached_events');
+            const cachedTimestamp = await AsyncStorage.getItem('cached_events_timestamp');
+            
+            if (cachedEvents && cachedTimestamp) {
+                const now = Date.now();
+                const lastFetch = parseInt(cachedTimestamp);
+                const hoursSinceLastFetch = (now - lastFetch) / (1000 * 60 * 60);
+                
+                // If less than 24 hours, use cached data
+                if (hoursSinceLastFetch < 24) {
+                    console.log('Using cached events (fetched', hoursSinceLastFetch.toFixed(1), 'hours ago)');
+                    const parsedEvents = JSON.parse(cachedEvents);
+                    setEventsItems(parsedEvents);
+                    setEvents(true);
+                    setEventsLoading(false);
+                    return;
+                }
+            }
+            
+            // Otherwise, fetch fresh data
+            console.log('Fetching fresh events from server...');
             let token = await AsyncStorage.getItem('auth_token');
             const response = await axios.get(`${apiBaseUrl}/scrape-events/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            if (Array.isArray(response.data)) {
+            console.log('Events response:', response.data);
+            if (Array.isArray(response.data) && response.data.length > 0) {
                 const normalizedEvents = response.data.map(event => ({
                     title: event.title ?? 'Untitled Event',
-                    data: event.data ?? 'Unknown date',
-                    locatie: event.locatie ?? 'Unknown location',
-                    descriere: event.descriere ?? '',
-                    imagine: event.imagine ?? null,
+                    date: (event.date && event.date !== 'Necunoscută') ? event.date : 'Unknown',
+                    location: (event.location && event.location !== 'Necunoscută') ? event.location : 'Unknown',
+                    description: event.description ?? '',
+                    image: event.image ?? null,
                     link: event.link ?? '',
                     source: event.source ?? '',
                 }));
+                
+                // Sort events: those with images first
+                normalizedEvents.sort((a, b) => {
+                    const aHasImage = a.image && a.image.trim() !== '';
+                    const bHasImage = b.image && b.image.trim() !== '';
+                    if (aHasImage && !bHasImage) return -1;
+                    if (!aHasImage && bHasImage) return 1;
+                    return 0;
+                });
+                
+                console.log('Normalized events:', normalizedEvents);
+                console.log('Setting events to true with', normalizedEvents.length, 'events');
+                
+                // Cache the events
+                await AsyncStorage.setItem('cached_events', JSON.stringify(normalizedEvents));
+                await AsyncStorage.setItem('cached_events_timestamp', Date.now().toString());
+                
                 setEventsItems(normalizedEvents);
                 setEvents(true);
+            } else {
+                console.log('Events response is not an array or empty');
+                setEvents(false);
             }
+            setEventsLoading(false);
         } catch (error) {
-            if (error.response?.status === 401) {
-                const newToken = await refreshAccessToken(apiBaseUrl);
-                if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/scrape-events/`, {
-                        headers: { Authorization: `JWT ${newToken}` }
-                    });
-                    if (Array.isArray(retryResponse.data)) {
-                        const normalizedEvents = retryResponse.data.map(event => ({
-                            title: event.title ?? 'Untitled Event',
-                            data: event.data ?? 'Unknown date',
-                            locatie: event.locatie ?? 'Unknown location',
-                            descriere: event.descriere ?? '',
-                            imagine: event.imagine ?? null,
-                            link: event.link ?? '',
-                            source: event.source ?? '',
-                        }));
-                        setEventsItems(normalizedEvents);
-                        setEvents(true);
-                    }
-                } else {
-                    console.error("Unable to refresh for events items.");
+            console.error('Events fetch error:', error.message, error.response?.status);
+            // Don't set events to false if we already have events loaded
+            if (eventsItems.length === 0) {
+                // For 500 errors, events scraping is not working - skip silently
+                if (error.response?.status === 500) {
+                    console.log('Events scraping service unavailable (500)');
                     setEvents(false);
+                    setEventsLoading(false);
+                    return;
                 }
-            } 
-            else if (error.response?.status === HTTP_200_OK) {
-                setEvents(false);
-            }
-            else {
-                console.error("Events error:", error.message);
-                setEvents(false);
+                if (error.response?.status === 401) {
+                    const newToken = await refreshAccessToken(apiBaseUrl);
+                    if (newToken) {
+                        try {
+                            const retryResponse = await axios.get(`${apiBaseUrl}/scrape-events/`, {
+                                headers: { Authorization: `JWT ${newToken}` }
+                            });
+                            if (Array.isArray(retryResponse.data) && retryResponse.data.length > 0) {
+                                const normalizedEvents = retryResponse.data.map(event => ({
+                                    title: event.title ?? 'Untitled Event',
+                                    date: (event.date && event.date !== 'Necunoscută') ? event.date : 'Unknown',
+                                    location: (event.location && event.location !== 'Necunoscută') ? event.location : 'Unknown',
+                                    description: event.description ?? '',
+                                    image: event.image ?? null,
+                                    link: event.link ?? '',
+                                    source: event.source ?? '',
+                                }));
+                                
+                                // Sort events: those with images first
+                                normalizedEvents.sort((a, b) => {
+                                    const aHasImage = a.image && a.image.trim() !== '';
+                                    const bHasImage = b.image && b.image.trim() !== '';
+                                    if (aHasImage && !bHasImage) return -1;
+                                    if (!aHasImage && bHasImage) return 1;
+                                    return 0;
+                                });
+                                
+                                // Cache the events
+                                await AsyncStorage.setItem('cached_events', JSON.stringify(normalizedEvents));
+                                await AsyncStorage.setItem('cached_events_timestamp', Date.now().toString());
+                                
+                                setEventsItems(normalizedEvents);
+                                setEvents(true);
+                            }
+                            setEventsLoading(false);
+                        } catch (retryError) {
+                            console.error("Events retry error:", retryError.message);
+                            setEvents(false);
+                            setEventsLoading(false);
+                        }
+                    } else {
+                        setEvents(false);
+                        setEventsLoading(false);
+                    }
+                } 
+                else {
+                    setEvents(false);
+                    setEventsLoading(false);
+                }
+            } else {
+                console.log('Error occurred but events already loaded, keeping existing events');
             }
         }
     };
@@ -319,6 +396,12 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
     const handleCategoryClick = (page, params = {}) => {
         setActive(page);
         navigation.navigate(page, params); 
+    };
+
+    const handleEventPress = (event) => {
+        navigation.navigate('EventPage', { 
+            eventData: JSON.stringify(event)
+        });
     };
 
     useEffect(() => {
@@ -441,36 +524,68 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                     }
 
 
-                    {/* {
-                        free ? (
-                            <View style={styles.container}>
-                                <View>
-                                    <Text style={styles.textContainer}> Free now </Text>
-                                </View>
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
-                                    {freeItems.map((book, index) => (
-                                        <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image
-                                                    source={{ uri: book.thumbnail }}
-                                                    style={styles.covers}
-                                                />
-                                            </View>
-                                        </TouchableNativeFeedback>
-                                    ))}
-                                </ScrollView>
-                            </View>
-                        ) : null 
-                    }
 
-                    {
-                        ! free ? (
-                            <View style={styles.container}>
-                                <Text style={styles.textContainer}> Free now </Text>
-                                <Text style={styles.textAdvice}>   No books available right now — check back soon! </Text>
-                            </View>
-                        ) : null
-                    } */}
+                    {/* EVENTS */}
+                    <View style={styles.container}>
+                        <Text style={styles.textContainer}>  Events </Text>
+
+                        {eventsLoading ? (
+                            <Text style={styles.textAdvice}>   Loading events... ✨</Text>
+                        ) : events && eventsItems.length > 0 ? (
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
+                                {(() => {
+                                    // Sort events dynamically based on which images have loaded successfully
+                                    const sortedEvents = eventsItems.map((event, originalIndex) => ({ event, originalIndex }))
+                                        .sort((a, b) => {
+                                            const aHasImage = a.event.image && a.event.image.trim() !== '' && !failedImages.has(a.originalIndex);
+                                            const bHasImage = b.event.image && b.event.image.trim() !== '' && !failedImages.has(b.originalIndex);
+                                            if (aHasImage && !bHasImage) return -1;
+                                            if (!aHasImage && bHasImage) return 1;
+                                            return 0;
+                                        });
+                                    
+                                    return sortedEvents.map(({ event, originalIndex }) => {
+                                        const hasValidImage = event.image && event.image.trim() !== '' && !failedImages.has(originalIndex);
+                                        return (
+                                            <TouchableNativeFeedback 
+                                                key={originalIndex} 
+                                                onPress={() => handleEventPress(event)}
+                                            >
+                                                <View style={styles.eventCard}>
+                                                    {hasValidImage && (
+                                                        <Image
+                                                            source={{ uri: event.image }}
+                                                            style={styles.eventImage}
+                                                            onError={() => {
+                                                                console.log('Failed to load image:', event.image);
+                                                                setFailedImages(prev => new Set([...prev, originalIndex]));
+                                                            }}
+                                                        />
+                                                    )}
+                                                    <View style={[styles.eventTextContent, !hasValidImage && styles.eventTextContentNoImage]}>
+                                                        <Text style={styles.eventTitle} numberOfLines={2}>{event.title}</Text>
+                                                        <Text style={styles.eventMeta} numberOfLines={1}>
+                                                            📅 {event.date || 'Unknown'}
+                                                        </Text>
+                                                        <Text style={styles.eventMeta} numberOfLines={1}>
+                                                            📍 {event.location || 'Unknown'}
+                                                        </Text>
+                                                        <Text style={styles.eventDescription}>
+                                                            {event.description}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableNativeFeedback>
+                                        );
+                                    });
+                                })()}
+                            </ScrollView>
+                        ) : (
+                            <Text style={styles.textAdvice}>   No upcoming events right now — check back soon!</Text>
+                        )}
+                    </View>
+
+
 
                     <View style={styles.container}>
                         <Text style={styles.textContainer}>  Free now </Text>
@@ -497,55 +612,6 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                             </ScrollView>
                         ) : (
                             <Text style={styles.textAdvice}>   No free books available right now — check back soon!</Text>
-                        )}
-                    </View>
-
-
-
-                    {/* {
-                        events ? (
-                            <View style={styles.container}>
-                                <View>
-                                    <Text style={styles.textContainer}> Events </Text>
-                                </View>
-                            </View>
-                        ) : null 
-                    }
-
-                    {
-                        ! events ? (
-                            <View style={styles.container}>
-                                <Text style={styles.textContainer}> Events </Text>
-                                <Text style={styles.textAdvice}>   No future events right now — check back soon! </Text>
-                            </View>
-                        ) : null
-                    }        */}
-
-                    <View style={styles.container}>
-                        <Text style={styles.textContainer}>  Events </Text>
-
-                        {events && eventsItems.length > 0 ? (
-                            eventsItems.map((event, index) => (
-                                <View key={index} style={styles.eventCard}>
-                                    {event.imagine && (
-                                        <Image
-                                            source={{ uri: event.imagine }}
-                                            style={styles.eventImage}
-                                        />
-                                    )}
-                                    <View style={styles.eventTextContent}>
-                                        <Text style={styles.eventTitle}>{event.title}</Text>
-                                        <Text style={styles.eventMeta}>
-                                            📅 {event.data || 'Date unknown'} ‧ 📍 {event.locatie || 'Unknown location'}
-                                        </Text>
-                                        <Text style={styles.eventDescription} numberOfLines={4}>
-                                            {event.descriere}
-                                        </Text>
-                                    </View>
-                                </View>
-                            ))
-                        ) : (
-                            <Text style={styles.textAdvice}>   No upcoming events right now — check back soon!</Text>
                         )}
                     </View>
 
@@ -615,44 +681,50 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
     },
     eventCard: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         backgroundColor: '#FCF8FA',
         borderRadius: 10,
-        marginHorizontal: 10,
-        marginVertical: 8,
+        marginRight: 12,
         padding: 10,
         borderColor: '#E5C3D1',
         borderWidth: 1,
         elevation: 2,
+        width: 180,
+        height: 255,
     },
     eventImage: {
-        width: 80,
-        height: 80,
+        width: 160,
+        height: 100,
         borderRadius: 6,
-        marginRight: 12,
-        backgroundColor: '#E5C3D1',
+        marginBottom: 8,
     },
     eventTextContent: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+    },
+    eventTextContentNoImage: {
+        marginTop: 0,
     },
     eventTitle: {
-        fontFamily: 'Nunito_700Bold',
-        fontSize: 16,
+        fontFamily: 'Nunito_600SemiBold',
+        fontSize: 15,
         color: '#18101D',
         marginBottom: 4,
+        lineHeight: 18,
     },
     eventMeta: {
         fontFamily: 'Nunito_500Medium',
-        fontSize: 14,
+        fontSize: 12,
         color: '#613F75',
-        marginBottom: 6,
+        marginBottom: 3,
     },
     eventDescription: {
         fontFamily: 'Nunito_400Regular',
-        fontSize: 14,
+        fontSize: 13,
         color: '#18101D',
-        lineHeight: 18,
+        lineHeight: 16,
+        marginTop: 4,
+        flex: 1,
     },
 });
 
