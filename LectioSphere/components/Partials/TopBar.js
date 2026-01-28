@@ -14,12 +14,13 @@ const addReadingSheetIcon = require('../../assets/addReadingSheet.png');
 const envelope = require('../../assets/envelope.png');
 const threeDots = require('../../assets/threeDots.png');
 
-const TopBar = ({pageName, page, apiBaseUrl}) => {
+const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
     const [followSearchVal, setFollowSearchVal] = React.useState('');
     const [searchSearchVal, setSearchSearchVal] = React.useState('');
     const navigation = useNavigation();    
 
-    const apiBaseUrl1 = 'http://192.168.1.138:8000';
+    const HOST_IP = process.env.EXPO_PUBLIC_HOST_IP || '192.168.1.138';
+    const apiBaseUrl1 = `http://${HOST_IP}:8000`;
     const handleFollowSearchTextChange = (text) => {
         setFollowSearchVal(text);
     };
@@ -103,7 +104,7 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
     };
     
     const handleNotificationsButton = () => {
-        Alert.alert('Notifications menu');
+        navigation.navigate('NotificationsMenu');
     };
 
     const handleSettingsButton = async () => {
@@ -182,7 +183,7 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
     else if (pageName == 'SearchPage')
     {
         return (
-            <SafeAreaView style={styles.container}>
+            <SafeAreaView style={styles.containerJustified}>
                 <Image 
                     source={icon} // Replace with your icon path
                     style={styles.icon}
@@ -240,15 +241,15 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
                     />
     
                     <View style={styles.libraryButtonsContainer}>
-                        {/* <Image 
+                        <Image 
                             source={envelope} // Replace with your search icon path
                             style={styles.envelopeIcon}
                             onTouchEnd={() => handleNotificationsButton()} // Trigger search on image press
-                        /> */}
+                        />
                         <Image 
                             source={threeDots} // Replace with your search icon path
                             style={styles.threeDotsIcon}
-                            onTouchEnd={() => handleSettingsButton()} // Trigger search on image press
+                            onTouchEnd={() => onSettingsPress ? onSettingsPress() : handleSettingsButton()} // Trigger drawer or default action
                         />
                     </View>
                 </SafeAreaView>

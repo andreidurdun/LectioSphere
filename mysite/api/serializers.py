@@ -236,11 +236,56 @@ class ShelfBooksSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(source="event.title")
-    link = serializers.CharField(source="event.link")
-    date = serializers.DateField(source="event.date")
-    source = serializers.CharField(source="event.source")
+    # Event notification fields
+    title = serializers.CharField(source="event.title", allow_null=True, required=False)
+    link = serializers.CharField(source="event.link", allow_null=True, required=False)
+    date = serializers.DateField(source="event.date", allow_null=True, required=False)
+    source = serializers.CharField(source="event.source", allow_null=True, required=False)
+    
+    # Book share notification fields
+    sender_username = serializers.CharField(source="sender.username", allow_null=True, required=False)
+    sender_id = serializers.IntegerField(source="sender.id", allow_null=True, required=False)
+    
+    # Use SerializerMethodField to handle both database books and external books
+    book_id = serializers.SerializerMethodField()
+    book_title = serializers.SerializerMethodField()
+    book_cover = serializers.SerializerMethodField()
+    book_author = serializers.SerializerMethodField()
+    
+    def get_book_id(self, obj):
+        # Return stored external_book_id field first (for external books)
+        if obj.external_book_id:
+            return obj.external_book_id
+        # Otherwise return database book ID
+        return obj.book.id if obj.book else None
+    
+    def get_book_title(self, obj):
+        # Return stored external_book_title field first (for external books)
+        if obj.external_book_title:
+            return obj.external_book_title
+        # Otherwise return database book title
+        return obj.book.title if obj.book else None
+    
+    def get_book_cover(self, obj):
+        # Return stored external_book_cover field first (for external books)
+        if obj.external_book_cover:
+            return obj.external_book_cover
+        # Otherwise return database book cover
+        return obj.book.cover_image if obj.book else None
+    
+    def get_book_author(self, obj):
+        # Return stored external_book_author field first (for external books)
+        if obj.external_book_author:
+            return obj.external_book_author
+        # Otherwise return database book author
+        return obj.book.author if obj.book else None
 
     class Meta:
         model = Notification
-        fields = ["id", "title", "link", "date", "source", "created_at"]
+        fields = [
+            "id", "notification_type", "message", "created_at", "is_read",
+            # Event fields
+            "title", "link", "date", "source",
+            # Book share fields
+            "sender_username", "sender_id", "book_id", "book_title", "book_cover", "book_author"
+        ]

@@ -3,13 +3,11 @@ import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert, Image, 
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
-import { makeRedirectUri } from 'expo-auth-session';
-
-WebBrowser.maybeCompleteAuthSession();
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 
 export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
+
+    // console.log('LoginMenu: rendered');
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,53 +18,67 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
         Nunito_600SemiBold
     });
 
-    // Google Authentication Setup
-    const [request, response, promptAsync] = Google.useAuthRequest({
-        expoClientId: '833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com',
-        androidClientId: '833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com',
-        webClientId: '833734718374-ea4qqqb33cp2jecj048e2n5fbvmdsf7k.apps.googleusercontent.com',
-        redirectUri: 'https://auth.expo.io/@lectiosphere/LectioSphere',
-        
-        useProxy: true,
-        
-        
-    });
 
-    // ADAUGĂ ACEASTĂ LINIE PENTRU DEBUGGING
-    console.log('Request details sent to Google:', request);
+    const [signingIn, setSigningIn] = useState(false);
 
+    // Configure Google Sign-In for native Android
     useEffect(() => {
-        if (response?.type === 'success') {
-            const { authentication } = response;
-            if (authentication?.accessToken) {
-                const googleLogin = async (token) => {
-                    try {
-                        // Make a POST request to your backend's Google login endpoint
-                        const res = await axios.post(`${apiBaseUrl}/api/accounts/google/`, {
-                            access_token: token,
-                        });
+        GoogleSignin.configure({
+            webClientId: '237244997664-3235sc7hnqjj1vujd9a52e2p2mdrhert.apps.googleusercontent.com', // Web client ID for backend
+            offlineAccess: true,
+        });
+    }, []);
 
-                        // Assuming the backend returns access and refresh tokens
-                        const { access, refresh } = res.data;
-
-                        // Save the refresh token
-                        await AsyncStorage.setItem('refresh_token', refresh);
-
-                        // Save the access token and update auth state
-                        saveAuthToken(access);
-
-                        // Navigate to the home page
-                        navigation.replace('HomePage');
-                    } catch (err) {
-                        console.error('Google Login Error:', err.response?.data || err.message);
-                        Alert.alert('Google Login Error', 'An error occurred during Google login.');
-                    }
-                };
-
-                googleLogin(authentication.accessToken);
+    const handleGoogleSignIn = async () => {
+        setSigningIn(true);
+        try {
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+            console.log('Google Sign-In success:', userInfo.user?.email);
+            
+            // Get tokens
+            const tokens = await GoogleSignin.getTokens();
+            const idToken = tokens.idToken;
+            
+            console.log('Got idToken from Google');
+            
+            // Send to backend
+            const res = await axios.post(`${apiBaseUrl}/api/accounts/google-exchange/`, {
+                id_token: idToken
+            });
+            
+            const { access, refresh } = res.data || {};
+            
+            if (!access || !refresh) {
+                Alert.alert('Authentication Error', 'Invalid response from server');
+                return;
             }
+            
+            await AsyncStorage.setItem('refresh_token', refresh);
+            saveAuthToken(access);
+            
+            console.log('Login successful!');
+            navigation.replace('HomePage');
+            
+        } catch (error) {
+            console.error('Google Sign-In error:', error);
+            
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                console.log('User cancelled');
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                Alert.alert('Sign-in in progress');
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                Alert.alert('Play Services not available');
+            } else if (error.response) {
+                const errorMsg = error.response.data?.error || error.response.data?.detail || 'Server error';
+                Alert.alert('Authentication Failed', errorMsg);
+            } else {
+                Alert.alert('Error', error.message || 'Sign-in failed');
+            }
+        } finally {
+            setSigningIn(false);
         }
-    }, [response]);
+    };
 
     if (!fontsLoaded) {
         return <Text>Loading fonts...</Text>;
@@ -183,11 +195,9 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
                     </Text>
 
                     <Button
-                        disabled={!request}
-                        title={!request ? "Loading Google Sign-In..." : "Login with Google"}
-                        onPress={() => {
-                            promptAsync();
-                        }}
+                        disabled={signingIn}
+                        title={signingIn ? "Signing in..." : "Login with Google"}
+                        onPress={handleGoogleSignIn}
                     />
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -229,6 +239,7 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 16,
         width: '100%', // Ensure inputs take full width
+        color: '#613F75', // Text and password bullet color
     },
     bigIcon: {
         maxWidth: '100%',

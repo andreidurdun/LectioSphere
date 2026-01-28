@@ -24,6 +24,8 @@ import AddShelf from './components/AddShelf';
 import UserSearchResult from './components/UserSearchResult';
 import SearchResult from './components/SearchResult';
 import PostPartial from './components/Partials/PostPartial';
+import NotificationsMenu from './components/NotificationsMenu';
+import FollowersFollowingList from './components/FollowersFollowingList';
 import AllReadingSheetsPage from './components/AllReadingSheetsPage';
 import CreateReadingSheetPage from './components/CreateReadingSheetPage';
 import SelectBookForSheetPage from './components/SelectBookForSheetPage';
@@ -32,7 +34,8 @@ import EventPage from './components/EventPage';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
-const API_BASE_URL = 'http://192.168.1.138:8000';
+const HOST_IP = process.env.EXPO_PUBLIC_HOST_IP;
+const API_BASE_URL = `http://${HOST_IP}:8000`;
 
 // Configurare interceptor global pentru axios
 const setupAxiosInterceptors = (refresh) => {
@@ -85,10 +88,12 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log('App useEffect: starting auth check');
     // Verifică dacă există un token salvat
     const checkAuth = async () => {
       try {
         const token = await AsyncStorage.getItem('auth_token');
+        console.log('App checkAuth: token from AsyncStorage =', token);
         if (token) {
           // Configurăm header-ul default pentru toate cererile axios
           axios.defaults.headers.common['Authorization'] = `JWT ${token}`;
@@ -100,6 +105,7 @@ export default function App() {
         console.error('Error reading auth token from AsyncStorage:', error);
         setIsAuthenticated(false);
       } finally {
+        console.log('App checkAuth: finished, setting isLoading=false');
         setIsLoading(false);
       }
     };
@@ -242,6 +248,28 @@ export default function App() {
           )}
         </Stack.Screen>
         
+        <Stack.Screen name="NotificationsMenu" options={{ headerShown: false }}>
+          {(props) => (
+            <NotificationsMenu
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="FollowersFollowingList" options={{ headerShown: false }}>
+          {(props) => (
+            <FollowersFollowingList
+              {...props}
+              removeAuthToken={removeAuthToken}
+              isAuthenticated={isAuthenticated}
+              apiBaseUrl={API_BASE_URL}
+            />
+          )}
+        </Stack.Screen>
+
         <Stack.Screen name="ProfileEdit" options={{ headerShown: false }}>
           {(props) => (
             <ProfileEdit

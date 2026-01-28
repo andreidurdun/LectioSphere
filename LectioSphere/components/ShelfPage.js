@@ -15,8 +15,13 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
     const [shelfBooks, setShelfBooks] = useState([]);
 
     const handleBookPress = (book) => {
+        // Transform author to authors array if needed for BookShow
+        const bookWithAuthors = {
+            ...book,
+            authors: book.authors || (book.author ? [book.author] : [])
+        };
         navigation.navigate('BookShow', { 
-            bookData: JSON.stringify(book)
+            bookData: JSON.stringify(bookWithAuthors)
         });
     };
 
@@ -96,19 +101,19 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
     const fetchShelfReading = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/Reading/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const books = response.data;
+            const {shelf_name, books} = response.data;
             setShelfBooks(books);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/Reading/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const books = retryResponse.data;
+                    const {shelf_name, books} = retryResponse.data;
                     setShelfBooks(books);
                 } else {
                     console.error(`Unable to refresh token for shelf.`);
@@ -122,19 +127,19 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
     const fetchShelfReadlist = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/Readlist/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const books = response.data;
+            const {shelf_name, books} = response.data;
             setShelfBooks(books);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/Readlist/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const books = retryResponse.data;
+                    const {shelf_name, books} = retryResponse.data;
                     setShelfBooks(books);
                 } else {
                     console.error(`Unable to refresh token for shelf.`);

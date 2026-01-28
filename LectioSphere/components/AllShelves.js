@@ -15,6 +15,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
     const [shelfRead, setShelfRead] = useState([]);
     const [shelfReading, setShelfReading] = useState([]);
     const [shelfReadlist, setShelfReadlist] = useState([]);
+    const [shelfFavourites, setShelfFavourites] = useState([]);
 
 
 
@@ -24,8 +25,13 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
     };
 
     const handleBookPress = (book) => {
+        // Transform author to authors array if needed for BookShow
+        const bookWithAuthors = {
+            ...book,
+            authors: book.authors || (book.author ? [book.author] : [])
+        };
         navigation.navigate('BookShow', { 
-            bookData: JSON.stringify(book)
+            bookData: JSON.stringify(bookWithAuthors)
         });
     };
 
@@ -129,19 +135,19 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
     const fetchShelfReading = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/Reading/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const books = response.data;
+            const {shelf_name, books} = response.data;
             setShelfReading(books);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/Reading/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const books = retryResponse.data;
+                    const {shelf_name, books} = retryResponse.data;
                     setShelfReading(books);
                 } else {
                     console.error(`Unable to refresh token for shelf.`);
@@ -155,20 +161,46 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
     const fetchShelfReadlist = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/Readlist/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const books = response.data;
+            const {shelf_name, books} = response.data;
             setShelfReadlist(books);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/Readlist/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const books = retryResponse.data;
+                    const {shelf_name, books} = retryResponse.data;
                     setShelfReadlist(books);
+                } else {
+                    console.error(`Unable to refresh token for shelf.`);
+                }
+            } else {
+                // console.error(`Error loading shelf:`, error.message);
+            }
+        }
+    };
+
+    const fetchShelfFavourites = async () => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/Favourites/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const {shelf_name, books} = response.data;
+            setShelfFavourites(books);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/Favourites/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const {shelf_name, books} = retryResponse.data;
+                    setShelfFavourites(books);
                 } else {
                     console.error(`Unable to refresh token for shelf.`);
                 }
@@ -185,6 +217,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
             fetchShelf('Read');
             fetchShelfReading();
             fetchShelfReadlist();
+            fetchShelfFavourites();
         }
     }, [isAuthenticated]);
 
@@ -304,8 +337,31 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                             )}
                     </View>
 
+                    <View style={styles.container}>
+                        <View>
+                            <View>
+                                <Text style={styles.textContainer}>  Favourites</Text>
+                            </View>
+                        </View>
+                            {shelfFavourites.length === 0 ? (
+                                <View style={styles.noBooksContainer}>
+                                    <Text style={styles.noBooksText}>No books yet</Text>
+                                </View>
+                            ) : (
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
+                                    {shelfFavourites.slice(0, 15).map((book, idx) => (
+                                        <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
+                                            <View>
+                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            </View>
+                                        </TouchableNativeFeedback>
+                                    ))}
+                                </ScrollView>
+                            )}
+                    </View>
+
                     {/* Custom Shelves (list-based) */}
-                    {(shelves.custom_shelves || []).slice(2).map((shelf, index) => (
+                    {(shelves.custom_shelves || []).filter(shelf => shelf.shelf_name !== 'Currently Reading').map((shelf, index) => (
                         <View key={`custom-${index}`} style={styles.container}>
                             <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: shelf.shelf_name })}>
                                 <View>

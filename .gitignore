@@ -24,6 +24,7 @@ mysite/db.sqlite3
 venv/
 ENV/
 env/
+node_modules/
 
 # ▶️ Mac & Windows stuff
 .DS_Store

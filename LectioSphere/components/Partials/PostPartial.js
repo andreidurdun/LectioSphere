@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, Image, TouchableNativeFeedback, Modal, TextInput } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, Image, TouchableNativeFeedback, Modal, TextInput, ScrollView } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } from '@expo-google-fonts/nunito';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { refreshAccessToken } from '../refreshAccessToken';
 
 const purpleStarFull = require('../../assets/purpleStarFull.png');
 const purpleStarEmpty = require('../../assets/purpleStarEmpty.png');
@@ -24,6 +25,10 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
     // Create post modal states
     const [showCreatePostModal, setShowCreatePostModal] = useState(false);
     const [postDescription, setPostDescription] = useState('');
+    // Shelf selection modal states
+    const [showShelfModal, setShowShelfModal] = useState(false);
+    const [shelves, setShelves] = useState([]);
+    const [shelfLoading, setShelfLoading] = useState(false);
     
     // Like functionality states
     const [isLiked, setIsLiked] = useState(false);
@@ -62,6 +67,66 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
     if (!post) return <Text style={styles.centered}>Post not found.</Text>;
 
     // console.log('Post data:', post)
+
+    const fetchShelves = async () => {
+        setShelfLoading(true);
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/library/shelves/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            
+            console.log('Shelves response:', response.data);
+            
+            // Get standard shelf names
+            const standardShelves = response.data.standard_shelves 
+                ? Object.keys(response.data.standard_shelves).map(name => ({ name }))
+                : [];
+            
+            // Get custom shelf names
+            const customShelves = (response.data.custom_shelves || [])
+                .filter(shelf => shelf.shelf_name !== 'Currently Reading')
+                .map(shelf => ({ 
+                    name: shelf.shelf_name 
+                }));
+            
+            const allShelves = [...standardShelves, ...customShelves];
+            console.log('All shelves:', allShelves);
+            setShelves(allShelves);
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelves/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    
+                    console.log('Shelves response (retry):', retryResponse.data);
+                    
+                    const standardShelves = retryResponse.data.standard_shelves 
+                        ? Object.keys(retryResponse.data.standard_shelves).map(name => ({ name }))
+                        : [];
+                    
+                    const customShelves = (retryResponse.data.custom_shelves || [])
+                        .filter(shelf => shelf.shelf_name !== 'Currently Reading')
+                        .map(shelf => ({ 
+                            name: shelf.shelf_name 
+                        }));
+                    
+                    const allShelves = [...standardShelves, ...customShelves];
+                    console.log('All shelves (retry):', allShelves);
+                    setShelves(allShelves);
+                }
+            } else {
+                console.error('Error loading shelves:', error.message);
+                if (error.response) {
+                    console.error('Error response:', error.response.data);
+                }
+            }
+        } finally {
+            setShelfLoading(false);
+        }
+    };
 
     const handleLikePress = async (id) => {
         if (likeLoading) return; // Prevent multiple requests
@@ -170,7 +235,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
         setShowLibraryModal(false);
     };
 
-    const handleLibraryAction = (action) => {
+    const handleLibraryAction = async (action) => {
         setShowLibraryModal(false);
           switch(action) {
             case 'update_reading':
@@ -183,7 +248,8 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                 handleWantToRead();
                 break;
             case 'add_to_shelf':
-                handleAddToShelf();
+                await fetchShelves();
+                setShowShelfModal(true);
                 break;            
             case 'create_post':
                 handleCreatePost();
@@ -524,7 +590,8 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
         }
     };
 
-    const handleAddToShelf= async () => {
+    const handleAddToShelf= async (shelfName) => {
+        setShowShelfModal(false);
         try {
             const token = await AsyncStorage.getItem('auth_token');
             if (!token) {
@@ -532,29 +599,31 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                 return;
             }
 
-            // Try refresh token if needed (optional, depends on your backend)
-            // await refreshAccessToken();
+            const bookData = post.book; // Get book data from post
+            console.log('Book data:', bookData);
 
             const bookPayload = {
                 book: {
-                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
-                    id: bookData.id, // poate fi Google ID
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND',
+                    id: bookData.id,
                     title: bookData.title ?? 'Unknown Title',
-                    authors: bookData.authors ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
-                    genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
-                    rating: bookData.rating ?? bookData.average_rating ?? 0,
-                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
-                    publication_year: bookData.publication_year ?? (
-                        bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
-                    ),
+                    author: bookData.author ?? 'Unknown Author',
+                    genre: bookData.genre ?? 'General',
+                    rating: bookData.rating,
+                    nr_pages: bookData.nr_pages,
+                    publication_year: bookData.publication_year ?? null,
                     series: bookData.series ?? '',
                     description: bookData.description ?? '',
-                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                    cover: bookData.cover ?? 'https://default-cover.jpg',
                 }
             };
 
+            console.log('Sending payload:', bookPayload);
+            console.log('Shelf name:', shelfName);
+            console.log('To URL:', `${apiBaseUrl}/library/add_book_to_shelf/${encodeURIComponent(shelfName)}/`);
+
             const responseShelf = await axios.post(
-                `${apiBaseUrl}/books/read_list/add/`,
+                `${apiBaseUrl}/library/add_book_to_shelf/${encodeURIComponent(shelfName)}/`,
                 bookPayload,
                 {
                     headers: {
@@ -570,12 +639,19 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                 [{ text: 'OK' }]
             );
         } catch (error) {
+            console.error('Error adding to shelf:', error);
+            console.error('Error response:', error.response?.data);
+            console.error('Error status:', error.response?.status);
             let errorMessage = 'Failed to annotate book.';
             if (error.response && error.response.data) {
                 if (typeof error.response.data === 'string') {
                     errorMessage = error.response.data;
+                } else if (error.response.data.error) {
+                    errorMessage = error.response.data.error;
                 } else if (error.response.data.detail) {
                     errorMessage = error.response.data.detail;
+                } else {
+                    errorMessage = JSON.stringify(error.response.data);
                 }
             }
             Alert.alert(
@@ -688,6 +764,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 value={pagesInput}
                                 onChangeText={setPagesInput}
                                 placeholder="Enter number of pages"
+                                placeholderTextColor="#613F75"
                                 keyboardType="numeric"
                                 autoFocus={true}
                             />
@@ -806,6 +883,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 value={reviewDescription}
                                 onChangeText={setReviewDescription}
                                 placeholder="Write your review here..."
+                                placeholderTextColor="#613F75"
                                 multiline={true}
                                 numberOfLines={4}
                                 textAlignVertical="top"
@@ -851,6 +929,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 value={postDescription}
                                 onChangeText={setPostDescription}
                                 placeholder="Write your post here... (required)"
+                                placeholderTextColor="#613F75"
                                 multiline={true}
                                 numberOfLines={4}
                                 textAlignVertical="top"
@@ -873,6 +952,52 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                     </View>
                                 </TouchableNativeFeedback>
                             </View>
+                        </View>
+                    </View>
+                </Modal>
+                
+                {/* Shelf Selection Modal */}
+                <Modal
+                    visible={showShelfModal}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={() => setShowShelfModal(false)}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.libraryModalContainer}>
+                            <Text style={styles.modalTitle}>Select a Shelf</Text>
+                            
+                            {console.log('Rendering modal, shelves:', shelves)}
+                            
+                            <ScrollView style={{ maxHeight: 400 }}>
+                                {shelfLoading ? (
+                                    <View style={styles.libraryOption}>
+                                        <ActivityIndicator size="small" color="#613F75" />
+                                        <Text style={[styles.libraryOptionText, { marginTop: 8 }]}>Loading shelves...</Text>
+                                    </View>
+                                ) : shelves.length === 0 ? (
+                                    <View style={styles.libraryOption}>
+                                        <Text style={styles.libraryOptionText}>No shelves available</Text>
+                                    </View>
+                                ) : (
+                                    shelves.map((shelf, index) => (
+                                        <TouchableNativeFeedback 
+                                            key={index} 
+                                            onPress={() => handleAddToShelf(shelf.name)}
+                                        >
+                                            <View style={styles.libraryOption}>
+                                                <Text style={styles.libraryOptionText}>{shelf.name}</Text>
+                                            </View>
+                                        </TouchableNativeFeedback>
+                                    ))
+                                )}
+                            </ScrollView>
+                            
+                            <TouchableNativeFeedback onPress={() => setShowShelfModal(false)}>
+                                <View style={[styles.libraryOption, styles.cancelOption]}>
+                                    <Text style={[styles.libraryOptionText, styles.cancelOptionText]}>Cancel</Text>
+                                </View>
+                            </TouchableNativeFeedback>
                         </View>
                     </View>
                 </Modal>

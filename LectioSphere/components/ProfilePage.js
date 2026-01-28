@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, SafeAreaView, ScrollView, Modal } from 'react-native';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,6 +15,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
     const [refreshToken, setRefreshToken] = useState(null);
 
     const [selected, setSelected] = useState('photo');
+    const [drawerVisible, setDrawerVisible] = useState(false);
 
     const defaultPicture = require('../assets/defaultProfilePic.jpg');
     const editPen = require('../assets/editPen.png');
@@ -145,13 +146,27 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
         navigation.navigate('ProfileEdit');
     }
 
+    const handleDrawerOpen = () => {
+        setDrawerVisible(true);
+    };
+
+    const handleDrawerClose = () => {
+        setDrawerVisible(false);
+    };
+
+    const handleChangeReadingSheets = () => {
+        setDrawerVisible(false);
+        // Add your navigation or logic here
+        Alert.alert('Change Reading Sheets Type', 'This feature will be implemented');
+    };
+
     // console.log("Profile Data:", profileData);
 
     // console.log(profileData);
 
     return (
         <SafeAreaView style={styles.screen}>
-            <TopBar pageName="ProfilePage" />
+            <TopBar pageName="ProfilePage" onSettingsPress={handleDrawerOpen} />
 
             <ScrollView 
                 style={styles.scrollView}
@@ -171,13 +186,27 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                             /> */}
                             <View style={styles.textInfo}>
                                 <View style={styles.followersInfo}>
-                                    <Text style={styles.followers}>
-                                        {profileData?.profile.followers_count || 0} {'\n'}followers
-                                    </Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('FollowersFollowingList', {
+                                        profileId: profileData?.profile.id,
+                                        listType: 'followers',
+                                        username: userData?.username,
+                                        apiBaseUrl
+                                    })}>
+                                        <Text style={styles.followers}>
+                                            {profileData?.profile.followers_count || 0} {'\n'}followers
+                                        </Text>
+                                    </TouchableOpacity>
                                     <View style={styles.verticalLine}></View>
-                                    <Text style={styles.followers}>
-                                        {profileData?.profile.following_count || 0} {'\n'}following
-                                    </Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('FollowersFollowingList', {
+                                        profileId: profileData?.profile.id,
+                                        listType: 'following',
+                                        username: userData?.username,
+                                        apiBaseUrl
+                                    })}>
+                                        <Text style={styles.followers}>
+                                            {profileData?.profile.following_count || 0} {'\n'}following
+                                        </Text>
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={styles.nameAndEdit}>
                                     <View style={styles.nameInfo}>
@@ -247,6 +276,38 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
             </ScrollView>
 
             <NavBar navigation={navigation} page="ProfilePage" />
+
+            {/* Drawer Menu Modal */}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={drawerVisible}
+                onRequestClose={handleDrawerClose}
+            >
+                <TouchableOpacity 
+                    style={styles.drawerOverlay} 
+                    activeOpacity={1} 
+                    onPress={handleDrawerClose}
+                >
+                    <View style={styles.drawerContainer}>
+                        <TouchableOpacity 
+                            style={styles.drawerItem}
+                            onPress={handleChangeReadingSheets}
+                        >
+                            <Text style={styles.drawerItemTextPurple}>Change Reading Sheets Type</Text>
+                        </TouchableOpacity>
+                        
+                        <View style={styles.drawerDivider} />
+                        
+                        <TouchableOpacity 
+                            style={styles.drawerItem}
+                            onPress={handleLogout}
+                        >
+                            <Text style={styles.drawerItemTextRed}>Log Out</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -418,6 +479,46 @@ const styles = StyleSheet.create({    screen: {
         color: '#fff',
         textAlign: 'center',
         fontFamily: 'Nunito_500Medium',
+    },
+    drawerOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
+        paddingTop: 84, // Position below TopBar
+        paddingRight: 10,
+    },
+    drawerContainer: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 8,
+        minWidth: 250,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    drawerItem: {
+        paddingVertical: 16,
+        paddingHorizontal: 20,
+    },
+    drawerItemTextPurple: {
+        fontSize: 16,
+        fontFamily: 'Nunito_500Medium',
+        color: '#613F75',
+    },
+    drawerItemTextRed: {
+        fontSize: 16,
+        fontFamily: 'Nunito_500Medium',
+        color: '#FF0000',
+    },
+    drawerDivider: {
+        height: 1,
+        backgroundColor: '#E5E5E5',
+        marginHorizontal: 10,
     },
 });
 

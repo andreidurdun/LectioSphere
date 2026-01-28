@@ -7,10 +7,12 @@ import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold, Nuni
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
 import PostPartial from './Partials/PostPartial';
+import ShareBookModal from './ShareBookModal';
 import { Alert } from 'react-native';
 
 const purpleStarFull = require('../assets/purpleStarFull.png');
 const purpleStarEmpty = require('../assets/purpleStarEmpty.png');
+const shareIcon = require('../assets/share.png');
 
 const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, setBookData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -32,6 +34,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
 
     const [shelves, setShelves] = useState([]);              
     const [showShelfModal, setShowShelfModal] = useState(false);
+    const [showShareModal, setShowShareModal] = useState(false);
 
     const [fontsLoaded] = useFonts({
         Nunito_400Regular,
@@ -70,8 +73,21 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
             const response = await axios.get(`${apiBaseUrl}/library/shelves/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const shelves = response.data.custom_shelves.slice(2);
-            setShelves(shelves);
+            
+            // Get standard shelf names
+            const standardShelves = response.data.standard_shelves 
+                ? Object.keys(response.data.standard_shelves).map(name => ({ name }))
+                : [];
+            
+            // Get custom shelf names, filter out Currently Reading
+            const customShelves = (response.data.custom_shelves || [])
+                .filter(shelf => shelf.shelf_name !== 'Currently Reading')
+                .map(shelf => ({ 
+                    name: shelf.shelf_name 
+                }));
+            
+            const allShelves = [...standardShelves, ...customShelves];
+            setShelves(allShelves);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
@@ -79,8 +95,19 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                     const retryResponse = await axios.get(`${apiBaseUrl}/library/shelves/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const shelves = retryResponse.data.custom_shelves.slice(2);
-                    setShelves(shelves);
+                    
+                    const standardShelves = retryResponse.data.standard_shelves 
+                        ? Object.keys(retryResponse.data.standard_shelves).map(name => ({ name }))
+                        : [];
+                    
+                    const customShelves = (retryResponse.data.custom_shelves || [])
+                        .filter(shelf => shelf.shelf_name !== 'Currently Reading')
+                        .map(shelf => ({ 
+                            name: shelf.shelf_name 
+                        }));
+                    
+                    const allShelves = [...standardShelves, ...customShelves];
+                    setShelves(allShelves);
                 } else {
                     console.error(`Unable to refresh token for shelves.`);
                 }
@@ -609,6 +636,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
     };
 
     const handleAddToShelf= async (shelfName) => {
+        setShowShelfModal(false);
         try {
             const token = await AsyncStorage.getItem('auth_token');
             if (!token) {
@@ -616,29 +644,32 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                 return;
             }
 
-            // Try refresh token if needed (optional, depends on your backend)
-            // await refreshAccessToken();
+            console.log('Book data:', bookData);
 
             const bookPayload = {
                 book: {
-                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND', // trebuie să existe
-                    id: bookData.id, // poate fi Google ID
+                    ISBN: bookData.ISBN || bookData.isbn || 'ISBN-NOT-FOUND',
+                    id: bookData.id,
                     title: bookData.title ?? 'Unknown Title',
-                    authors: bookData.authors ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
+                    author: bookData.author ?? (bookData.authors?.join(', ') ?? 'Unknown Author'),
                     genre: bookData.genre ?? (bookData.categories?.[0] ?? 'General'),
-                    rating: bookData.rating ?? bookData.average_rating ?? 0,
-                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 0,
+                    rating: bookData.rating ?? bookData.average_rating ?? 3,
+                    nr_pages: bookData.nr_pages ?? bookData.pageCount ?? 1,
                     publication_year: bookData.publication_year ?? (
                         bookData.publishedDate ? parseInt(bookData.publishedDate.slice(0, 4)) : null
                     ),
                     series: bookData.series ?? '',
                     description: bookData.description ?? '',
-                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                    cover: bookData.cover ?? bookData.thumbnail ?? 'https://default-cover.jpg',
                 }
             };
 
+            console.log('Sending payload:', bookPayload);
+            console.log('Shelf name:', shelfName);
+            console.log('To URL:', `${apiBaseUrl}/library/add_book_to_shelf/${encodeURIComponent(shelfName)}/`);
+
             const responseShelf = await axios.post(
-                `${apiBaseUrl}/library/add_book_to_shelf/${(shelfName)}/`,
+                `${apiBaseUrl}/library/add_book_to_shelf/${encodeURIComponent(shelfName)}/`,
                 bookPayload,
                 {
                     headers: {
@@ -654,12 +685,19 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                 [{ text: 'OK' }]
             );
         } catch (error) {
+            console.error('Error adding to shelf:', error);
+            console.error('Error response:', error.response?.data);
+            console.error('Error status:', error.response?.status);
             let errorMessage = 'Failed to annotate book.';
             if (error.response && error.response.data) {
                 if (typeof error.response.data === 'string') {
                     errorMessage = error.response.data;
+                } else if (error.response.data.error) {
+                    errorMessage = error.response.data.error;
                 } else if (error.response.data.detail) {
                     errorMessage = error.response.data.detail;
+                } else {
+                    errorMessage = JSON.stringify(error.response.data);
                 }
             }
             Alert.alert(
@@ -809,7 +847,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                             </Text>
 
                             {bookData.authors && bookData.authors.length > 0 && (
-                                <View style={[styles.authorsContainer, { alignItems: 'center' }]}>
+                                <View style={[styles.authorsContainer, { alignItems: 'center', marginBottom: 4 }]}>
                                     {bookData.authors.map((author, index) => (
                                         <Text key={index} style={styles.author}>
                                             {author}
@@ -817,15 +855,28 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                                     ))}
                                 </View>
                             )}
-                            <TouchableNativeFeedback 
-                                onPress={() => handleAddToLibrary()}
-                            >
-                                <View style={styles.addButtonTouchable}>
-                                    <Text style={styles.addButtonText}>
-                                        Add to Library
-                                    </Text>
-                                </View>
-                            </TouchableNativeFeedback>
+                            <View style={styles.buttonsRow}>
+                                <TouchableNativeFeedback 
+                                    onPress={() => handleAddToLibrary()}
+                                >
+                                    <View style={styles.addButtonTouchable}>
+                                        <Text style={styles.addButtonText}>
+                                            Add to Library
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                
+                                <TouchableNativeFeedback 
+                                    onPress={() => setShowShareModal(true)}
+                                >
+                                    <View style={styles.shareButtonTouchable}>
+                                        <Image source={shareIcon} style={styles.shareIcon} />
+                                        <Text style={styles.shareButtonText}>
+                                            Share
+                                        </Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                            </View>
                     </View>
 
                 </View>
@@ -1051,20 +1102,26 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
             <View style={styles.modalOverlay}>
                 <View style={styles.libraryModalContainer}>
                 <Text style={styles.modalTitle}>Choose a Shelf</Text>
-                <ScrollView>
-                    {shelves.map((shelf, idx) => (
-                    <TouchableNativeFeedback
-                        key={idx}
-                        onPress={() => {
-                        setShowShelfModal(false);
-                        handleAddToShelf(shelf.shelf_name);
-                        }}
-                    >
+                <ScrollView style={{ maxHeight: 400 }}>
+                    {shelves.length === 0 ? (
                         <View style={styles.libraryOption}>
-                        <Text style={styles.libraryOptionText}>{shelf.shelf_name}</Text>
+                            <Text style={styles.libraryOptionText}>No shelves available</Text>
                         </View>
-                    </TouchableNativeFeedback>
-                    ))}
+                    ) : (
+                        shelves.map((shelf, idx) => (
+                        <TouchableNativeFeedback
+                            key={idx}
+                            onPress={() => {
+                            setShowShelfModal(false);
+                            handleAddToShelf(shelf.name);
+                            }}
+                        >
+                            <View style={styles.libraryOption}>
+                            <Text style={styles.libraryOptionText}>{shelf.name}</Text>
+                            </View>
+                        </TouchableNativeFeedback>
+                        ))
+                    )}
                 </ScrollView>
                 <TouchableNativeFeedback onPress={() => setShowShelfModal(false)}>
                     <View style={[styles.libraryOption, styles.cancelOption]}>
@@ -1183,6 +1240,17 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                 </View>
             </Modal>
             
+            {/* Share Book Modal */}
+            <ShareBookModal
+                visible={showShareModal}
+                onClose={() => setShowShareModal(false)}
+                bookId={bookData?.id}
+                bookTitle={bookData?.title}
+                bookCover={bookData?.cover || bookData?.thumbnail}
+                bookAuthor={bookData?.authors?.join(', ') || bookData?.author || 'Unknown Author'}
+                apiBaseUrl={apiBaseUrl}
+            />
+            
             <NavBar navigation={navigation} page="SearchPage" />
         </SafeAreaView>
     );
@@ -1232,7 +1300,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 16,
+        marginBottom: 8,
         fontFamily: 'Nunito_700Bold',
         flexWrap: 'wrap',
         color: '#18101D',
@@ -1245,6 +1313,13 @@ const styles = StyleSheet.create({
         color: '#613F75',
         textAlign: 'center'
     },
+    buttonsRow: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        gap: 10,
+    },
     addButtonTouchable: {
         backgroundColor: '#613F75',
         width: 120,
@@ -1252,10 +1327,30 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 16,
     },
     addButtonText: {
         color: '#FCF8FA',
+        fontFamily: 'Nunito_500Medium',
+    },
+    shareButtonTouchable: {
+        backgroundColor: '#E5C3D1',
+        flexDirection: 'row',
+        width: 90,
+        height: 30,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 6,
+    },
+    shareIcon: {
+        width: 16,
+        height: 16,
+        tintColor: '#613F75',
+    },
+    shareButtonText: {
+        color: '#613F75',
+        fontFamily: 'Nunito_500Medium',
+        fontSize: 13,
     },
     ratingContainer: {
         flexDirection: 'row',

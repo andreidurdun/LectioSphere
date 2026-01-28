@@ -193,20 +193,20 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
     const fetchShelfReading = async (setShelf) => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/Reading/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const books = response.data;
+            const {shelf_name, books} = response.data;
             const normalizedBooks = books.slice(0, 4);
             setShelf(normalizedBooks);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/Reading/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const books = retryResponse.data;
+                    const {shelf_name, books} = retryResponse.data;
                     const normalizedBooks = books.slice(0, 4);
                     setShelf(normalizedBooks);
                 } else {
@@ -221,20 +221,20 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
     const fetchShelfReadlist = async (setShelf) => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/Readlist/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const books = response.data;
+            const {shelf_name, books} = response.data;
             const normalizedBooks = books.slice(0, 4);
             setShelf(normalizedBooks);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/Readlist/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const books = retryResponse.data;
+                    const {shelf_name, books} = retryResponse.data;
                     const normalizedBooks = books.slice(0, 4);
                     setShelf(normalizedBooks);
                 } else {

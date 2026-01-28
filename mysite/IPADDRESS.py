@@ -1,2 +1,8 @@
+import os
+from environs import Env
+
+env = Env()
+env.read_env()
+
 def getIP():
-    return "192.168.1.138"
+    return env.str('HOST_IP')
