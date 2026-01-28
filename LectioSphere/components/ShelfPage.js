@@ -160,7 +160,7 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
                 </View>
             </View>
         </TouchableWithoutFeedback>
-        );
+    );
     
     useEffect(() => {
         if (isAuthenticated) {

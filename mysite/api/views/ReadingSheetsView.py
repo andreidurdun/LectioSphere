@@ -115,28 +115,9 @@ class ReadingSheetsView(ViewSet):
         if not sheet:
             return Response({"error": "ReadingSheet not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # update text (doar daca e basic sau vrei sa permiti oricum)
+        # update text (doar daca e basic)
         if "text" in request.data:
             sheet.text = request.data.get("text")
-
-        # update shelf
-        if "shelf" in request.data:
-            shelf_id = request.data.get("shelf")
-            if shelf_id in [None, "", 0]:
-                sheet.shelf = None
-            else:
-                shelf = Shelf.objects.filter(id=shelf_id, user=request.user).first()
-                if not shelf:
-                    return Response({"error": "Shelf not found"}, status=status.HTTP_404_NOT_FOUND)
-                sheet.shelf = shelf
-
-        # update book
-        if "book" in request.data:
-            book_id = request.data.get("book")
-            book = Book.objects.filter(id=book_id).first()
-            if not book:
-                return Response({"error": "Book not found"}, status=status.HTTP_404_NOT_FOUND)
-            sheet.book = book
 
         # update data (pentru modele)
         if "data" in request.data:
@@ -144,16 +125,9 @@ class ReadingSheetsView(ViewSet):
             if not isinstance(incoming, dict):
                 return Response({"error": "data must be an object/dict"}, status=status.HTTP_400_BAD_REQUEST)
 
-            # optional: validare required la update (daca vrei)
+            # merge cu datele existente
             if sheet.model_type != "basic" and sheet.model_type in MODEL_SCHEMAS:
                 merged = {**(sheet.data or {}), **incoming}
-                required_keys = MODEL_SCHEMAS[sheet.model_type]
-                missing = [k for k in required_keys if k not in merged or merged[k] in [None, ""]]
-                if missing:
-                    return Response(
-                        {"error": f"Missing fields for {sheet.model_type}", "missing": missing},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
                 sheet.data = merged
             else:
                 # basic: ignora data sau o salvezi daca vrei

@@ -19,7 +19,7 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
     const [searchSearchVal, setSearchSearchVal] = React.useState('');
     const navigation = useNavigation();    
 
-    const apiBaseUrl1 = 'http://192.168.1.134:8000';
+    const apiBaseUrl1 = 'http://192.168.1.138:8000';
     const handleFollowSearchTextChange = (text) => {
         setFollowSearchVal(text);
     };
@@ -92,9 +92,13 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
             );
         }
         
-    };    const handleLibraryAddReadingSheet = () => {
-        Alert.alert('Add reading sheet');
-    };    const handleLibraryAddShelf = (page) => {
+    };    
+    
+    const handleLibraryAddReadingSheet = (page) => {
+        navigation.navigate(page); 
+    };    
+    
+    const handleLibraryAddShelf = (page) => {
         navigation.navigate(page); 
     };
     
@@ -212,11 +216,11 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
                 />
 
                 <View style={styles.libraryButtonsContainer}>
-                    {/* <Image 
+                    <Image 
                         source={addReadingSheetIcon} // Replace with your search icon path
                         style={styles.addReadingSheetIcon}
-                        onTouchEnd={() => handleLibraryAddReadingSheet()} // Trigger search on image press
-                    /> */}
+                        onTouchEnd={() => handleLibraryAddReadingSheet('SelectBookForSheetPage')} // Trigger search on image press
+                    />
                     <Image 
                         source={addShelfIcon} // Replace with your search icon path
                         style={styles.addShelfIcon}
@@ -343,9 +347,10 @@ const styles = StyleSheet.create({
     },
     libraryButtonsContainer: {
         flexDirection: 'row',
-        width: 70,
+        width: 100,
         justifyContent: 'space-around',
-        alignItems: 'center'
+        alignItems: 'center',
+        gap: 5,
     },
     addReadingSheetIcon: {
         width: 31,

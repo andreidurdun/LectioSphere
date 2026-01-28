@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView, TouchableNativeFeedback, ScrollView, Image, FlatList } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { ProgressBar } from 'react-native-paper';
 import NavBar from './Partials/NavBar';
 import TopBar from './Partials/TopBar';
@@ -11,6 +12,7 @@ import AllShelves from './AllShelves';
 
 const calendarItem = require('../assets/calendarIcon.png');
 const shelfItem = require('../assets/shelf.png');
+const readingSheetItem = require('../assets/readingSheets.png');
 
 const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseUrl }) => {
     const [userData, setUserData] = useState(null);
@@ -31,12 +33,23 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
     const [reading, setReading] = useState([]); 
     const [readlist, setReadlist] = useState([]); 
     const [favourites, setFavourites] = useState([]); 
+
+    //Reading Sheets
+    const [readingSheets, setReadingSheets] = useState([]);
  
 
 
-    const handleShelfClick = (page, params = {}) => {
+    const handleClick = (page, params = {}) => {
         setActive(page);
         navigation.navigate(page, params); 
+    };
+
+    const handleBookPress = (book) => {
+        navigation.navigate('BookShow', { book });
+    };
+
+    const handleReadingSheetPress = (sheet) => {
+        navigation.navigate('ReadingSheetPage', { sheet });
     };
 
     const [fontsLoaded] = useFonts({
@@ -233,6 +246,43 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
         }
     };
 
+    const fetchReadingSheets = async () => {
+        try {
+            let token = await AsyncStorage.getItem('auth_token');
+            const response = await axios.get(`${apiBaseUrl}/reading-sheets/`, {
+                headers: { Authorization: `JWT ${token}` }
+            });
+            const allSheets = Object.values(response.data).flat();
+            if (Array.isArray(allSheets)) {
+                setReadingSheets(allSheets.slice(0, 5));
+            } else {
+                setReadingSheets([]);
+                console.warn("Reading sheets response is not an array.");
+            }
+        } catch (error) {
+            if (error.response?.status === 401) {
+                const newToken = await refreshAccessToken(apiBaseUrl);
+                if (newToken) {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/reading-sheets/`, {
+                        headers: { Authorization: `JWT ${newToken}` }
+                    });
+                    const allSheets = Object.values(retryResponse.data).flat();
+                    if (Array.isArray(allSheets)) {
+                        setReadingSheets(allSheets.slice(0, 5));
+                    } else {
+                        setReadingSheets([]);
+                        console.warn("Reading sheets retry response is not an array.");
+                    }
+                } else {
+                    console.error("Unable to refresh for reading sheets.");
+                }
+            } 
+            else {
+                console.error("Reading Sheets error:", error.message);
+            }
+        }
+    };
+
     const [loading, setLoading] = useState(true);
 
     const fetchData = async () => {
@@ -243,14 +293,17 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
         await fetchShelfReading(setReading);
         await fetchShelfReadlist(setReadlist);
         await fetchShelf("Favourites", setFavourites, 4);
+        await fetchReadingSheets();
         setLoading(false);
     };
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            fetchData();
-        }
-    }, [isAuthenticated]);
+    useFocusEffect(
+        useCallback(() => {
+            if (isAuthenticated) {
+                fetchData();
+            }
+        }, [isAuthenticated])
+    );
       
       
     if (loading) {
@@ -283,7 +336,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                         <Text style={styles.textTitleChallenges}> Reading Challenges </Text>
                         <View style={styles.challengeContainer}>
                             <View style={{ width: '47.5%' }}>
-                                <TouchableNativeFeedback onPress={() => handleShelfClick('BooksChallenge')}>
+                                <TouchableNativeFeedback onPress={() => handleClick('BooksChallenge')}>
                                     <View style={styles.challengeBooks}>
                                         <Text style={styles.textChallenge}>Number of Books </Text>
                                         {/* <View style={styles.counterBox}>
@@ -307,7 +360,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             </View>
                             <View style={styles.verticalBar} />
                             <View style={{ width: '47.5%' }}>
-                                <TouchableNativeFeedback onPress={() => handleShelfClick('PagesChallenge')}>
+                                <TouchableNativeFeedback onPress={() => handleClick('PagesChallenge')}>
                                     <View style={styles.challengePages}>
                                         <Text style={styles.textChallenge}>  Number of Pages </Text>
                                         <View style={styles.counterBoxPages}>
@@ -339,7 +392,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                     </View>
 
                     <View style={styles.shelvesContainer}>
-                        <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Read'})}>
+                        <TouchableNativeFeedback onPress={() => handleClick('ShelfPage', { shelfName: 'Read'})}>
                             <View style={styles.shelf}>
                                 {read[0] && read[1] ? (
                                     <Image source={{ uri: read[0].cover }} style={styles.coversBig} />
@@ -375,7 +428,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
-                        <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Reading'})}>
+                        <TouchableNativeFeedback onPress={() => handleClick('ShelfPage', { shelfName: 'Reading'})}>
                             <View style={styles.shelf}>
                                 {reading[0] && reading[1] ? (
                                     <Image source={{ uri: reading[0].cover }} style={styles.coversBig} />
@@ -401,7 +454,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
-                        <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Readlist'})}>
+                        <TouchableNativeFeedback onPress={() => handleClick('ShelfPage', { shelfName: 'Readlist'})}>
                             <View style={styles.shelf}>
                                 {readlist[0] && readlist[1] ? (
                                     <Image source={{ uri: readlist[0].cover }} style={styles.coversBig} />
@@ -427,15 +480,62 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             </View>
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
-                        <TouchableNativeFeedback onPress={() => handleShelfClick('AllShelves')}>
+                        <TouchableNativeFeedback onPress={() => handleClick('AllShelves')}>
                             <View style={styles.sheet}>
                                 <Text style={styles.textShelfMore}>See More</Text>
                             </View>
                         </TouchableNativeFeedback>
                     </View>
+
+
+
+                    {/* READING SHEETS SECTION */}
+                    <View style={styles.readingSheetsTitleContainer}>
+                        <Image
+                            source={readingSheetItem}
+                            style={{ width: 80, height: 80 }}
+                        />
+                        <View style={styles.categoryContainer}>
+                            <Text style={styles.textCategory}> Reading Sheets </Text>
+                            <View style={styles.horizontalBar} />
+                        </View>
+                    </View>
+
+                    <View style={styles.shelvesContainer}>
+                        {readingSheets.map((readingSheet, index) => (
+                            <TouchableNativeFeedback key={index} onPress={() => handleReadingSheetPress(readingSheet)}>
+                                <View style={styles.readingSheetContainer}>
+                                    <Image
+                                        source={{ uri: readingSheet.book.cover }}
+                                        style={styles.covers}
+                                    />
+                                    <View style={styles.infoBookReadingSheet}>
+                                        <Text style={styles.textInfoTitle}>
+                                            {readingSheet.book.title}
+                                        </Text>
+                                        <Text style={styles.textInfoAuthor}>
+                                            {readingSheet.book.author}
+                                        </Text>
+                                    </View>
+                                </View>
+                            </TouchableNativeFeedback>
+                        ))}
+                        { readingSheets.length > 0 ? <View style={styles.shelfBar} /> : null }
+                        { readingSheets.length !== 0 ? (
+                                <TouchableNativeFeedback onPress={() => handleClick('AllReadingSheetsPage')}>
+                                    <View style={styles.sheet}>
+                                        <Text style={styles.textShelfMore}>See More</Text>
+                                    </View>
+                                </TouchableNativeFeedback>
+                        ) : (
+                            <TouchableNativeFeedback onPress={() => handleClick('SelectBookForSheetPage')}>
+                                <View style={styles.sheet}>
+                                    <Text style={styles.textShelfMore}>Add Reading Sheet</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                        )}
+                    </View>
                         
-
-
                 </View>
 
             </ScrollView>
@@ -583,6 +683,13 @@ const styles = StyleSheet.create({
         marginTop: 16,
         width: '90%',
     },
+    readingSheetsTitleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 16,
+        width: '90%',
+    },
     categoryContainer: {
         backgroundColor: '#FCF8FA',
         alignItems: 'center',
@@ -629,9 +736,10 @@ const styles = StyleSheet.create({
     shelfBar: {
         height: 2,
         width: '90%',
-        alignItems: 'center',
         backgroundColor: '#E5C3D1', 
-        marginTop: 4,
+        marginTop: 8,
+        marginBottom: 4,
+        alignSelf: 'center',
     },
     coversBig: {
         height: 60,
@@ -639,6 +747,12 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         marginRight: 6,
         marginLeft: 6,
+    },
+    covers: {
+        height: 80,
+        width: 56,
+        borderRadius: 4,
+        marginRight: 12,
     },
     coversMedium: {
         height: 42,
@@ -688,6 +802,18 @@ const styles = StyleSheet.create({
     numbersPages: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    readingSheetContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 12,
+        width: '95%',
+        minHeight: 100,
+    },
+    infoBookReadingSheet: {
+        flexDirection: 'column',
+        flex: 1,
     },
 });
 

@@ -209,11 +209,12 @@ class PostLikeSerializer(serializers.ModelSerializer):
 
 class ReadingSheetSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=UserAccount.objects.all()) 
-    book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
+    book = BookSerializer(read_only=True)
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.all())
+    book_id = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all(), source='book', write_only=True)
     class Meta:
         model = ReadingSheet
-        fields = ["shelf", "user", "book", "text", "date"]
+        fields = ["id", "shelf", "user", "book", "book_id", "text", "date", "model_type", "data"]
 
 
 
