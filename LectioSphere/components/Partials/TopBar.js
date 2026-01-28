@@ -14,7 +14,7 @@ const addReadingSheetIcon = require('../../assets/addReadingSheet.png');
 const envelope = require('../../assets/envelope.png');
 const threeDots = require('../../assets/threeDots.png');
 
-const TopBar = ({pageName, page, apiBaseUrl}) => {
+const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
     const [followSearchVal, setFollowSearchVal] = React.useState('');
     const [searchSearchVal, setSearchSearchVal] = React.useState('');
     const navigation = useNavigation();    
@@ -245,7 +245,7 @@ const TopBar = ({pageName, page, apiBaseUrl}) => {
                         <Image 
                             source={threeDots} // Replace with your search icon path
                             style={styles.threeDotsIcon}
-                            onTouchEnd={() => handleSettingsButton()} // Trigger search on image press
+                            onTouchEnd={() => onSettingsPress ? onSettingsPress() : handleSettingsButton()} // Trigger drawer or default action
                         />
                     </View>
                 </SafeAreaView>

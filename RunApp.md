@@ -35,3 +35,5 @@ For cloud version:
 npx eas-cli build --profile development --platform android
 - from second onwards:
 npx expo start --dev-client --clear
+        or
+npx expo start --dev-client --clear --tunnel
