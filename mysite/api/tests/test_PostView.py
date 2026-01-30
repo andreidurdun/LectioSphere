@@ -22,7 +22,7 @@ class MadeProgressPostTestCase(APITestCase):
 
         response = self.client.post(self.url, data, format='json')
         
-        print(response.data)  
+        #print(response.data)  
         
         self.assertEqual(response.status_code, 201)
         self.assertIn("action", response.data)
@@ -40,7 +40,7 @@ class MadeProgressPostTestCase(APITestCase):
 
         response = self.client.post(self.url, data, format='json')
         
-        print(response.data)  
+        #print(response.data)  
         
         self.assertEqual(response.status_code, 201)
         self.assertIn("action", response.data)
@@ -60,7 +60,7 @@ class MadeProgressPostTestCase(APITestCase):
 
         response = self.client.post(self.url, data, format='json')
         
-        print(response.data)  #
+        #print(response.data)  
         
         self.assertEqual(response.status_code, 201)
         self.assertIn("action", response.data)
@@ -69,5 +69,39 @@ class MadeProgressPostTestCase(APITestCase):
         self.assertEqual(response.data["rating"], 3)
         self.assertIn("description", response.data)
         self.assertEqual(response.data["description"], "SUPERR!")
-      
 
+
+   
+
+    # teste negative
+    def test_post_without_auth_should_fail(self):
+        self.client.credentials() 
+        data = {"action": "post", "description": "test", "id": "yow0EAAAQBAJ"}
+        response = self.client.post(self.url, data, format="json")
+        self.assertIn(response.status_code, [401, 403])  
+
+
+    def test_invalid_action_should_fail(self):
+        data = {"action": "ceva_invalid", "id": "yow0EAAAQBAJ"}
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_id_should_fail(self):
+        data = {"action": "want_to_read"} 
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+
+    def test_review_missing_rating_should_fail(self):
+        data = {"action": "review", "description": "ok", "id": "yow0EAAAQBAJ"} 
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+
+    def test_review_invalid_rating_should_fail(self):
+        data = {"action": "review", "rating": 6, "description": "ok", "id": "yow0EAAAQBAJ"}
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+                
+
+
+
+   
