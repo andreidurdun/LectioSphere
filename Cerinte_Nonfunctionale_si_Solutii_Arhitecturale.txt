@@ -1,0 +1,501 @@
+CERINȚE NON-FUNCȚIONALE ȘI SOLUȚII ARHITECTURALE - LECTIOSPHERE
+
+================================================================================
+
+## 1. SECURITATE
+
+### Cerințe Non-Funcționale:
+- Autentificare și autorizare robustă: Utilizatorii trebuie să își poată accesa conturile în siguranță
+- Protecție împotriva atacurilor comune: CSRF, XSS, SQL Injection
+- Confidențialitatea datelor: Informațiile personale ale utilizatorilor trebuie protejate
+- Control al accesului: Utilizatorii pot accesa doar propriile date și resursele permise
+
+### Soluții Arhitecturale Implementate:
+
+#### 1.1 Autentificare JWT (JSON Web Tokens)
+Package: djangorestframework-simplejwt
+
+- Token-based authentication pentru API-ul REST
+- Refresh tokens pentru menținerea sesiunilor fără a cere re-autentificare frecventă
+- Token blacklisting pentru invalidarea token-urilor la logout
+- Tokens stocate pe client, reducând overhead-ul serverului
+
+#### 1.2 Django AllAuth + Social Authentication
+Packages: django-allauth, social-auth-core, social-auth-app-django
+
+- OAuth2 pentru autentificare prin Google
+- Gestionare centralizată a conturilor și profilurilor
+- Email verification pentru validarea utilizatorilor noi
+- Password reset securizat
+
+#### 1.3 Django Security Middleware
+- CORS Headers (django-cors-headers) pentru controlul accesului cross-origin
+- CSRF Protection nativ în Django
+- SQL Injection Protection prin Django ORM
+- XSS Protection prin template escaping automat
+
+#### 1.4 Permission Classes (REST Framework)
+IsAuthenticated, AllowAny
+
+- View-level permissions pentru controlul accesului la endpoint-uri
+- Object-level permissions pentru resurse specifice utilizatorilor
+- Verificări de proprietate în views (ex: user poate șterge doar propriile notificări)
+
+================================================================================
+
+## 2. PERFORMANȚĂ
+
+### Cerințe Non-Funcționale:
+- Timp de răspuns rapid: < 2 secunde pentru operații normale
+- Încărcare eficientă a datelor: Minimizarea query-urilor către baza de date
+- Scalabilitate: Suport pentru creșterea numărului de utilizatori
+
+### Soluții Arhitecturale Implementate:
+
+#### 2.1 Database Query Optimization
+select_related(), prefetch_related()
+
+- Eager loading pentru reducerea N+1 query problems
+- Indexing pe chei străine și câmpuri des căutate
+- Unique constraints la nivel de bază de date pentru performanță
+
+Exemplu din cod:
+shelf_books = ShelfBooks.objects.filter(shelf=shelf).select_related("book")
+
+#### 2.2 Pagination și Filtering
+- Pagination pentru liste mari de date (posts, events, books)
+- Lazy loading prin REST API
+- Query parameter filtering pentru căutări eficiente
+
+#### 2.3 Django Extensions
+Package: django-extensions
+
+- Database optimizations și debugging tools
+- Performance profiling capabilities
+
+#### 2.4 Sentence Transformers Caching
+Package: sentence-transformers
+Model: all-MiniLM-L6-v2
+
+- Model loading optimization (cached în memorie)
+- Batch processing pentru embeddings
+- Efficient similarity search folosind cosine similarity
+
+#### 2.5 Background Processing
+- Scraping asincron pentru evenimente și cărți
+- Selenium WebDriver cu headless mode pentru scraping rapid
+- WebDriver Manager pentru gestionarea automată a driverelor
+
+================================================================================
+
+## 3. DISPONIBILITATE ȘI FIABILITATE
+
+### Cerințe Non-Funcționale:
+- Uptime ridicat: 99%+ disponibilitate
+- Gestionarea erorilor: Răspunsuri clare și utile pentru erori
+- Data integrity: Consistența datelor în baza de date
+- Fault tolerance: Reziliență la erori externe (API-uri terțe)
+
+### Soluții Arhitecturale Implementate:
+
+#### 3.1 Database Constraints
+UniqueConstraint, ForeignKey constraints, NOT NULL
+
+- Referential integrity prin foreign keys
+- Unique constraints pentru prevenirea duplicatelor
+- Validări la nivel de model (Django validators)
+
+Exemplu:
+class Event(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["source", "external_id"], 
+                name="uniq_event_source_external"
+            )
+        ]
+
+#### 3.2 Error Handling și Validation
+- Serializer validation în REST Framework
+- HTTP status codes corecte (400, 401, 403, 404, 500)
+- Error messages descriptive pentru debugging
+- Try-catch blocks pentru operații externe (API calls, scraping)
+
+#### 3.3 Soft Delete Pattern
+is_deleted = models.BooleanField(default=False)
+
+- Păstrarea datelor în loc de delete hard
+- Recovery capability pentru date șterse din greșeală
+- Audit trail pentru modificări
+
+#### 3.4 External API Resilience
+- Timeout handling pentru requests HTTP
+- Fallback mechanisms (ex: bestseller când nu există preferințe)
+- Error propagation controlată către client
+
+================================================================================
+
+## 4. SCALABILITATE
+
+### Cerințe Non-Funcționale:
+- Scalare orizontală: Suport pentru multiple instanțe
+- Database scalability: Creșterea volumului de date
+- API rate limiting: Protecție împotriva abuse-ului
+
+### Soluții Arhitecturale Implementate:
+
+#### 4.1 REST API Architecture
+Django REST Framework
+
+- Stateless design prin JWT tokens
+- Separation of concerns: Backend (Django) + Frontend (React Native)
+- API versioning capability (pregătit pentru viitor)
+- Horizontal scaling posibil (instanțe multiple pot rula în paralel)
+
+#### 4.2 Database Design
+SQLite (Development), PostgreSQL-ready (Production)
+
+- Normalized schema pentru reducerea redundanței
+- Foreign key relationships optimizate
+- Indexes pe câmpuri des folosite
+- Migration system pentru evoluție incrementală
+
+#### 4.3 Modular Architecture
+Apps: api, accounts
+
+- Separarea responsabilităților între aplicații
+- Reusable components (models, serializers, views)
+- Easy to extend cu noi funcționalități
+
+#### 4.4 ViewSets și Routers
+ViewSet, DefaultRouter
+
+- RESTful conventions pentru consistency
+- Automatic URL routing pentru reducerea boilerplate-ului
+- Standard CRUD operations cu minimal code
+
+================================================================================
+
+## 5. MENTENABILITATE
+
+### Cerințe Non-Funcționale:
+- Cod ușor de întreținut: Structură clară și consistentă
+- Testabilitate: Coverage ridicat de teste
+- Documentație: API documentat și comentat
+- Code quality: Standards și best practices
+
+### Soluții Arhitecturale Implementate:
+
+#### 5.1 Comprehensive Testing
+Package: pytest
+Framework: Django TestCase, APITestCase
+
+- Unit tests pentru modele (24 teste pentru Event)
+- Integration tests pentru views (37+ teste pentru views)
+- API tests pentru endpoint-uri REST
+- Test isolation (in-memory database, setUp/tearDown)
+- Mock support pentru dependințe externe
+
+Coverage actual:
+- EventModel: 24 teste
+- NotificationsView: 14 teste
+- ShelfByNameView: 12 teste
+- BookShareView: 11 teste
+- Plus teste existente pentru Posts, Books, Library, ReadingSheets, Comments
+
+#### 5.2 Django Project Structure
+mysite/
+├── accounts/     # User management
+├── api/          # Core API
+│   ├── models/   # Domain models
+│   ├── views/    # API endpoints
+│   ├── tests/    # Test suites
+│   └── serializers.py
+└── mysite/       # Project settings
+
+- Clear separation între module
+- Single Responsibility Principle pentru fiecare modul
+- Easy navigation pentru dezvoltatori noi
+
+#### 5.3 Configuration Management
+Package: environs
+File: .env
+
+- Environment variables pentru configurări sensibile
+- Separate configs pentru development/production
+- Secret management (API keys, database URLs)
+
+#### 5.4 Migration System
+Django Migrations
+
+- Version control pentru schema bazei de date
+- Rollback capability pentru migrări
+- Atomic migrations pentru consistency
+
+#### 5.5 Code Organization Best Practices
+- Fat models, thin views approach
+- Serializers pentru validare și transformare date
+- Signals pentru business logic decuplat
+- Custom managers pentru query-uri complexe
+
+================================================================================
+
+## 6. USABILITATE
+
+### Cerințe Non-Funcționale:
+- API intuitive: Endpoint-uri consistente și predictibile
+- Error messages clare: Feedback util pentru utilizatori
+- Response format consistent: JSON standard
+- Mobile-friendly: Support pentru React Native client
+
+### Soluții Arhitecturale Implementate:
+
+#### 6.1 RESTful API Design
+Standard HTTP methods: GET, POST, PUT, PATCH, DELETE
+
+- Resource-based URLs: /books/, /posts/, /notifications/
+- Nested resources: /posts/{id}/comments/
+- Query parameters: ?title=book&author=name
+- HTTP status codes semantice
+
+#### 6.2 Serialization
+Django REST Framework Serializers
+
+- Consistent JSON format pentru toate răspunsurile
+- Field-level validation cu mesaje clare
+- Nested serialization pentru relații complexe
+- Read-only fields pentru metadata (created_at, etc.)
+
+#### 6.3 Google Books API Integration
+External API: Google Books API
+
+- Rich book data (covers, descriptions, ratings)
+- Search capabilities (title, author, ISBN, publisher)
+- Category browsing (fiction, bestsellers, etc.)
+- Fallback data când cartea nu există local
+
+#### 6.4 Recommendation System
+ML: Sentence Transformers + Cosine Similarity
+
+- Personalized recommendations bazate pe profilul utilizatorului
+- Content-based filtering folosind descrieri de cărți
+- User preference learning din cărțile citite
+- Fallback la bestsellers pentru utilizatori noi
+
+================================================================================
+
+## 7. INTEROPERABILITATE
+
+### Cerințe Non-Funcționale:
+- Cross-platform support: Web + Mobile
+- Third-party integrations: Google Books, OAuth providers
+- Data exchange standards: JSON, REST
+- External data sources: Web scraping pentru evenimente
+
+### Soluții Arhitecturale Implementate:
+
+#### 7.1 CORS Configuration
+Package: django-cors-headers
+
+- Cross-Origin Resource Sharing pentru React Native
+- Configurare flexibilă pentru allowed origins
+- Credentials support pentru autentificare
+
+#### 7.2 Web Scraping System
+Packages: selenium, beautifulsoup4, webdriver-manager
+
+- Multi-source scraping (exclusivebooks, biblioteca națională)
+- Dynamic content handling cu Selenium
+- HTML parsing cu BeautifulSoup4
+- Automatic driver management pentru portabilitate
+
+Surse suportate:
+- ExclusiveBooks events
+- Biblioteca Națională events
+- BookScouter events
+
+#### 7.3 OAuth2 Integration
+Google OAuth2
+
+- Social login pentru experiență utilizator simplificată
+- Profile data sync de la Google
+- Token management automat
+
+#### 7.4 RESTful API
+- JSON-only responses pentru consistență
+- Versioning support (pregătit pentru /api/v1/, /api/v2/)
+- Standard HTTP pentru compatibilitate universală
+
+================================================================================
+
+## 8. EXTENSIBILITATE
+
+### Cerințe Non-Funcționale:
+- Adăugare funcționalități noi: Fără refactorizări majore
+- New data sources: Ușor de integrat
+- Plugin architecture: Modular și decuplat
+- Future-proof: Pregătit pentru evoluție
+
+### Soluții Arhitecturale Implementate:
+
+#### 8.1 Django App Structure
+Pluggable apps: api, accounts
+
+- Self-contained apps care pot fi reutilizate
+- Clear interfaces între componente
+- Easy to add new apps (ex: payments, messaging)
+
+#### 8.2 Model Inheritance și Extensibilitate
+AbstractBaseUser, Profile extension pattern
+
+- Custom User Model (UserAccount)
+- Profile pattern pentru date suplimentare
+- Signals pentru hooks în business logic
+
+#### 8.3 ViewSet Extensibility
+ViewSet, mixins
+
+- Custom actions (@action decorator)
+- Override methods pentru comportament custom
+- Mixins pentru functionality reutilizabil
+
+#### 8.4 Serializer Extensibility
+- Custom fields și validatori
+- Method fields pentru computații on-the-fly
+- Nested serializers pentru structuri complexe
+
+#### 8.5 Generic Design Patterns
+- Strategy pattern pentru recommendation algorithms
+- Factory pattern pentru scrapers
+- Observer pattern prin Django signals
+
+================================================================================
+
+## 9. MONITORIZARE ȘI OBSERVABILITATE
+
+### Cerințe Non-Funcționale:
+- Logging: Înregistrarea evenimentelor importante
+- Debugging: Tools pentru identificare probleme
+- Testing: Automated testing pentru regression prevention
+
+### Soluții Arhitecturale Implementate:
+
+#### 9.1 Django Logging
+- Built-in logging framework Django
+- Console output pentru development
+- File logging capability pentru production
+
+#### 9.2 Django Debug Toolbar (implicit pentru development)
+- SQL query analysis pentru performance
+- Request/response inspection
+- Template rendering analysis
+
+#### 9.3 Test Suite
+pytest + Django TestCase
+
+- Comprehensive test coverage (60+ tests)
+- Continuous testing capability
+- Automated regression detection
+
+#### 9.4 Django Admin
+Built-in admin interface
+
+- Data inspection și management
+- User administration
+- Model CRUD operations
+
+================================================================================
+
+## 10. COMPATIBILITATE
+
+### Cerințe Non-Funcționale:
+- Browser compatibility: Support pentru browsere moderne
+- Mobile OS support: iOS și Android
+- Python version: Python 3.12+
+- Database compatibility: SQLite, PostgreSQL
+
+### Soluții Arhitecturale Implementate:
+
+#### 10.1 Technology Stack
+Backend: Django 5.2+ / Python 3.12+
+Frontend: React Native (Expo)
+Database: SQLite (dev), PostgreSQL-ready (prod)
+
+#### 10.2 Package Management
+requirements.txt
+
+- Version pinning pentru reproducibilitate
+- Compatible package versions testate împreună
+- Easy deployment cu pip install
+
+#### 10.3 Cross-Platform Mobile
+React Native + Expo
+
+- Single codebase pentru iOS și Android
+- Native performance pe ambele platforme
+- Hot reload pentru development rapid
+
+================================================================================
+
+## REZUMAT STACK TEHNOLOGIC
+
+### Backend
+- Framework: Django 5.2
+- API: Django REST Framework 3.16
+- Authentication: djangorestframework-simplejwt, djoser, django-allauth
+- Database: SQLite (dev), PostgreSQL-ready
+- ML/AI: sentence-transformers (all-MiniLM-L6-v2)
+- Web Scraping: selenium, beautifulsoup4, webdriver-manager
+- Testing: pytest
+
+### Frontend
+- Framework: React Native
+- Platform: Expo
+- HTTP Client: axios (presupus)
+
+### DevOps & Tools
+- Environment Management: environs
+- CORS: django-cors-headers
+- Extensions: django-extensions
+- Package Management: pip, requirements.txt
+
+### External Services
+- Google Books API: Book data și covers
+- Google OAuth2: Social authentication
+- Web Sources: Event scraping (multiple sites)
+
+================================================================================
+
+## BEST PRACTICES IMPLEMENTATE
+
+1. Security First
+   - JWT authentication
+   - CORS protection
+   - Permission-based access control
+   - Input validation
+
+2. Performance Optimization
+   - Database query optimization
+   - Caching strategies
+   - Efficient data serialization
+   - Background processing
+
+3. Code Quality
+   - Comprehensive testing (60+ tests)
+   - Clear project structure
+   - Modular design
+   - Documentation
+
+4. Scalability
+   - Stateless API design
+   - Horizontal scaling capability
+   - Database normalization
+   - Efficient algorithms
+
+5. Maintainability
+   - Clean code principles
+   - Separation of concerns
+   - Django best practices
+   - Version control (migrations)
+
+================================================================================
