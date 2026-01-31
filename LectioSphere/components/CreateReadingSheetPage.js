@@ -108,8 +108,8 @@ export default function SelectBookForSheetPage({ navigation, route, page, isAuth
 
         const urlPath = urlMap[preferredModel] || 'basic';
 
-        // Send the book id and full metadata so backend can create the book if needed
-        const bookVal = selectedBookObj?.isbn || selectedBookObj?.id || bookId || null;
+        // Send the book id (database ID is required, not ISBN)
+        const bookVal = selectedBookObj?.id || bookId || null;
         
         // Fill empty fields with "-" to satisfy backend validation
         const requiredFields = MODEL_SCHEMAS[preferredModel] || [];
