@@ -87,7 +87,7 @@ urlpatterns = [
 
     # ⚠️ ai doua rute identice pt library/shelf/<name>/ — alege una!
     # path("library/shelf/<str:name>/", LibraryPageView.as_view({"get": "get_shelf_by_name"}), name="library-shelf"),
-    path("library/shelf/<str:name>/", ShelfByNameView.as_view(), name="shelf-by-name"),"
+    path("library/shelf/<str:name>/", ShelfByNameView.as_view(), name="shelf-by-name"),
 
     # --- SCRAPE ---
     path("scrape-books/", BooksWebScrapperView.as_view(), name="scrape_books"),
