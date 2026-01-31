@@ -154,7 +154,7 @@ const NotificationsMenu = ({ navigation, apiBaseUrl }) => {
     };
 
     const handleProfilePress = (profileId) => {
-        navigation.navigate('ProfilePageOther', { profileId, apiBaseUrl });
+        navigation.navigate('ProfilePageOther', { userId: profileId, apiBaseUrl });
     };
 
     if (!fontsLoaded) {

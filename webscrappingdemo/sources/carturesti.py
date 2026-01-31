@@ -8,6 +8,10 @@ import time
 def get_carturesti_events():
     options = Options()
     options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.binary_location = "/usr/bin/chromium"
     driver = webdriver.Chrome(options=options)
     driver.get("https://blog.carturesti.ro/category/evenimente/")
     time.sleep(3)
