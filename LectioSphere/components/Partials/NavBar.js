@@ -22,37 +22,42 @@ const NavBar = ({ navigation, page }) => {
     };
 
     return (
-        <View style={styles.navBar}>
-            <TouchableOpacity onPress={() => handleNavClick('HomePage')} style={styles.button}>
+        <View style={styles.navBar} testID="partial-NavBar-root" accessibilityLabel="partial-NavBar-root">
+            <TouchableOpacity testID="partial-NavBar-home" accessibilityLabel="partial-NavBar-home" onPress={() => handleNavClick('HomePage')} style={styles.button}>
                 <Image
+                    testID="partial-NavBar-home-image" accessibilityLabel="partial-NavBar-home-image"
                     source={active === 'HomePage' ? homePurple : homeBlack}
                     style={{ width: 25, height: 19.44 }}
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleNavClick('FollowPage')} style={styles.button}>
+            <TouchableOpacity testID="partial-NavBar-follow" accessibilityLabel="partial-NavBar-follow" onPress={() => handleNavClick('FollowPage')} style={styles.button}>
                 <Image
+                    testID="partial-NavBar-follow-image" accessibilityLabel="partial-NavBar-follow-image"
                     source={active === 'FollowPage' ? peoplePurple : peopleBlack}
                     style={{ width: 25, height: 17.5 }}
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleNavClick('SearchPage')} style={styles.button}>
+            <TouchableOpacity testID="partial-NavBar-search" accessibilityLabel="partial-NavBar-search" onPress={() => handleNavClick('SearchPage')} style={styles.button}>
                 <Image
+                    testID="partial-NavBar-search-image" accessibilityLabel="partial-NavBar-search-image"
                     source={active === 'SearchPage' ? searchPurple : searchBlack}
                     style={{ width: 25, height: 25 }}
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleNavClick('LibraryPage')} style={styles.button}>
+            <TouchableOpacity testID="partial-NavBar-library" accessibilityLabel="partial-NavBar-library" onPress={() => handleNavClick('LibraryPage')} style={styles.button}>
                 <Image
+                    testID="partial-NavBar-library-image" accessibilityLabel="partial-NavBar-library-image"
                     source={active === 'LibraryPage' ? bookPurple : bookBlack}
                     style={{ width: 25, height: 19.44 }}
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleNavClick('ProfilePage')} style={styles.button}>
+            <TouchableOpacity testID="partial-NavBar-profile" accessibilityLabel="partial-NavBar-profile" onPress={() => handleNavClick('ProfilePage')} style={styles.button}>
                 <Image
+                    testID="partial-NavBar-profile-image" accessibilityLabel="partial-NavBar-profile-image"
                     source={active === 'ProfilePage' ? humanPurple : humanBlack}
                     style={{ width: 18.75, height: 25 }}
                 />

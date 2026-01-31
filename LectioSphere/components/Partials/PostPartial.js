@@ -767,19 +767,20 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 placeholderTextColor="#613F75"
                                 keyboardType="numeric"
                                 autoFocus={true}
+                                testID={`postpartial-pages-input-${post?.id || 'unknown'}`}
                             />
                             
                             <View style={styles.modalButtons}>
                                 <TouchableNativeFeedback onPress={handleModalCancel}>
-                                    <View style={[styles.modalButton, styles.cancelButton]}>
+                                    <View style={[styles.modalButton, styles.cancelButton]} testID={`postpartial-pages-cancel-${post?.id || 'unknown'}`}>
                                         <Text style={styles.cancelButtonText}>
                                             Cancel
                                         </Text>
                                     </View>
                                 </TouchableNativeFeedback>
-                                
+
                                 <TouchableNativeFeedback onPress={handlePagesSubmit}>
-                                    <View style={[styles.modalButton, styles.updateButton]}>
+                                    <View style={[styles.modalButton, styles.updateButton]} testID={`postpartial-pages-update-${post?.id || 'unknown'}`}>
                                         <Text style={styles.updateButtonText}>
                                             Update
                                         </Text>
@@ -802,43 +803,43 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                             <Text style={styles.modalTitle}>Choose an action</Text>
                             
                             <TouchableNativeFeedback onPress={() => handleLibraryAction('update_reading')}>
-                                <View style={styles.libraryOption}>
+                                <View style={styles.libraryOption} testID={`postpartial-lib-update-${post?.id || 'unknown'}`}>
                                     <Text style={styles.libraryOptionText}>Start/Update Reading</Text>
                                 </View>
                             </TouchableNativeFeedback>
                             
                             <TouchableNativeFeedback onPress={() => handleLibraryAction('finish_reading')}>
-                                <View style={styles.libraryOption}>
+                                <View style={styles.libraryOption} testID={`postpartial-lib-finish-${post?.id || 'unknown'}`}>
                                     <Text style={styles.libraryOptionText}>Finish Reading</Text>
                                 </View>
                             </TouchableNativeFeedback>
                             
                             <TouchableNativeFeedback onPress={() => handleLibraryAction('want_to_read')}>
-                                <View style={styles.libraryOption}>
+                                <View style={styles.libraryOption} testID={`postpartial-lib-want-${post?.id || 'unknown'}`}>
                                     <Text style={styles.libraryOptionText}>Want to Read</Text>
                                 </View>
                             </TouchableNativeFeedback>
                             
                             <TouchableNativeFeedback onPress={() => handleLibraryAction('add_to_shelf')}>
-                                <View style={styles.libraryOption}>
+                                <View style={styles.libraryOption} testID={`postpartial-lib-addtoshelf-${post?.id || 'unknown'}`}>
                                     <Text style={styles.libraryOptionText}>Add to Shelf</Text>
                                 </View>
                             </TouchableNativeFeedback>
                             
                             <TouchableNativeFeedback onPress={() => handleLibraryAction('create_post')}>
-                                <View style={styles.libraryOption}>
+                                <View style={styles.libraryOption} testID={`postpartial-lib-createpost-${post?.id || 'unknown'}`}>
                                     <Text style={styles.libraryOptionText}>Create Post</Text>
                                 </View>
                             </TouchableNativeFeedback>
                             
                             <TouchableNativeFeedback onPress={() => handleLibraryAction('add_review')}>
-                                <View style={styles.libraryOption}>
+                                <View style={styles.libraryOption} testID={`postpartial-lib-addreview-${post?.id || 'unknown'}`}>
                                     <Text style={styles.libraryOptionText}>Add Review</Text>
                                 </View>
                             </TouchableNativeFeedback>
                             
                             <TouchableNativeFeedback onPress={handleLibraryModalCancel}>
-                                <View style={[styles.libraryOption, styles.cancelOption]}>
+                                <View style={[styles.libraryOption, styles.cancelOption]} testID={`postpartial-lib-cancel-${post?.id || 'unknown'}`}>
                                     <Text style={[styles.libraryOptionText, styles.cancelOptionText]}>Cancel</Text>
                                 </View>
                             </TouchableNativeFeedback>
@@ -870,6 +871,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                             onPress={() => setReviewRating(star)}
                                         >
                                             <Image 
+                                                testID={`postpartial-review-star-${post?.id || 'unknown'}-${star}`}
                                                 style={styles.star} 
                                                 source={star <= reviewRating ? purpleStarFull : purpleStarEmpty}
                                             />
@@ -887,11 +889,12 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 multiline={true}
                                 numberOfLines={4}
                                 textAlignVertical="top"
+                                testID={`postpartial-review-input-${post?.id || 'unknown'}`}
                             />
                             
                             <View style={styles.modalButtons}>
                                 <TouchableNativeFeedback onPress={handleReviewModalCancel}>
-                                    <View style={[styles.modalButton, styles.cancelButton]}>
+                                    <View style={[styles.modalButton, styles.cancelButton]} testID={`postpartial-review-cancel-${post?.id || 'unknown'}`}>
                                         <Text style={styles.cancelButtonText}>
                                             Cancel
                                         </Text>
@@ -899,7 +902,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 </TouchableNativeFeedback>
                                 
                                 <TouchableNativeFeedback onPress={handleReviewSubmit}>
-                                    <View style={[styles.modalButton, styles.updateButton]}>
+                                    <View style={[styles.modalButton, styles.updateButton]} testID={`postpartial-review-submit-${post?.id || 'unknown'}`}>
                                         <Text style={styles.updateButtonText}>
                                             Submit Review
                                         </Text>
@@ -933,11 +936,12 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 multiline={true}
                                 numberOfLines={4}
                                 textAlignVertical="top"
+                                testID={`postpartial-createpost-input-${post?.id || 'unknown'}`}
                             />
                             
                             <View style={styles.modalButtons}>
                                 <TouchableNativeFeedback onPress={handleCreatePostModalCancel}>
-                                    <View style={[styles.modalButton, styles.cancelButton]}>
+                                    <View style={[styles.modalButton, styles.cancelButton]} testID={`postpartial-createpost-cancel-${post?.id || 'unknown'}`}>
                                         <Text style={styles.cancelButtonText}>
                                             Cancel
                                         </Text>
@@ -945,7 +949,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                 </TouchableNativeFeedback>
                                 
                                 <TouchableNativeFeedback onPress={handleCreatePostSubmit}>
-                                    <View style={[styles.modalButton, styles.updateButton]}>
+                                    <View style={[styles.modalButton, styles.updateButton]} testID={`postpartial-createpost-submit-${post?.id || 'unknown'}`}>
                                         <Text style={styles.updateButtonText}>
                                             Create Post
                                         </Text>
@@ -985,7 +989,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                                             key={index} 
                                             onPress={() => handleAddToShelf(shelf.name)}
                                         >
-                                            <View style={styles.libraryOption}>
+                                            <View style={styles.libraryOption} testID={`postpartial-shelf-option-${post?.id || 'unknown'}-${index}`}>
                                                 <Text style={styles.libraryOptionText}>{shelf.name}</Text>
                                             </View>
                                         </TouchableNativeFeedback>
@@ -1020,7 +1024,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
     if (post.action == "finished_reading" || post.progress >= post.book.nr_pages)
     {
         return (
-            <View style={styles.container}>
+            <View style={styles.container} testID="post-partial-root" accessibilityLabel='post-partial-root'>
                 <View style={styles.headerContainer}>
                     <View style={styles.headerInfo}>
                         <View style={styles.profileInfo}>
@@ -1035,7 +1039,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                             /> */}
 
                             <View style={styles.profileText}>
-                            <Text style={styles.username} onPress={() => handleUsernamePress(post.user.id)}>
+                            <Text style={styles.username} testID={`postpartial-username-${post?.id || 'unknown'}`} onPress={() => handleUsernamePress(post.user.id)}>
                                 @{post?.user?.username || 'Unknown User'}
                             </Text>
                             <Text style={styles.normalText}>
@@ -1055,7 +1059,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                         <TouchableNativeFeedback 
                             onPress={() => handleAddToLibrary(post.book.id)}
                         >
-                            <View style={styles.addButtonTouchable}>
+                            <View style={styles.addButtonTouchable} testID={`postpartial-addtolibrary-${post?.id || 'unknown'}`}>
                             <Text style={styles.addButtonText}>
                                 Add to Library
                             </Text>
@@ -1065,8 +1069,9 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                     
                     <View style={styles.headerBookContainer}>
                         {post.book.cover && (
-                            <TouchableNativeFeedback onPress={() => handleBookPress(post.book)}>
+                                <TouchableNativeFeedback onPress={() => handleBookPress(post.book)}>
                                 <Image 
+                                    testID={`postpartial-bookcover-${post?.id || 'unknown'}`}
                                     source={{ uri: post.book.cover}} 
                                     style={styles.coverImage} 
                                     resizeMode="cover"
@@ -1077,13 +1082,19 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                 </View>
                 <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-                        <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                        <TouchableNativeFeedback 
+                            onPress={() => handleLikePress(post.id)}
+                            accessibilityLabel={`postpartial-like-${post?.id || 'unknown'}`}
+                        >
                         <Image
                         source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                         style={{ width: 25, height: 22, marginRight: 6 }}
                         />
-                    </TouchableNativeFeedback>
-                    <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                    </TouchableNativeFeedback><Text 
+                        style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }} 
+                        testID={`postpartial-like-count-${post.id}`}
+                        accessibilityLabel={`postpartial-like-count-${post.id}`}
+                    >
                         {likeCount} 
                     </Text>
                     </View>
@@ -1101,7 +1112,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
         // console.log(post);
 
         return (
-            <View style={styles.container}>
+            <View style={styles.container} testID="post-partial-root" accessibilityLabel='post-partial-root'>
                 <View style={styles.headerContainer}>
                     <View style={styles.headerInfo}>
                     <View style={styles.profileInfo}>
@@ -1158,26 +1169,33 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                 </View>
                 {/* Progress Bar Section */}
                 {post.progress !== undefined && post.progress !== null && post.book.nr_pages && post.book.nr_pages > 0 && (
-                    <View style={styles.progressContainer}>
+                    <View style={styles.progressContainer} testID={`postpartial-progress-${post?.id || 'unknown'}`}>
                         <ProgressBar 
+                            testID={`postpartial-progressbar-${post?.id || 'unknown'}`}
                             progress={Math.min(post.progress / post.book.nr_pages, 1)}
                             color="#613F75"
                             style={styles.progressBar}
                         />
-                        <Text style={styles.progressText}>
+                        <Text style={styles.progressText} testID={`postpartial-progress-text-${post?.id || 'unknown'}`}>
                             {post.progress} / {post.book.nr_pages} pages ({Math.round((post.progress / post.book.nr_pages) * 100)}%)
                         </Text>
                     </View>
                 )}
                 <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-                        <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                        <TouchableNativeFeedback 
+                            onPress={() => handleLikePress(post.id)}
+                            accessibilityLabel={`postpartial-like-${post?.id || 'unknown'}`}
+                        >
                             <Image
                             source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                             style={{ width: 25, height: 22, marginRight: 6 }}
                             />
-                        </TouchableNativeFeedback>
-                        <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                        </TouchableNativeFeedback><Text 
+                            style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }} 
+                            testID={`postpartial-like-count-${post.id}`}
+                            accessibilityLabel={`postpartial-like-count-${post.id}`}
+                        >
                             {likeCount} 
                         </Text>
                     </View>
@@ -1190,7 +1208,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
     if (post.action == "want_to_read")
     {
         return (
-            <View style={styles.container}>
+            <View style={styles.container} testID="post-partial-root" accessibilityLabel='post-partial-root'>
                 <View style={styles.headerContainer}>
                     <View style={styles.headerInfo}>
                         <View style={styles.profileInfo}>
@@ -1247,13 +1265,19 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                 </View>
                 <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-                        <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                        <TouchableNativeFeedback 
+                            onPress={() => handleLikePress(post.id)}
+                            accessibilityLabel={`postpartial-like-${post?.id || 'unknown'}`}
+                        >
                             <Image
                             source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                             style={{ width: 25, height: 22, marginRight: 6 }}
                             />
-                        </TouchableNativeFeedback>
-                        <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                        </TouchableNativeFeedback><Text 
+                            style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }} 
+                            testID={`postpartial-like-count-${post.id}`}
+                            accessibilityLabel={`postpartial-like-count-${post.id}`}
+                        >
                             {likeCount} 
                         </Text>
                     </View>
@@ -1282,7 +1306,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
         if (post.description)
         {
             return (
-                <View style={styles.container}>
+                <View style={styles.container} testID="post-partial-root" accessibilityLabel='post-partial-root'>
                     <View style={styles.headerContainer}>
                         <View style={styles.headerInfo}>
                             <View style={styles.profileInfo}>
@@ -1345,13 +1369,19 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                     <View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                                <TouchableNativeFeedback 
+                                    onPress={() => handleLikePress(post.id)}
+                                    accessibilityLabel={`postpartial-like-${post?.id || 'unknown'}`}
+                                >
                                     <Image
                                     source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                                     style={{ width: 25, height: 22, marginRight: 6 }}
                                     />
-                                </TouchableNativeFeedback>
-                                <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                                </TouchableNativeFeedback><Text 
+                                    style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }} 
+                                    testID={`postpartial-like-count-${post.id}`}
+                                    accessibilityLabel={`postpartial-like-count-${post.id}`}
+                                >
                                     {likeCount} 
                                 </Text>
                             </View>
@@ -1368,7 +1398,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
         else
         {
             return (
-                <View style={styles.container}>
+                <View style={styles.container} testID="post-partial-root" accessibilityLabel='post-partial-root'>
                     <View style={styles.headerContainer}>
                         <View style={styles.headerInfo}>
                             <View style={styles.profileInfo}>
@@ -1422,13 +1452,19 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
                     <View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                                <TouchableNativeFeedback 
+                                    onPress={() => handleLikePress(post.id)}
+                                    accessibilityLabel={`postpartial-like-${post?.id || 'unknown'}`}
+                                >
                                     <Image
                                     source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                                     style={{ width: 25, height: 22, marginRight: 6 }}
                                     />
-                                </TouchableNativeFeedback>
-                                <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                                </TouchableNativeFeedback><Text 
+                                    style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }} 
+                                    testID={`postpartial-like-count-${post.id}`}
+                                    accessibilityLabel={`postpartial-like-count-${post.id}`}
+                                >
                                     {likeCount} 
                                 </Text>
                             </View>
@@ -1446,7 +1482,7 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
     if (post.action == "post")
     {
         return (
-            <View style={styles.container}>
+            <View style={styles.container} testID="post-partial-root" accessibilityLabel='post-partial-root'>
                 <View style={styles.headerContainer}>
                     <View style={styles.headerInfo}>
                         <View style={styles.profileInfo}>
@@ -1506,13 +1542,19 @@ const PostPartial = ({ navigation, apiBaseUrl, postData }) => {
 
                 <View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-                        <TouchableNativeFeedback onPress={() => handleLikePress(post.id)}>
+                        <TouchableNativeFeedback 
+                            onPress={() => handleLikePress(post.id)}
+                            accessibilityLabel={`postpartial-like-${post?.id || 'unknown'}`}
+                        >
                             <Image
                             source={isLiked ? require('../../assets/heartFull.png') : require('../../assets/heartEmpty.png')}
                             style={{ width: 25, height: 22, marginRight: 6 }}
                             />
-                        </TouchableNativeFeedback>
-                        <Text style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }}>
+                        </TouchableNativeFeedback><Text 
+                            style={{ fontFamily: 'Nunito_500Medium', fontSize: 14, color: '#613F75' }} 
+                            testID={`postpartial-like-count-${post.id}`}
+                            accessibilityLabel={`postpartial-like-count-${post.id}`}
+                        >
                             {likeCount} 
                         </Text>
                     </View>

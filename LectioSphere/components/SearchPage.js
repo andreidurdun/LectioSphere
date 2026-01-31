@@ -162,17 +162,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                 <View style={styles.header}>
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Recently Published' })}>
-                            <View>
+                            <View testID="search-category-recent" accessibilityLabel="search-category-recent">
                                 <Text style={styles.textContainer}> Recently Published </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {recentlyPublishedItems.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-recent-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-recent-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -182,17 +183,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
     
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Popular Now'})}>
-                            <View>
+                            <View testID="search-category-popular" accessibilityLabel="search-category-popular">
                                 <Text style={styles.textContainer}> Popular Now </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {popularItems.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-popular-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-popular-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -210,17 +212,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     {/* <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Adventure'})}>
-                            <View>
+                            <View testID="search-category-adventure" accessibilityLabel="search-category-adventure">
                                 <Text style={styles.textContainer}> Adventure </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {adventure.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-adventure-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-adventure-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -230,17 +233,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Fantasy' })}>
-                            <View>
+                            <View testID="search-category-fantasy" accessibilityLabel="search-category-fantasy">
                                 <Text style={styles.textContainer}> Fantasy </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {fantasy.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-fantasy-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-fantasy-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -250,17 +254,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Romance' })}>
-                            <View>
+                            <View testID="search-category-romance" accessibilityLabel="search-category-romance">
                                 <Text style={styles.textContainer}> Romance </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {romance.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-romance-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-romance-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -270,17 +275,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Science Fiction' })}>
-                            <View>
+                            <View testID="search-category-sciencefiction" accessibilityLabel="search-category-sciencefiction">
                                 <Text style={styles.textContainer}> Science Fiction </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {scienceFiction.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-sciencefiction-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-sciencefiction-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -290,17 +296,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 {/* 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Thriller' })}>
-                            <View>
+                            <View testID="search-category-thriller" accessibilityLabel="search-category-thriller">
                                 <Text style={styles.textContainer}> Thriller </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {thriller.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-thriller-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-thriller-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -359,17 +366,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Psychology' })}>
-                            <View>
+                            <View testID="search-category-psychology" accessibilityLabel="search-category-psychology">
                                 <Text style={styles.textContainer}> Psychology </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {psychology.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-psychology-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-psychology-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -387,17 +395,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 {/* 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Business' })}>
-                            <View>
+                            <View testID="search-category-business" accessibilityLabel="search-category-business">
                                 <Text style={styles.textContainer}> Business </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {business.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-business-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-business-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -407,17 +416,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Economics' })}>
-                            <View>
+                            <View testID="search-category-economics" accessibilityLabel="search-category-economics">
                                 <Text style={styles.textContainer}> Economics </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {economics.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-economics-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-economics-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -427,17 +437,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Technology' })}>
-                            <View>
+                            <View testID="search-category-technology" accessibilityLabel="search-category-technology">
                                 <Text style={styles.textContainer}> Technology </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {technology.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-technology-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-technology-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -455,17 +466,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Health' })}>
-                            <View>
+                            <View testID="search-category-health" accessibilityLabel="search-category-health">
                                 <Text style={styles.textContainer}> Health </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {health.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-health-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-health-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -475,17 +487,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Nutrition' })}>
-                            <View>
+                            <View testID="search-category-nutrition" accessibilityLabel="search-category-nutrition">
                                 <Text style={styles.textContainer}> Nutrition </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {nutrition.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-nutrition-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-nutrition-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>
@@ -495,17 +508,18 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Travel' })}>
-                            <View>
+                            <View testID="search-category-travel" accessibilityLabel="search-category-travel">
                                 <Text style={styles.textContainer}> Travel </Text>
                             </View>
                         </TouchableNativeFeedback>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                             {travel.map((book, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                    <View>
+                                    <View testID={`search-travel-book-${index}`}>
                                         <Image
                                             source={{ uri: book.thumbnail }}
                                             style={styles.covers}
+                                            testID={`search-travel-book-image-${index}`}
                                         />
                                     </View>
                                 </TouchableNativeFeedback>

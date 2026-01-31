@@ -109,7 +109,7 @@ const FollowPage = ({ navigation, removeAuthToken, isAuthenticated, apiBaseUrl }
                         />
                     ))
                 ) : (
-                    <View style={styles.noPostsContainer}>
+                    <View style={styles.noPostsContainer} testID="followpage-no-posts" accessibilityLabel="followpage-no-posts">
                         <Text style={styles.textAdvice}>
                             There are no posts from the people you follow. Follow users to see their posts here!
                         </Text>

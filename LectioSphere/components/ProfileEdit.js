@@ -175,6 +175,7 @@ export default function ProfileEdit({ navigation, removeAuthToken, apiBaseUrl })
                             value={firstName}
                             onChangeText={setFirstName}
                             placeholder="Enter your first name"
+                            testID="profileedit-firstname" accessibilityLabel="profileedit-firstname"
                         />
                     </View>
                 
@@ -185,6 +186,7 @@ export default function ProfileEdit({ navigation, removeAuthToken, apiBaseUrl })
                             value={lastName}
                             onChangeText={setLastName}
                             placeholder="Enter your last name"
+                            testID="profileedit-lastname" accessibilityLabel="profileedit-lastname"
                         />
                     </View>
                 
@@ -193,8 +195,9 @@ export default function ProfileEdit({ navigation, removeAuthToken, apiBaseUrl })
                         <TextInput
                             style={styles.input}
                             value={username}
-                                                    onChangeText={setUsername}
+                            onChangeText={setUsername}
                             placeholder="Enter your username"
+                            testID="profileedit-username" accessibilityLabel="profileedit-username"
                         />
                     </View>
                     <View style={styles.formGroup}>
@@ -205,6 +208,7 @@ export default function ProfileEdit({ navigation, removeAuthToken, apiBaseUrl })
                             onChangeText={setEmail}
                             placeholder="Enter your email"
                             keyboardType="email-address"
+                            testID="profileedit-email" accessibilityLabel="profileedit-email"
                         />
                     </View>
                     <View style={styles.formGroup}>
@@ -216,10 +220,11 @@ export default function ProfileEdit({ navigation, removeAuthToken, apiBaseUrl })
                             placeholder="Write a few words about yourself"
                             multiline
                             numberOfLines={4}
+                            testID="profileedit-bio" accessibilityLabel="profileedit-bio"
                         />
                     </View>
                     
-                    <TouchableOpacity style={styles.saveButton} onPress={saveProfile}>
+                    <TouchableOpacity style={styles.saveButton} onPress={saveProfile} testID="profileedit-save" accessibilityLabel="profileedit-save">
                         <Text style={styles.saveButtonText}>Save Changes</Text>
                     </TouchableOpacity>
                 </ScrollView>

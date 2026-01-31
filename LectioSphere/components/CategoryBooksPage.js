@@ -135,13 +135,13 @@ const CategoryBooksPage = ({ route, navigation, removeAuthToken, isAuthenticated
     };
 
     const renderBook = ({ item }) => (
-        <TouchableWithoutFeedback onPress={() => handleBookPress(item)}>
+        <TouchableWithoutFeedback testID={`category-book-${item.id}`} onPress={() => handleBookPress(item)}>
             <View style={styles.bookContainer}>
                 <Image source={{ uri: item.thumbnail }} style={styles.covers} />
                 <View style={styles.infoContainer}>
-                    <Text style={styles.textInfoTitle}>{item.title}</Text>
-                    <Text style={styles.textInfoAuthor}>{item.author}</Text>
-                    <Text style={styles.textInfo}>{item.rating}</Text>
+                    <Text testID={`category-book-title-${item.id}`} style={styles.textInfoTitle}>{item.title}</Text>
+                    <Text testID={`category-book-author-${item.id}`} style={styles.textInfoAuthor}>{item.author}</Text>
+                    <Text testID={`category-book-rating-${item.id}`} style={styles.textInfo}>{item.rating}</Text>
                 </View>
             </View>
         </TouchableWithoutFeedback>

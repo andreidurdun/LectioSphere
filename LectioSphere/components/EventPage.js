@@ -44,6 +44,7 @@ const EventPage = ({ navigation, route }) => {
                 <View style={styles.container}>
                     {eventData.image && eventData.image.trim() !== '' && !imageError && (
                         <Image
+                            testID="event-image" accessibilityLabel="event-image"
                             source={{ uri: eventData.image }}
                             style={styles.eventImage}
                             resizeMode="cover"
@@ -52,22 +53,22 @@ const EventPage = ({ navigation, route }) => {
                     )}
 
                     <View style={styles.contentContainer}>
-                        <Text style={styles.eventTitle}>{eventData.title}</Text>
+                        <Text testID="event-title" accessibilityLabel="event-title" style={styles.eventTitle}>{eventData.title}</Text>
 
                         <View style={styles.infoRow}>
                             <Text style={styles.infoLabel}>📅 Date:</Text>
-                            <Text style={styles.infoValue}>{eventData.date || 'Unknown'}</Text>
+                            <Text testID="event-date" accessibilityLabel="event-date" style={styles.infoValue}>{eventData.date || 'Unknown'}</Text>
                         </View>
 
                         <View style={styles.infoRow}>
                             <Text style={styles.infoLabel}>📍 Location:</Text>
-                            <Text style={styles.infoValue}>{eventData.location || 'Unknown'}</Text>
+                            <Text testID="event-location" accessibilityLabel="event-location" style={styles.infoValue}>{eventData.location || 'Unknown'}</Text>
                         </View>
 
                         {eventData.source && (
                             <View style={styles.infoRow}>
                                 <Text style={styles.infoLabel}>🔖 Source:</Text>
-                                <Text style={styles.infoValue}>{eventData.source}</Text>
+                                <Text testID="event-source" accessibilityLabel="event-source" style={styles.infoValue}>{eventData.source}</Text>
                             </View>
                         )}
 
@@ -85,7 +86,7 @@ const EventPage = ({ navigation, route }) => {
                         </View>
 
                         {eventData.link && eventData.link.trim() !== '' && (
-                            <TouchableOpacity style={styles.linkButton} onPress={handleLinkPress}>
+                            <TouchableOpacity testID="event-link" accessibilityLabel="event-link" style={styles.linkButton} onPress={handleLinkPress}>
                                 <Text style={styles.linkButtonText}>🔗 Visit Event Page</Text>
                             </TouchableOpacity>
                         )}

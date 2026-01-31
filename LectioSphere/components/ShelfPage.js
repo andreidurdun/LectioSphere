@@ -152,8 +152,8 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
 
     const renderBook = ({ item }) => (
         <TouchableWithoutFeedback onPress={() => handleBookPress(item)}>
-            <View style={styles.bookContainer}>
-                <Image source={{ uri: item.thumbnail || item.cover}} style={styles.covers} />
+            <View style={styles.bookContainer} testID={`shelfpage-book-${item.id}`}>
+                <Image source={{ uri: item.thumbnail || item.cover}} style={styles.covers} testID={`shelfpage-book-image-${item.id}`} />
                 <View style={styles.infoContainer}>
                     <Text style={styles.textInfoTitle}>{item.title}</Text>
                     <Text style={styles.textInfoAuthor}>{item.author}</Text>
@@ -195,7 +195,7 @@ const ShelfPage = ({ route, navigation, page, removeAuthToken, isAuthenticated, 
 
                 {/* {/* <View style={styles.header}> */}
                     <View style={styles.categoryContainer}>
-                        <Text style={styles.textCategory}> {shelfName} </Text>
+                        <Text style={styles.textCategory} testID="shelfpage-header" accessibilityLabel="shelfpage-header"> {shelfName} </Text>
                             <View style={styles.horizontalBar} />
                     </View>
 

@@ -182,9 +182,9 @@ export default function Postings ({ navigation, apiBaseUrl, selection, userId })
 
     if (loading) {
         return (
-            <View style={styles.card}>
-                <View style={styles.notFoundContainer}>
-                    <Text style={styles.notFoundText}>
+            <View style={styles.card} testID="partial-PostingsOther-loading" accessibilityLabel="partial-PostingsOther-loading">
+                <View style={styles.notFoundContainer} testID="partial-PostingsOther-notfound" accessibilityLabel="partial-PostingsOther-notfound">
+                    <Text style={styles.notFoundText} testID="partial-PostingsOther-notfound-text" accessibilityLabel="partial-PostingsOther-notfound-text">
                         Loading...
                     </Text>
                 </View>
@@ -343,13 +343,15 @@ export default function Postings ({ navigation, apiBaseUrl, selection, userId })
         );
     }    
     
-    return (
-        <View style={styles.card}>
+        return (
+            <View style={styles.card} testID="partial-PostingsOther-root" accessibilityLabel="partial-PostingsOther-root">
             {posts.map((post, index) => (
-                <PostPartial navigation={navigation} postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={`${selection}-${post.id || index}`} />
+                <View key={`${selection}-${post.id || index}`} testID={`partial-PostingsOther-post-${index}`}>
+                    <PostPartial navigation={navigation} postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} />
+                </View>
             ))}
         </View>
-    );
+        );
 }
 
 const styles = StyleSheet.create({

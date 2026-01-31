@@ -22,17 +22,17 @@ const SearchResult = ({ navigation, route }) => {
     };
 
     const renderBookItem = ({ item }) => (
-        <TouchableWithoutFeedback onPress={() => handleBookPress(item)}>
-            <View style={styles.bookContainer}>
-                <Image source={{ uri: item.thumbnail }} style={styles.covers} />
-                <View style={styles.infoContainer}>
-                    <Text style={styles.textInfoTitle}>{item.title}</Text>
-                    <Text style={styles.textInfoAuthor}>{item.authors}</Text>
-                    <Text style={styles.textInfo}>{item.rating}</Text>
+            <TouchableWithoutFeedback onPress={() => handleBookPress(item)}>
+                <View style={styles.bookContainer} accessibilityLabel={`searchresult-book-${item.id}`}>
+                    <Image source={{ uri: item.thumbnail }} style={styles.covers} accessibilityLabel={`searchresult-book-image-${item.id}`} />
+                    <View style={styles.infoContainer}>
+                        <Text style={styles.textInfoTitle} accessibilityLabel={`searchresult-book-title-${item.id}`}>{item.title}</Text>
+                        <Text style={styles.textInfoAuthor}>{item.authors}</Text>
+                        <Text style={styles.textInfo}>{item.rating}</Text>
+                    </View>
                 </View>
-            </View>
-        </TouchableWithoutFeedback>
-    );
+            </TouchableWithoutFeedback>
+        );
 
     if (!fontsLoaded) {
         return null;

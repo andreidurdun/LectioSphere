@@ -50,9 +50,9 @@ const SelectBookForSheetPage = ({ navigation, route, page, removeAuthToken, isAu
         const thumbnail = item.thumbnail || item.cover || null;
 
         return (
-            <TouchableOpacity style={styles.itemRow} onPress={() => handleSelect(item)}>
+            <TouchableOpacity style={styles.itemRow} onPress={() => handleSelect(item)} accessibilityLabel={`selectbook-item-${item.id}`}>
                 {thumbnail ? (
-                    <Image source={{ uri: thumbnail }} style={styles.coverSmall} />
+                    <Image source={{ uri: thumbnail }} style={styles.coverSmall} accessibilityLabel={`selectbook-item-image-${item.id}`} />
                 ) : (
                     <View style={styles.coverPlaceholder} />
                 )}
@@ -212,6 +212,7 @@ const SelectBookForSheetPage = ({ navigation, route, page, removeAuthToken, isAu
                     onChangeText={handleSearchTextChange}
                     autoCorrect={false}
                     autoCapitalize="none"
+                    testID="selectbook-search-input" accessibilityLabel="selectbook-search-input"
                 />
             
                 <FlatList

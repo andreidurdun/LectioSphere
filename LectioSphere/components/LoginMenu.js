@@ -155,6 +155,7 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
                     <View style={styles.inputGroup}>
                         <Text style={styles.label}>Email:</Text>
                         <TextInput
+                            testID="login-email" accessibilityLabel="login-email"
                             style={styles.input}
                             value={email}
                             onChangeText={setEmail}
@@ -168,6 +169,7 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
                     <View style={styles.inputGroup}>
                         <Text style={styles.label}>Password:</Text>
                         <TextInput
+                            testID="login-password" accessibilityLabel="login-password"
                             style={styles.input}
                             value={password}
                             onChangeText={setPassword}
@@ -179,6 +181,7 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
                     
                     <View style={{ marginTop: 12, width: '100%' }}>
                         <Button
+                            testID="login-submit" accessibilityLabel="login-submit"
                             title="Login"
                             onPress={handleSubmit}
                             color="#613F75" // Set button color to match the theme
@@ -188,6 +191,7 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
                     <Text style={styles.registerText}>
                         Don't have an account?{' '}
                         <Text
+                            testID="login-register" accessibilityLabel="login-register"
                             style={{ color: '#613F75', textDecorationLine: 'underline' }}
                             onPress={() => navigation.navigate('RegisterMenu')}>
                             Register Now!
@@ -195,6 +199,7 @@ export default function LoginMenu ({ navigation, saveAuthToken, apiBaseUrl }) {
                     </Text>
 
                     <Button
+                        testID="login-google" accessibilityLabel="login-google"
                         disabled={signingIn}
                         title={signingIn ? "Signing in..." : "Login with Google"}
                         onPress={handleGoogleSignIn}

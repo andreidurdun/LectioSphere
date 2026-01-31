@@ -420,20 +420,21 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                         isReading ? (
                             <View style={styles.container}>
                                 <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: 'Reading'})}>
-                                    <View>
+                                    <View testID="home-continue-reading" accessibilityLabel="home-continue-reading">
                                         <Text style={styles.textContainer}>  Continue Reading </Text>
                                     </View>
                                 </TouchableNativeFeedback>
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                                     {continueReadingItems.map((book, index) => (
-                                        <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image
-                                                    source={{ uri: book.cover }}
-                                                    style={styles.covers}
-                                                />
-                                            </View>
-                                        </TouchableNativeFeedback>
+                                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                                    <View accessibilityLabel={`home-continue-book-${index}`}>
+                                                        <Image
+                                                            source={{ uri: book.cover }}
+                                                            style={styles.covers}
+                                                            accessibilityLabel={`home-continue-book-image-${index}`}
+                                                        />
+                                                    </View>
+                                                </TouchableNativeFeedback>
                                     ))}
                                 </ScrollView>
                             </View>
@@ -443,18 +444,19 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                         Read ? (
                             <View style={styles.container}>
                                 <View>
-                                    <View>
+                                    <View testID="home-you-may-like" accessibilityLabel="home-you-may-like">
                                         <Text style={styles.textContainer}>  You May Like </Text>
                                     </View>
                                 </View>
                                 {youMayLikeItems.length > 0 ? (
                                     <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                                         {youMayLikeItems.map((book, index) => (
-                                            <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                                <View>
+                                                <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                                <View accessibilityLabel={`home-youmaylike-book-${index}`}>
                                                     <Image
                                                         source={{ uri: book.thumbnail }}
                                                         style={styles.covers}
+                                                        accessibilityLabel={`home-youmaylike-book-image-${index}`}
                                                     />
                                                 </View>
                                             </TouchableNativeFeedback>
@@ -480,17 +482,18 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                         areReading ? (
                             <View style={styles.container}>
                                 <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Your friends are reading'})}>
-                                    <View>
+                                    <View accessibilityLabel="home-friends-reading">
                                         <Text style={styles.textContainer}> Your friends are reading </Text>
                                     </View>
                                 </TouchableNativeFeedback>
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style = {styles.containerImages}>
                                     {friendsAreReadingItems.map((book, index) => (
-                                        <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
-                                            <View>
+                                            <TouchableNativeFeedback key={index} onPress={() => handleBookPress(book)}>
+                                            <View accessibilityLabel={`home-friends-book-${index}`}>
                                                 <Image
                                                     source={{ uri: book.cover }}
                                                     style={styles.covers}
+                                                    accessibilityLabel={`home-friends-book-image-${index}`}
                                                 />
                                             </View>
                                         </TouchableNativeFeedback>
@@ -513,7 +516,7 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
 
                     {/* EVENTS */}
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}>  Events </Text>
+                        <Text style={styles.textContainer} accessibilityLabel="home-events-header">  Events </Text>
 
                         {eventsLoading ? (
                             <Text style={styles.textAdvice}>   Loading events... ✨</Text>
@@ -533,11 +536,11 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                                     return sortedEvents.map(({ event, originalIndex }) => {
                                         const hasValidImage = event.image && event.image.trim() !== '' && !failedImages.has(originalIndex);
                                         return (
-                                            <TouchableNativeFeedback 
+                                                <TouchableNativeFeedback 
                                                 key={originalIndex} 
                                                 onPress={() => handleEventPress(event)}
                                             >
-                                                <View style={styles.eventCard}>
+                                                <View style={styles.eventCard} accessibilityLabel={`home-event-${originalIndex}`}>
                                                     {hasValidImage && (
                                                         <Image
                                                             source={{ uri: event.image }}
@@ -545,10 +548,11 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                                                             onError={() => {
                                                                 setFailedImages(prev => new Set([...prev, originalIndex]));
                                                             }}
+                                                            accessibilityLabel={`home-event-image-${originalIndex}`}
                                                         />
                                                     )}
                                                     <View style={[styles.eventTextContent, !hasValidImage && styles.eventTextContentNoImage]}>
-                                                        <Text style={styles.eventTitle} numberOfLines={2}>{event.title}</Text>
+                                                        <Text style={styles.eventTitle} numberOfLines={2} accessibilityLabel={`home-event-title-${originalIndex}`}>{event.title}</Text>
                                                         <Text style={styles.eventMeta} numberOfLines={1}>
                                                             📅 {event.date || 'Unknown'}
                                                         </Text>
@@ -573,7 +577,7 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
 
 
                     <View style={styles.container}>
-                        <Text style={styles.textContainer}>  Free now </Text>
+                        <Text style={styles.textContainer} accessibilityLabel="home-free-now">  Free now </Text>
 
                         {freeItems.length > 0 ? (
                             <ScrollView
@@ -586,10 +590,11 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                                         key={index}
                                         onPress={() => handleBookPress(book)}
                                     >
-                                        <View>
+                                        <View accessibilityLabel={`home-free-book-${index}`}>
                                             <Image
                                                 source={{ uri: book.thumbnail }}
                                                 style={styles.covers}
+                                                accessibilityLabel={`home-free-book-image-${index}`}
                                             />
                                         </View>
                                     </TouchableNativeFeedback>

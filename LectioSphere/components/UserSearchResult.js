@@ -23,6 +23,7 @@ const UserSearchResult = ({ navigation, route }) => {
         <TouchableOpacity 
             style={styles.userItem}
             onPress={() => handleUserPress(item.id)}
+            testID={`usersearch-user-${item.id}`}
         >
             <Image 
                 source={
@@ -31,9 +32,10 @@ const UserSearchResult = ({ navigation, route }) => {
                     : defaultPicture
                 }
                 style={styles.profilePic}
+                testID={`usersearch-user-image-${item.id}`}
             />
             <View style={styles.userInfo}>
-                <Text style={styles.fullName}>
+                <Text style={styles.fullName} testID={`usersearch-user-name-${item.id}`}>
                     {item.first_name} {item.last_name}
                 </Text>
                 <Text style={styles.username}>

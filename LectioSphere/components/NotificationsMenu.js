@@ -180,15 +180,16 @@ const NotificationsMenu = ({ navigation, apiBaseUrl }) => {
                             <View key={notification.id} style={styles.notificationCard}>
                                 {/* Book Cover */}
                                 <TouchableOpacity 
-                                    onPress={() => {
-                                        const bookData = JSON.stringify({
-                                            id: notification.book_id,
-                                            title: notification.book_title,
-                                            thumbnail: notification.book_cover
-                                        });
-                                        navigation.navigate('BookShow', { bookData, apiBaseUrl });
-                                    }}
-                                >
+                                        testID={`notif-book-${notification.id}`}
+                                        onPress={() => {
+                                            const bookData = JSON.stringify({
+                                                id: notification.book_id,
+                                                title: notification.book_title,
+                                                thumbnail: notification.book_cover
+                                            });
+                                            navigation.navigate('BookShow', { bookData, apiBaseUrl });
+                                        }}
+                                    >
                                     {notification.book_cover ? (
                                         <Image 
                                             source={{ uri: notification.book_cover }}
@@ -204,6 +205,7 @@ const NotificationsMenu = ({ navigation, apiBaseUrl }) => {
                                 {/* Book Share Info */}
                                 <View style={styles.bookShareContent}>
                                     <TouchableOpacity 
+                                        testID={`notif-sender-${notification.id}`}
                                         onPress={() => navigation.navigate('ProfilePageOther', { 
                                             userId: notification.sender_id,
                                             apiBaseUrl 
@@ -215,6 +217,7 @@ const NotificationsMenu = ({ navigation, apiBaseUrl }) => {
                                         </Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity 
+                                        testID={`notif-booktitle-${notification.id}`}
                                         onPress={() => {
                                             const bookData = JSON.stringify({
                                                 id: notification.book_id,
@@ -254,6 +257,7 @@ const NotificationsMenu = ({ navigation, apiBaseUrl }) => {
                     followers.map((follower) => (
                         <View key={follower.id} style={styles.notificationCard}>
                             <TouchableOpacity 
+                                testID={`notif-user-${follower.id}`}
                                 style={styles.userInfo}
                                 onPress={() => handleProfilePress(follower.id)}
                             >
@@ -280,6 +284,7 @@ const NotificationsMenu = ({ navigation, apiBaseUrl }) => {
                             
                             {followingStatus[follower.id] ? (
                                 <TouchableOpacity 
+                                    testID={`notif-following-${follower.id}`}
                                     style={styles.followingButton}
                                     onPress={() => handleUnfollow(follower.id)}
                                 >
@@ -287,6 +292,7 @@ const NotificationsMenu = ({ navigation, apiBaseUrl }) => {
                                 </TouchableOpacity>
                             ) : (
                                 <TouchableOpacity 
+                                    testID={`notif-followback-${follower.id}`}
                                     style={styles.followBackButton}
                                     onPress={() => handleFollowBack(follower.id)}
                                 >

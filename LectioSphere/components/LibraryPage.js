@@ -337,7 +337,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                         <View style={styles.challengeContainer}>
                             <View style={{ width: '47.5%' }}>
                                 <TouchableNativeFeedback onPress={() => handleClick('BooksChallenge')}>
-                                    <View style={styles.challengeBooks}>
+                                    <View style={styles.challengeBooks} testID="library-books-challenge" accessibilityLabel="library-books-challenge">
                                         <Text style={styles.textChallenge}>Number of Books </Text>
                                         {/* <View style={styles.counterBox}>
                                             <Text style={styles.currentB}>{currentBooks}</Text>
@@ -361,7 +361,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                             <View style={styles.verticalBar} />
                             <View style={{ width: '47.5%' }}>
                                 <TouchableNativeFeedback onPress={() => handleClick('PagesChallenge')}>
-                                    <View style={styles.challengePages}>
+                                    <View style={styles.challengePages} testID="library-pages-challenge" accessibilityLabel="library-pages-challenge">
                                         <Text style={styles.textChallenge}>  Number of Pages </Text>
                                         <View style={styles.counterBoxPages}>
                                             <View style={styles.numbersPages}>
@@ -393,7 +393,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
 
                     <View style={styles.shelvesContainer}>
                         <TouchableNativeFeedback onPress={() => handleClick('ShelfPage', { shelfName: 'Read'})}>
-                            <View style={styles.shelf}>
+                            <View style={styles.shelf} testID="library-shelf-read" accessibilityLabel="library-shelf-read">
                                 {read[0] && read[1] ? (
                                     <Image source={{ uri: read[0].cover }} style={styles.coversBig} />
                                 ) : (
@@ -429,7 +429,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
                         <TouchableNativeFeedback onPress={() => handleClick('ShelfPage', { shelfName: 'Reading'})}>
-                            <View style={styles.shelf}>
+                            <View style={styles.shelf} testID="library-shelf-reading" accessibilityLabel="library-shelf-reading">
                                 {reading[0] && reading[1] ? (
                                     <Image source={{ uri: reading[0].cover }} style={styles.coversBig} />
                                 ) : (
@@ -455,7 +455,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
                         <TouchableNativeFeedback onPress={() => handleClick('ShelfPage', { shelfName: 'Readlist'})}>
-                            <View style={styles.shelf}>
+                            <View style={styles.shelf} testID="library-shelf-readlist" accessibilityLabel="library-shelf-readlist">
                                 {readlist[0] && readlist[1] ? (
                                     <Image source={{ uri: readlist[0].cover }} style={styles.coversBig} />
                                 ): (
@@ -481,7 +481,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                         </TouchableNativeFeedback>
                         <View style={styles.shelfBar} />
                         <TouchableNativeFeedback onPress={() => handleClick('AllShelves')}>
-                            <View style={styles.sheet}>
+                            <View style={styles.sheet} testID="library-all-shelves" accessibilityLabel="library-all-shelves">
                                 <Text style={styles.textShelfMore}>See More</Text>
                             </View>
                         </TouchableNativeFeedback>
@@ -504,7 +504,7 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                     <View style={styles.shelvesContainer}>
                         {readingSheets.map((readingSheet, index) => (
                             <TouchableNativeFeedback key={index} onPress={() => handleReadingSheetPress(readingSheet)}>
-                                <View style={styles.readingSheetContainer}>
+                                <View style={styles.readingSheetContainer} testID={`readingSheet-${index}`}>
                                     <Image
                                         source={{ uri: readingSheet.book.cover }}
                                         style={styles.covers}
@@ -522,8 +522,8 @@ const LibraryPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBa
                         ))}
                         { readingSheets.length > 0 ? <View style={styles.shelfBar} /> : null }
                         { readingSheets.length !== 0 ? (
-                                <TouchableNativeFeedback onPress={() => handleClick('AllReadingSheetsPage')}>
-                                    <View style={styles.sheet}>
+                                <TouchableNativeFeedback onPress={() => handleClick('AllReadingSheetsPage')} testID="library-reading-sheets-see-more" accessibilityLabel="library-reading-sheets-see-more">
+                                    <View style={styles.sheet} >
                                         <Text style={styles.textShelfMore}>See More</Text>
                                     </View>
                                 </TouchableNativeFeedback>

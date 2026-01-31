@@ -108,8 +108,8 @@ export default function SelectBookForSheetPage({ navigation, route, page, isAuth
 
         const urlPath = urlMap[preferredModel] || 'basic';
 
-        // Send the book id and full metadata so backend can create the book if needed
-        const bookVal = selectedBookObj?.isbn || selectedBookObj?.id || bookId || null;
+        // Send the book id (database ID is required, not ISBN)
+        const bookVal = selectedBookObj?.id || bookId || null;
         
         // Fill empty fields with "-" to satisfy backend validation
         const requiredFields = MODEL_SCHEMAS[preferredModel] || [];
@@ -171,7 +171,8 @@ export default function SelectBookForSheetPage({ navigation, route, page, isAuth
                 <View key={key} style={styles.fieldRow}>
                     <Text style={styles.fieldLabel}>{label}</Text>
                     <View style={styles.ratingRow}>
-                        <TextInput
+                            <TextInput
+                                accessibilityLabel={`crs-input-rating`}
                             style={[styles.input, styles.ratingInput]}
                             value={String(value)}
                             onChangeText={(val) => {
@@ -201,6 +202,7 @@ export default function SelectBookForSheetPage({ navigation, route, page, isAuth
             >
                 <Text style={styles.fieldLabel}>{label}</Text>
                 <TextInput
+                    accessibilityLabel={`crs-input-${key}`}
                     style={[styles.input, heightStyle]}
                     value={String(value)}
                     onChangeText={(val) => setData(prev => ({ ...prev, [key]: val }))}
@@ -290,7 +292,7 @@ export default function SelectBookForSheetPage({ navigation, route, page, isAuth
                         
                         {(MODEL_SCHEMAS[preferredModel] || []).map(renderField)}
                     
-                        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                        <TouchableOpacity testID="crs-save" accessibilityLabel="crs-save" style={styles.submitButton} onPress={handleSubmit}>
                             <Text style={styles.submitText}>Save</Text>
                         </TouchableOpacity>
                     </View>

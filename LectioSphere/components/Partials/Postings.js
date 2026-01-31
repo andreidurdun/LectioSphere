@@ -214,7 +214,7 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
                                 <Text style={styles.textContainer}>Read</Text>
                                 <View style={styles.shelfBar} />
                             </View>
-                            <View style={styles.noBooksContainer}>
+                            <View style={styles.noBooksContainer} testID="postings-shelf-empty-read" accessibilityLabel="postings-shelf-empty-read">
                                 <Text style={styles.noBooksText}>No books yet</Text>
                             </View>
                         </View>
@@ -228,8 +228,8 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
                                     {shelfRead.slice(0, 15).map((book, idx) => (
                                     <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                        <View>
-                                            <Image source={{ uri: book.cover }} style={styles.covers} />
+                                        <View accessibilityLabel={`partial-Postings-book-${idx}`}>
+                                            <Image accessibilityLabel={`partial-Postings-book-image-${idx}`} source={{ uri: book.cover }} style={styles.covers} />
                                         </View>
                                     </TouchableNativeFeedback>
                                 ))}
@@ -243,8 +243,7 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
                                 <View style={styles.titleShelf}>
                                     <Text style={styles.textContainer}>Reading</Text>
                                     <View style={styles.shelfBar} />
-                                </View>
-                                <View style={styles.noBooksContainer}>
+                                </View><View style={styles.noBooksContainer} testID="postings-shelf-empty-reading" accessibilityLabel="postings-shelf-empty-reading">
                                     <Text style={styles.noBooksText}>No books yet</Text>
                                 </View>
                             </View>
@@ -258,8 +257,8 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
                                     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
                                         {shelfReading.slice(0, 15).map((book, idx) => (
                                         <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            <View accessibilityLabel={`partial-Postings-reading-book-${idx}`}>
+                                                <Image accessibilityLabel={`partial-Postings-reading-book-image-${idx}`} source={{ uri: book.cover }} style={styles.covers} />
                                             </View>
                                         </TouchableNativeFeedback>
                                     ))}
@@ -273,8 +272,7 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
                                 <View style={styles.titleShelf}>
                                     <Text style={styles.textContainer}>Readlist</Text>
                                     <View style={styles.shelfBar} />
-                                </View>
-                                <View style={styles.noBooksContainer}>
+                                </View><View style={styles.noBooksContainer} testID="postings-shelf-empty-readlist" accessibilityLabel="postings-shelf-empty-readlist">
                                     <Text style={styles.noBooksText}>No books yet</Text>
                                 </View>
                             </View>
@@ -288,8 +286,8 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
                                     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
                                     {shelfReadlist.slice(0, 15).map((book, idx) => (
                                         <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            <View accessibilityLabel={`partial-Postings-readlist-book-${idx}`}>
+                                                <Image accessibilityLabel={`partial-Postings-readlist-book-image-${idx}`} source={{ uri: book.cover }} style={styles.covers} />
                                             </View>
                                         </TouchableNativeFeedback>
                                     ))}
@@ -304,13 +302,12 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
                         <View key={`custom-${index}`} >
                             {shelf.books.length === 0 ? (
                                 <View style={styles.box}>
-                                    <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: shelf.shelf_name })}>
-                                        <View style={styles.titleShelf}>
+                                        <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: shelf.shelf_name })}>
+                                        <View style={styles.titleShelf} accessibilityLabel={`partial-Postings-custom-shelf-title-${index}`}>
                                             <Text style={styles.textContainer}>{shelf.shelf_name}</Text>
                                             <View style={styles.shelfBar} />
-                                        </View>
-                                    </TouchableNativeFeedback>
-                                    <View style={styles.noBooksContainer}>
+                                        </View></TouchableNativeFeedback>
+                                    <View style={styles.noBooksContainer} testID={`postings-shelf-empty-custom-${index}`} accessibilityLabel={`postings-shelf-empty-custom-${index}`}>
                                         <Text style={styles.noBooksText}>No books yet</Text>
                                     </View>
                                 </View>
@@ -326,8 +323,8 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
                                         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
                                         {shelf.books.slice(0, 15).map((book, idx) => (
                                             <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                                <View>
-                                                    <Image source={{ uri: book.cover }} style={styles.covers} />
+                                                <View accessibilityLabel={`partial-Postings-custom-shelf-book-${index}-${idx}`}>
+                                                    <Image accessibilityLabel={`partial-Postings-custom-shelf-book-image-${index}-${idx}`} source={{ uri: book.cover }} style={styles.covers} />
                                                 </View>
                                             </TouchableNativeFeedback>
                                         ))}
@@ -348,8 +345,8 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
             
         return (
             <View style={styles.card}>
-                <View style={styles.notFoundContainer}>
-                    <Text style={styles.notFoundText}>
+                <View style={styles.notFoundContainer} testID="postings-empty-state" accessibilityLabel="postings-empty-state">
+                    <Text style={styles.notFoundText} testID="postings-empty-state-text" accessibilityLabel="postings-empty-state-text">
                         {message}
                     </Text>
                 </View>
@@ -358,9 +355,11 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
     }    
     
     return (
-        <View style={styles.card}>
+        <View style={styles.card} testID="partial-Postings-root" accessibilityLabel="partial-Postings-root">
             {posts.map((post, index) => (
-                <PostPartial navigation={navigation} postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} key={`${selection}-${post.id || index}`} />
+                <View key={`${selection}-${post.id || index}`} testID={`partial-Postings-post-${index}`}>
+                    <PostPartial navigation={navigation} postData={JSON.stringify(post)} apiBaseUrl={apiBaseUrl} />
+                </View>
             ))}
         </View>
     );

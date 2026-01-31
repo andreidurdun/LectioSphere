@@ -252,6 +252,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                     >
                         <Text style={styles.fieldLabel}>Notes</Text>
                         <TextInput
+                            testID="rs-text" accessibilityLabel="rs-text"
                             style={[styles.input, { height: Math.max(40, inputHeights['text'] || 40) }]}
                             value={editedText}
                             onChangeText={(val) => setEditedText(val)}
@@ -290,6 +291,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                             <Text style={styles.fieldLabel}>Rating</Text>
                             <View style={styles.ratingRow}>
                                 <TextInput
+                                    testID="rs-rating" accessibilityLabel="rs-rating"
                                     style={[styles.input, styles.ratingInput]}
                                     value={String(editedData.rating || '')}
                                     onChangeText={(val) => {
@@ -322,6 +324,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         >
                             <Text style={styles.fieldLabel}>Themes</Text>
                             <TextInput
+                                testID="rs-themes" accessibilityLabel="rs-themes"
                                 style={[styles.input, { height: Math.max(40, inputHeights['themes'] || 40) }]}
                                 value={editedData.themes || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, themes: val }))}
@@ -354,6 +357,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         >
                             <Text style={styles.fieldLabel}>Favorite Quote</Text>
                             <TextInput
+                                testID="rs-favorite_quote" accessibilityLabel="rs-favorite_quote"
                                 style={[styles.input, { height: Math.max(40, inputHeights['favorite_quote'] || 40) }]}
                                 value={editedData.favorite_quote || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, favorite_quote: val }))}
@@ -386,6 +390,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         >
                             <Text style={styles.fieldLabel}>Summary</Text>
                             <TextInput
+                                testID="rs-summary" accessibilityLabel="rs-summary"
                                 style={[styles.input, { height: Math.max(40, inputHeights['summary'] || 40) }]}
                                 value={editedData.summary || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, summary: val }))}
@@ -418,6 +423,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         >
                             <Text style={styles.fieldLabel}>Characters</Text>
                             <TextInput
+                                testID="rs-characters" accessibilityLabel="rs-characters"
                                 style={[styles.input, { height: Math.max(40, inputHeights['characters'] || 40) }]}
                                 value={editedData.characters || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, characters: val }))}
@@ -450,6 +456,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         <View style={styles.fieldRow}>
                             <Text style={styles.fieldLabel}>Notes</Text>
                             <TextInput
+                                testID="rs-notes" accessibilityLabel="rs-notes"
                                 style={[styles.input, { height: Math.max(40, inputHeights['notes'] || 40) }]}
                                 value={editedData.notes || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, notes: val }))}
@@ -465,6 +472,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         <View style={styles.fieldRow}>
                             <Text style={styles.fieldLabel}>Takeaways</Text>
                             <TextInput
+                                testID="rs-takeaways" accessibilityLabel="rs-takeaways"
                                 style={[styles.input, { height: Math.max(40, inputHeights['takeaways'] || 40) }]}
                                 value={editedData.takeaways || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, takeaways: val }))}
@@ -480,6 +488,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         <View style={styles.fieldRow}>
                             <Text style={styles.fieldLabel}>Questions</Text>
                             <TextInput
+                                testID="rs-questions" accessibilityLabel="rs-questions"
                                 style={[styles.input, { height: Math.max(40, inputHeights['questions'] || 40) }]}
                                 value={editedData.questions || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, questions: val }))}
@@ -495,6 +504,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         <View style={styles.fieldRow}>
                             <Text style={styles.fieldLabel}>Vocabulary</Text>
                             <TextInput
+                                testID="rs-vocabulary" accessibilityLabel="rs-vocabulary"
                                 style={[styles.input, { height: Math.max(40, inputHeights['vocabulary'] || 40) }]}
                                 value={editedData.vocabulary || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, vocabulary: val }))}
@@ -516,6 +526,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         <View style={styles.fieldRow}>
                             <Text style={styles.fieldLabel}>What I learned</Text>
                             <TextInput
+                                testID="rs-learned" accessibilityLabel="rs-learned"
                                 style={[styles.input, { height: Math.max(40, inputHeights['learned'] || 40) }]}
                                 value={editedData.learned || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, learned: val }))}
@@ -531,6 +542,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         <View style={styles.fieldRow}>
                             <Text style={styles.fieldLabel}>Favorite part</Text>
                             <TextInput
+                                testID="rs-favorite_part" accessibilityLabel="rs-favorite_part"
                                 style={[styles.input, { height: Math.max(40, inputHeights['favorite_part'] || 40) }]}
                                 value={editedData.favorite_part || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, favorite_part: val }))}
@@ -546,6 +558,7 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         <View style={styles.fieldRow}>
                             <Text style={styles.fieldLabel}>Reflections</Text>
                             <TextInput
+                                testID="rs-reflections" accessibilityLabel="rs-reflections"
                                 style={[styles.input, { height: Math.max(40, inputHeights['reflections'] || 40) }]}
                                 value={editedData.reflections || ''}
                                 onChangeText={(val) => setEditedData(prev => ({ ...prev, reflections: val }))}
@@ -601,13 +614,14 @@ const ReadingSheetPage = ({ route, navigation, removeAuthToken, isAuthenticated,
                         {/* Book Info Section */}
                         <View style={styles.bookInfoRow}>
                             <Image
+                                testID="rs-book-cover" accessibilityLabel="rs-book-cover"
                                 source={{ uri: sheet.book.cover }}
                                 style={styles.bookCover}
                             />
                             <View style={styles.bookInfo}>
-                                <Text style={styles.bookTitle}>{sheet.book.title}</Text>
-                                <Text style={styles.bookAuthor}>{sheet.book.author}</Text>
-                                <Text style={styles.dateText}>Created: {new Date(sheet.date).toLocaleDateString()}</Text>
+                                <Text testID="rs-book-title" accessibilityLabel="rs-book-title" style={styles.bookTitle}>{sheet.book.title}</Text>
+                                <Text testID="rs-book-author" accessibilityLabel="rs-book-author" style={styles.bookAuthor}>{sheet.book.author}</Text>
+                                <Text testID="rs-created-date" accessibilityLabel="rs-created-date" style={styles.dateText}>Created: {new Date(sheet.date).toLocaleDateString()}</Text>
                             </View>
                         </View>
 

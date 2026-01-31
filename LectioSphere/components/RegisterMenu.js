@@ -167,6 +167,7 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                             placeholder="Enter your first name"
                             autoCapitalize="none"
                             placeholderTextColor="#E5C3D1" // Placeholder text color
+                            testID="register-firstname" accessibilityLabel="register-firstname"
                         />
                     </View>
 
@@ -179,6 +180,7 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                             placeholder="Enter your last name"
                             autoCapitalize="none"
                             placeholderTextColor="#E5C3D1" // Placeholder text color
+                            testID="register-lastname" accessibilityLabel="register-lastname"
                         />
                     </View>
 
@@ -191,6 +193,7 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                             placeholder="Enter your username"
                             autoCapitalize="none"
                             placeholderTextColor="#E5C3D1" // Placeholder text color
+                            testID="register-username" accessibilityLabel="register-username"
                         />
                     </View>
 
@@ -204,6 +207,7 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                             autoCapitalize="none"
                             keyboardType="email-address"
                             placeholderTextColor="#E5C3D1" // Placeholder text color
+                            testID="register-email" accessibilityLabel="register-email"
                         />
                     </View>
 
@@ -216,6 +220,7 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                             placeholder="Enter your password"
                             secureTextEntry
                             placeholderTextColor="#E5C3D1" // Placeholder text color
+                            testID="register-password" accessibilityLabel="register-password"
                         />
                     </View>
 
@@ -228,6 +233,7 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                             placeholder="Confirm your password"
                             secureTextEntry
                             placeholderTextColor="#E5C3D1" // Placeholder text color
+                            testID="register-confirm-password" accessibilityLabel="register-confirm-password"
                         />
                     </View>
                     
@@ -236,6 +242,7 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                             title="Register"
                             onPress={handleSubmit}
                             color="#613F75" // Set button color to match the theme
+                            testID="register-submit" accessibilityLabel="register-submit"
                         />
                     </View>
 
@@ -243,7 +250,8 @@ export default function RegisterMenu ({ navigation, saveAuthToken, apiBaseUrl })
                         Already have an account?{' '}
                         <Text
                             style={{ color: '#613F75', textDecorationLine: 'underline' }}
-                            onPress={() => navigation.navigate('LoginMenu')}>
+                            onPress={() => navigation.navigate('LoginMenu')}
+                            testID="register-login-link" accessibilityLabel="register-login-link">
                             Log In!
                         </Text>
                     </Text>

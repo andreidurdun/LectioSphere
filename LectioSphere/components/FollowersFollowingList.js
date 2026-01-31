@@ -166,7 +166,7 @@ const FollowersFollowingList = ({ navigation, route, apiBaseUrl }) => {
                 contentContainerStyle={styles.scrollContainer}
                 showsVerticalScrollIndicator={false}
             >
-                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.title} testID="followers-title" accessibilityLabel="followers-title">{title}</Text>
                 
                 {loading ? (
                     <View style={styles.loadingContainer}>
@@ -184,6 +184,7 @@ const FollowersFollowingList = ({ navigation, route, apiBaseUrl }) => {
                             <TouchableOpacity 
                                 style={styles.userInfo}
                                 onPress={() => handleProfilePress(user.id)}
+                                accessibilityLabel={`follower-user-${user.id}`}
                             >
                                 <Image 
                                     source={
@@ -192,12 +193,13 @@ const FollowersFollowingList = ({ navigation, route, apiBaseUrl }) => {
                                         : defaultPicture
                                     }
                                     style={styles.profilePic}
+                                    accessibilityLabel={`follower-user-image-${user.id}`}
                                 />
                                 <View style={styles.textInfo}>
-                                    <Text style={styles.nameText}>
+                                    <Text style={styles.nameText} accessibilityLabel={`follower-user-name-${user.id}`}>
                                         {user.first_name} {user.last_name}
                                     </Text>
-                                    <Text style={styles.usernameText}>
+                                    <Text style={styles.usernameText} accessibilityLabel={`follower-user-username-${user.id}`}>
                                         @{user.username}
                                     </Text>
                                 </View>
@@ -208,6 +210,7 @@ const FollowersFollowingList = ({ navigation, route, apiBaseUrl }) => {
                                     <TouchableOpacity 
                                         style={styles.followingButton}
                                         onPress={() => handleUnfollow(user.id)}
+                                        accessibilityLabel={`follower-unfollow-button-${user.id}`}
                                     >
                                         <Text style={styles.followingButtonText}>Following</Text>
                                     </TouchableOpacity>
@@ -215,6 +218,7 @@ const FollowersFollowingList = ({ navigation, route, apiBaseUrl }) => {
                                     <TouchableOpacity 
                                         style={styles.followButton}
                                         onPress={() => handleFollow(user.id)}
+                                        accessibilityLabel={`follower-follow-button-${user.id}`}
                                     >
                                         <Text style={styles.followButtonText}>Follow</Text>
                                     </TouchableOpacity>

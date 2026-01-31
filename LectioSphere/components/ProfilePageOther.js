@@ -235,19 +235,20 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                                         listType: 'followers',
                                         username: userData?.username,
                                         apiBaseUrl
-                                    })}>
-                                        <Text style={styles.followers}>
+                                    })} testID="profileother-followers-count" accessibilityLabel="profileother-followers-count">
+                                        <Text style={styles.followers} testID="profileother-followers-text" accessibilityLabel="profileother-followers-text">
                                             {profileData?.followers_count || 0} {'\n'}followers
                                         </Text>
                                     </TouchableOpacity>
+                                    
                                     <View style={styles.verticalLine}></View>
                                     <TouchableOpacity onPress={() => navigation.navigate('FollowersFollowingList', {
                                         profileId: userId,
                                         listType: 'following',
                                         username: userData?.username,
                                         apiBaseUrl
-                                    })}>
-                                        <Text style={styles.followers}>
+                                    })} testID="profileother-following-count" accessibilityLabel="profileother-following-count">
+                                        <Text style={styles.followers} testID="profileother-following-text" accessibilityLabel="profileother-following-text">
                                             {profileData?.following_count || 0} {'\n'}following
                                         </Text>
                                     </TouchableOpacity>
@@ -273,11 +274,12 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                                                 styles.followButton,
                                                 isFollowing ? styles.followingButton : styles.notFollowingButton
                                             ]}
+                                            testID="profileother-follow-button" accessibilityLabel="profileother-follow-button"
                                         >
                                             <Text style={[
                                                 styles.followButtonText,
                                                 isFollowing ? styles.followingButtonText : styles.notFollowingButtonText
-                                            ]}>
+                                            ]} testID="profileother-follow-button-text" accessibilityLabel="profileother-follow-button-text">
                                                 {followLoading ? '...' : (isFollowing ? 'Following' : 'Follow')}
                                             </Text>
                                         </TouchableOpacity>
@@ -286,7 +288,7 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                             </View>
                         </View>
                         <View style={styles.description}>
-                            <Text style={styles.bioText}>
+                            <Text style={styles.bioText} testID="profileother-bio" accessibilityLabel="profileother-bio">
                                 {profileData?.bio || "No bio available"}
                             </Text>
                         </View>
@@ -296,30 +298,36 @@ const ProfilePageOther = ({ navigation, route, removeAuthToken, apiBaseUrl }) =>
                         <TouchableOpacity 
                             onPress={() => setSelected('photo')} 
                             style={selected === 'photo' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
+                            testID="profileother-select-photo" accessibilityLabel="profileother-select-photo"
                         >
                             <Image 
                                 source={selected === 'photo' ? photoPurple : photoBlack} 
                                 style={styles.photoIcon} 
+                                testID="profileother-select-photo-image" accessibilityLabel="profileother-select-photo-image"
                             />
                         </TouchableOpacity>
 
                         <TouchableOpacity 
                             onPress={() => setSelected('glasses')} 
                             style={selected === 'glasses' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
+                            testID="profileother-select-glasses" accessibilityLabel="profileother-select-glasses"
                         >
                             <Image 
                                 source={selected === 'glasses' ? glassesPurple : glassesBlack} 
                                 style={styles.glassesIcon} 
+                                testID="profileother-select-glasses-image" accessibilityLabel="profileother-select-glasses-image"
                             />
                         </TouchableOpacity>
 
                         <TouchableOpacity 
                             onPress={() => setSelected('closedBook')} 
                             style={selected === 'closedBook' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
+                            testID="profileother-select-closedbook" accessibilityLabel="profileother-select-closedbook"
                         >
                             <Image 
                                 source={selected === 'closedBook' ? closedBookPurple : closedBookBlack} 
                                 style={styles.closedBookIcon} 
+                                testID="profileother-select-closedbook-image" accessibilityLabel="profileother-select-closedbook-image"
                             />
                         </TouchableOpacity>
                     </View>

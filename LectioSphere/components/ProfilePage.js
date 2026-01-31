@@ -205,7 +205,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                             /> */}
                             <View style={styles.textInfo}>
                                 <View style={styles.followersInfo}>
-                                    <TouchableOpacity onPress={() => navigation.navigate('FollowersFollowingList', {
+                                    <TouchableOpacity testID="profile-followers" accessibilityLabel="profile-followers" onPress={() => navigation.navigate('FollowersFollowingList', {
                                         profileId: profileData?.profile.id,
                                         listType: 'followers',
                                         username: userData?.username,
@@ -216,7 +216,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                                         </Text>
                                     </TouchableOpacity>
                                     <View style={styles.verticalLine}></View>
-                                    <TouchableOpacity onPress={() => navigation.navigate('FollowersFollowingList', {
+                                    <TouchableOpacity testID="profile-following" accessibilityLabel="profile-following" onPress={() => navigation.navigate('FollowersFollowingList', {
                                         profileId: profileData?.profile.id,
                                         listType: 'following',
                                         username: userData?.username,
@@ -241,7 +241,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                                             
                                         </View>
                                     </View>
-                                    <TouchableOpacity onPress={handlePressEdit}>
+                                    <TouchableOpacity testID="profile-edit" accessibilityLabel="profile-edit" onPress={handlePressEdit}>
                                         <Image 
                                             source={editPen} 
                                             style={styles.editPen} 
@@ -260,6 +260,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
 
                     <View style={styles.selection}>
                         <TouchableOpacity 
+                            testID="profile-select-photo" accessibilityLabel="profile-select-photo"
                             onPress={() => setSelected('photo')} 
                             style={selected === 'photo' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
                         >
@@ -270,6 +271,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity 
+                            testID="profile-select-glasses" accessibilityLabel="profile-select-glasses"
                             onPress={() => setSelected('glasses')} 
                             style={selected === 'glasses' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
                         >
@@ -280,6 +282,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity 
+                            testID="profile-select-closedbook" accessibilityLabel="profile-select-closedbook"
                             onPress={() => setSelected('closedBook')} 
                             style={selected === 'closedBook' ? [styles.selected, styles.selectionItem] : styles.selectionItem}
                         >
@@ -335,12 +338,14 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
 
                         <View style={styles.modalButtons}>
                             <TouchableOpacity
+                                testID="sheettype-cancel" accessibilityLabel="sheettype-cancel"
                                 style={[styles.modalButton, styles.modalButtonCancel]}
                                 onPress={() => setSheetTypeModalVisible(false)}
                             >
                                 <Text style={styles.modalButtonTextCancel}>Cancel</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
+                                testID="sheettype-save" accessibilityLabel="sheettype-save"
                                 style={[styles.modalButton, styles.modalButtonSave]}
                                 onPress={handleSaveSheetType}
                             >
@@ -365,6 +370,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                 >
                     <View style={styles.drawerContainer}>
                         <TouchableOpacity 
+                            testID="drawer-change-sheettype" accessibilityLabel="drawer-change-sheettype"
                             style={styles.drawerItem}
                             onPress={handleChangeReadingSheets}
                         >
@@ -374,6 +380,7 @@ const ProfilePage = ({ navigation, removeAuthToken, apiBaseUrl }) => {
                         <View style={styles.drawerDivider} />
                         
                         <TouchableOpacity 
+                            testID="drawer-logout" accessibilityLabel="drawer-logout"
                             style={styles.drawerItem}
                             onPress={handleLogout}
                         >

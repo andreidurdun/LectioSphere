@@ -157,16 +157,17 @@ const AllReadingSheetsPage = ({ navigation, page, removeAuthToken, isAuthenticat
                         <View style={{ width: '100%', alignItems: 'center' }}>
                             {readingSheets.map((readingSheet, index) => (
                                 <TouchableNativeFeedback key={index} onPress={() => handleReadingSheetPress(readingSheet)}>
-                                    <View style={styles.sheetContainer}>
+                                    <View style={styles.sheetContainer} accessibilityLabel={`allReadingSheet-${index}`}>
                                         <Image
+                                            accessibilityLabel={`allReadingSheet-image-${index}`}
                                             source={{ uri: readingSheet.book.cover }}
                                             style={styles.covers}
                                         />
                                         <View style={styles.infoBookReadingSheet}>
-                                            <Text style={styles.textInfoTitle}>
+                                            <Text accessibilityLabel={`allReadingSheet-title-${index}`} style={styles.textInfoTitle}>
                                                 {readingSheet.book.title}
                                             </Text>
-                                            <Text style={styles.textInfoAuthor}>
+                                            <Text accessibilityLabel={`allReadingSheet-author-${index}`} style={styles.textInfoAuthor}>
                                                 {readingSheet.book.author}
                                             </Text>
                                         </View>

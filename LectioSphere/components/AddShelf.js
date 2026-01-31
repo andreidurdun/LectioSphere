@@ -120,6 +120,7 @@ const AddShelf = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
 
                 <View style={styles.inputContainer}>
                     <TextInput
+                        testID="addshelf-name" accessibilityLabel="addshelf-name"
                         style={styles.input}
                         value={shelfName}
                         onChangeText={setShelfName}
@@ -130,6 +131,7 @@ const AddShelf = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                 </View>
 
                 <Text
+                    testID="addshelf-create" accessibilityLabel="addshelf-create"
                     style={styles.changeText}
                     onPress={async () => {
                         if (!shelfName.trim()) {

@@ -140,15 +140,16 @@ const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
     if (pageName === 'HomePage')
     {
         return (
-            <SafeAreaView style={styles.container}>
+            <SafeAreaView style={styles.container} testID="partial-TopBar-home-root" accessibilityLabel="partial-TopBar-home-root">
                 <Image 
+                    testID="partial-TopBar-home-icon" accessibilityLabel="partial-TopBar-home-icon"
                     source={icon} // Replace with your icon path
                     style={styles.icon}
                 />
 
                 <View>
-                    <Text style={styles.title}>LectioSphere</Text>
-                    <Text style={styles.subtitle}>Literary Experience, Community, Thoughts, Interaction, Organization</Text>
+                    <Text style={styles.title} testID="partial-TopBar-title" accessibilityLabel="partial-TopBar-title">LectioSphere</Text>
+                    <Text style={styles.subtitle} testID="partial-TopBar-subtitle" accessibilityLabel="partial-TopBar-subtitle">Literary Experience, Community, Thoughts, Interaction, Organization</Text>
                 </View>
                 
             </SafeAreaView>
@@ -157,8 +158,9 @@ const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
     else if (pageName == 'FollowPage')
     {
         return (
-            <SafeAreaView style={styles.containerJustified}>
+            <SafeAreaView style={styles.containerJustified} testID="partial-TopBar-follow-root" accessibilityLabel="partial-TopBar-follow-root">
                 <Image 
+                    testID="partial-TopBar-follow-icon" accessibilityLabel="partial-TopBar-follow-icon"
                     source={icon} // Replace with your icon path
                     style={styles.icon}
                 />
@@ -170,8 +172,10 @@ const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
                         placeholderTextColor="#613F75"
                         onChangeText={(text) => handleFollowSearchTextChange(text)} // Update state on text input
                         onSubmitEditing={() => handleFollowSearchSubmit()} // Trigger search on Enter
+                        testID="partial-TopBar-follow-search-input" accessibilityLabel="partial-TopBar-follow-search-input"
                     />
                     <Image 
+                        testID="partial-TopBar-follow-search-icon" accessibilityLabel="partial-TopBar-follow-search-icon"
                         source={searchPurpleIcon} // Replace with your search icon path
                         style={styles.searchIcon}
                         onTouchEnd={() => handleFollowSearchSubmit()} // Trigger search on image press
@@ -183,8 +187,9 @@ const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
     else if (pageName == 'SearchPage')
     {
         return (
-            <SafeAreaView style={styles.containerJustified}>
+            <SafeAreaView style={styles.containerJustified} testID="partial-TopBar-search-root" accessibilityLabel="partial-TopBar-search-root">
                 <Image 
+                    testID="partial-TopBar-search-icon" accessibilityLabel="partial-TopBar-search-icon"
                     source={icon} // Replace with your icon path
                     style={styles.icon}
                 />
@@ -197,8 +202,10 @@ const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
                         placeholderTextColor="#613F75"
                         onChangeText={(text) => handleSearchTextChange(text)} // Update state on text input
                         onSubmitEditing={() => handleSearchSubmit()} // Trigger handle on Enter
+                        testID="partial-TopBar-search-input" accessibilityLabel="partial-TopBar-search-input"
                     />
                     <Image 
+                        testID="partial-TopBar-search-icon-action" accessibilityLabel="partial-TopBar-search-icon-action"
                         source={searchPurpleIcon} // Replace with your search icon path
                         style={styles.searchIcon}
                         onTouchEnd={() => handleSearchSubmit()} // Trigger search on image press
@@ -210,19 +217,22 @@ const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
     else if (pageName == 'LibraryPage')
     {
         return (
-            <SafeAreaView style={styles.containerJustified}>
+            <SafeAreaView style={styles.containerJustified} testID="partial-TopBar-library-root" accessibilityLabel="partial-TopBar-library-root">
                 <Image 
+                    testID="partial-TopBar-library-icon" accessibilityLabel="partial-TopBar-library-icon"
                     source={icon} // Replace with your icon path
                     style={styles.icon}
                 />
 
                 <View style={styles.libraryButtonsContainer}>
                     <Image 
+                        testID="partial-TopBar-add-reading-sheet" accessibilityLabel="partial-TopBar-add-reading-sheet"
                         source={addReadingSheetIcon} // Replace with your search icon path
                         style={styles.addReadingSheetIcon}
                         onTouchEnd={() => handleLibraryAddReadingSheet('SelectBookForSheetPage')} // Trigger search on image press
                     />
                     <Image 
+                        testID="partial-TopBar-add-shelf" accessibilityLabel="partial-TopBar-add-shelf"
                         source={addShelfIcon} // Replace with your search icon path
                         style={styles.addShelfIcon}
                         onTouchEnd={() => handleLibraryAddShelf('AddShelf')} // Trigger search on image press
@@ -241,17 +251,19 @@ const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
                     />
     
                     <View style={styles.libraryButtonsContainer}>
-                        <Image 
-                            source={envelope} // Replace with your search icon path
-                            style={styles.envelopeIcon}
-                            onTouchEnd={() => handleNotificationsButton()} // Trigger search on image press
-                        />
-                        <Image 
-                            source={threeDots} // Replace with your search icon path
-                            style={styles.threeDotsIcon}
-                            onTouchEnd={() => onSettingsPress ? onSettingsPress() : handleSettingsButton()} // Trigger drawer or default action
-                        />
-                    </View>
+                                <Image 
+                                    testID="partial-TopBar-notifications" accessibilityLabel="partial-TopBar-notifications"
+                                    source={envelope} // Replace with your search icon path
+                                    style={styles.envelopeIcon}
+                                    onTouchEnd={() => handleNotificationsButton()} // Trigger search on image press
+                                />
+                                <Image 
+                                    testID="partial-TopBar-settings" accessibilityLabel="partial-TopBar-settings"
+                                    source={threeDots} // Replace with your search icon path
+                                    style={styles.threeDotsIcon}
+                                    onTouchEnd={() => onSettingsPress ? onSettingsPress() : handleSettingsButton()} // Trigger drawer or default action
+                                />
+                            </View>
                 </SafeAreaView>
             );
         }

@@ -857,6 +857,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                             )}
                             <View style={styles.buttonsRow}>
                                 <TouchableNativeFeedback 
+                                    testID="bookshow-add-library" accessibilityLabel="bookshow-add-library"
                                     onPress={() => handleAddToLibrary()}
                                 >
                                     <View style={styles.addButtonTouchable}>
@@ -867,6 +868,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                                 </TouchableNativeFeedback>
                                 
                                 <TouchableNativeFeedback 
+                                    testID="bookshow-share" accessibilityLabel="bookshow-share"
                                     onPress={() => setShowShareModal(true)}
                                 >
                                     <View style={styles.shareButtonTouchable}>
@@ -912,6 +914,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                             {bookData.description}
                         </Text>
                         <TouchableNativeFeedback 
+                            testID="bookshow-description-toggle" accessibilityLabel="bookshow-description-toggle"
                             onPress={() => setSeeMorePressed(!seeMorePressed)}
                         >
                             <Text style={styles.showMoreDescription}>
@@ -1006,6 +1009,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                         </Text>
                         
                         <TextInput
+                            testID="bookshow-pages-input" accessibilityLabel="bookshow-pages-input"
                             style={styles.modalInput}
                             value={pagesInput}
                             onChangeText={setPagesInput}
@@ -1015,7 +1019,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                         />
                         
                         <View style={styles.modalButtons}>
-                            <TouchableNativeFeedback onPress={handleModalCancel}>
+                            <TouchableNativeFeedback testID="bookshow-pages-cancel" accessibilityLabel="bookshow-pages-cancel" onPress={handleModalCancel}>
                                 <View style={[styles.modalButton, styles.cancelButton]}>
                                     <Text style={styles.cancelButtonText}>
                                         Cancel
@@ -1023,7 +1027,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                                 </View>
                             </TouchableNativeFeedback>
                             
-                            <TouchableNativeFeedback onPress={handlePagesSubmit}>
+                            <TouchableNativeFeedback testID="bookshow-pages-update" accessibilityLabel="bookshow-pages-update" onPress={handlePagesSubmit}>
                                 <View style={[styles.modalButton, styles.updateButton]}>
                                     <Text style={styles.updateButtonText}>
                                         Update
@@ -1046,13 +1050,13 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                     <View style={styles.libraryModalContainer}>
                         <Text style={styles.modalTitle}>Choose an action</Text>
                         
-                        <TouchableNativeFeedback onPress={() => handleLibraryAction('update_reading')}>
+                        <TouchableNativeFeedback testID="bookshow-library-action-update_reading" accessibilityLabel="bookshow-library-action-update_reading" onPress={() => handleLibraryAction('update_reading')}>
                             <View style={styles.libraryOption}>
                                 <Text style={styles.libraryOptionText}>Start/Update Reading</Text>
                             </View>
                         </TouchableNativeFeedback>
                         
-                        <TouchableNativeFeedback onPress={() => handleLibraryAction('finish_reading')}>
+                        <TouchableNativeFeedback testID="bookshow-library-action-finish_reading" accessibilityLabel="bookshow-library-action-finish_reading" onPress={() => handleLibraryAction('finish_reading')}>
                             <View style={styles.libraryOption}>
                                 <Text style={styles.libraryOptionText}>Finish Reading</Text>
                             </View>

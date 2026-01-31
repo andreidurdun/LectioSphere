@@ -270,7 +270,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <View>
-                            <View>
+                            <View testID="shelf-read-header" accessibilityLabel="shelf-read-header">
                                 <Text style={styles.textContainer}>  Read</Text>
                             </View>
                         </View>
@@ -282,8 +282,8 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
                                     {shelfRead.slice(0, 15).map((book, idx) => (
                                         <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            <View testID={`shelf-read-book-${idx}`}>
+                                                <Image source={{ uri: book.cover }} style={styles.covers} testID={`shelf-read-book-image-${idx}`} />
                                             </View>
                                         </TouchableNativeFeedback>
                                     ))}
@@ -293,7 +293,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <View>
-                            <View>
+                            <View testID="shelf-reading-header" accessibilityLabel="shelf-reading-header">
                                 <Text style={styles.textContainer}>  Reading </Text>
                             </View>
                         </View>
@@ -305,8 +305,8 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
                                     {shelfReading.slice(0, 15).map((book, idx) => (
                                         <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            <View testID={`shelf-reading-book-${idx}`}>
+                                                <Image source={{ uri: book.cover }} style={styles.covers} testID={`shelf-reading-book-image-${idx}`} />
                                             </View>
                                         </TouchableNativeFeedback>
                                     ))}
@@ -316,7 +316,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <View>
-                            <View>
+                            <View testID="shelf-readlist-header" accessibilityLabel="shelf-readlist-header">
                                 <Text style={styles.textContainer}>  Readlist</Text>
                             </View>
                         </View>
@@ -328,8 +328,8 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
                                     {shelfReadlist.slice(0, 15).map((book, idx) => (
                                         <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            <View testID={`shelf-readlist-book-${idx}`}>
+                                                <Image source={{ uri: book.cover }} style={styles.covers} testID={`shelf-readlist-book-image-${idx}`} />
                                             </View>
                                         </TouchableNativeFeedback>
                                     ))}
@@ -339,7 +339,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
 
                     <View style={styles.container}>
                         <View>
-                            <View>
+                            <View testID="shelf-favourites-header" accessibilityLabel="shelf-favourites-header">
                                 <Text style={styles.textContainer}>  Favourites</Text>
                             </View>
                         </View>
@@ -351,8 +351,8 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
                                     {shelfFavourites.slice(0, 15).map((book, idx) => (
                                         <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            <View testID={`shelf-favourites-book-${idx}`}>
+                                                <Image source={{ uri: book.cover }} style={styles.covers} testID={`shelf-favourites-book-image-${idx}`} />
                                             </View>
                                         </TouchableNativeFeedback>
                                     ))}
@@ -364,7 +364,7 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                     {(shelves.custom_shelves || []).filter(shelf => shelf.shelf_name !== 'Currently Reading').map((shelf, index) => (
                         <View key={`custom-${index}`} style={styles.container}>
                             <TouchableNativeFeedback onPress={() => handleShelfClick('ShelfPage', { shelfName: shelf.shelf_name })}>
-                                <View>
+                                <View testID={`shelf-custom-header-${index}`}>
                                     <Text style={styles.textContainer}>  {shelf.shelf_name}</Text>
                                 </View>
                             </TouchableNativeFeedback>
@@ -376,8 +376,8 @@ const AllShelves = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.containerImages}>
                                     {shelf.books.slice(0, 15).map((book, idx) => (
                                         <TouchableNativeFeedback key={idx} onPress={() => handleBookPress(book)}>
-                                            <View>
-                                                <Image source={{ uri: book.cover }} style={styles.covers} />
+                                            <View testID={`shelf-custom-book-${index}-${idx}`}>
+                                                <Image source={{ uri: book.cover }} style={styles.covers} testID={`shelf-custom-book-image-${index}-${idx}`} />
                                             </View>
                                         </TouchableNativeFeedback>
                                     ))}
