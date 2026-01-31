@@ -221,8 +221,52 @@ class LibraryPageView(ViewSet):
 
         ShelfBooks.objects.create(shelf=shelf, book=book)
         return Response({"message": f"Book added to shelf '{shelf.name}' successfully."}, status=status.HTTP_201_CREATED)
-            
+    
+    # Endpoint-uri pentru a obține rafturile altor utilizatori
+    @action(detail=False, methods=["get"], url_path=r"user-shelves/(?P<user_id>\d+)")
+    def get_user_shelves(self, request, user_id=None):
+        """Obține toate rafturile unui utilizator specificat"""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
         
+        try:
+            target_user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        standard, custom = self.get_shelves(target_user)
+        return Response({
+            "standard_shelves": standard,
+            "custom_shelves": custom
+        })
+    
+    @action(detail=False, methods=["get"], url_path=r"user-shelf/(?P<user_id>\d+)/(?P<shelf_name>[^/]+)")
+    def get_user_shelf_by_name(self, request, user_id=None, shelf_name=None):
+        """Obține un raft specific al unui utilizator specificat"""
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        try:
+            target_user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        if not shelf_name:
+            return Response({"error": "Shelf name is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        decoded_name = unquote(shelf_name)
+        shelf = Shelf.objects.filter(user=target_user, name__iexact=decoded_name).first()
+
+        if not shelf:
+            return Response({"error": f"Shelf '{decoded_name}' not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        shelf_books = ShelfBooks.objects.filter(shelf=shelf).select_related("book")
+        books_data = [BookSerializer(sb.book).data for sb in shelf_books]
+
+        return Response({
+            "shelf_name": shelf.name,
+            "books": books_data
+        })
 
 
 

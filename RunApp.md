@@ -3,6 +3,8 @@ Environment config:
 - In "mysite" create a ".env" file containing the constants:
 
 HOST_IP -> your local IP address / the adress you want your app to work on
+GOOGLE_CLIENT_ID- -> google cloud client id
+GOOGLE_CLIENT_SECRET -> google cloud client secret
 
 - In "LectioSphere" create a ".env" file contaning the constants:
 
@@ -27,7 +29,6 @@ docker start backendContainer
 
 
 Frontend:
-
 npx expo start
 
 For cloud version:

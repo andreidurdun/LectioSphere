@@ -4,6 +4,7 @@ import { useFonts, Nunito_400Regular, Nunito_500Medium, Nunito_600SemiBold } fro
 import axios from 'axios';
 import PostPartial from './PostPartial'; // Adjust the import path as necessary
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { refreshAccessToken } from '../refreshAccessToken';
 
 
 export default function Postings ({ navigation, apiBaseUrl, selection }) {
@@ -22,6 +23,15 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
     const [shelfReadlist, setShelfReadlist] = useState([]);
 
     const defaultPicture = require('../../assets/defaultProfilePic.jpg');
+
+    const handleBookPress = (book) => {
+        navigation.navigate('BookShow', { bookData: JSON.stringify(book) });
+    };
+
+    const handleShelfClick = (page, params = {}) => {
+        navigation.navigate(page, params);
+    };
+
     const fetchShelves = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
@@ -73,19 +83,19 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
     const fetchShelfReading = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/Reading/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const books = response.data;
+            const books = response.data.books || [];
             setShelfReading(books);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/books/currently_reading/get/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/Reading/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const books = retryResponse.data;
+                    const books = retryResponse.data.books || [];
                     setShelfReading(books);
                 } else {
                     console.error(`Unable to refresh token for shelf.`);
@@ -98,19 +108,19 @@ export default function Postings ({ navigation, apiBaseUrl, selection }) {
     const fetchShelfReadlist = async () => {
         try {
             let token = await AsyncStorage.getItem('auth_token');
-            const response = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+            const response = await axios.get(`${apiBaseUrl}/library/shelf/Readlist/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
-            const books = response.data;
+            const books = response.data.books || [];
             setShelfReadlist(books);
         } catch (error) {
             if (error.response?.status === 401) {
                 const newToken = await refreshAccessToken(apiBaseUrl);
                 if (newToken) {
-                    const retryResponse = await axios.get(`${apiBaseUrl}/books/read_list/get/`, {
+                    const retryResponse = await axios.get(`${apiBaseUrl}/library/shelf/Readlist/`, {
                         headers: { Authorization: `JWT ${newToken}` }
                     });
-                    const books = retryResponse.data;
+                    const books = retryResponse.data.books || [];
                     setShelfReadlist(books);
                 } else {
                     console.error(`Unable to refresh token for shelf.`);

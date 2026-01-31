@@ -208,7 +208,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         <View style={styles.horizontalBar} />
                     </View>
 
-                    <View style={styles.container}>
+                    {/* <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Adventure'})}>
                             <View>
                                 <Text style={styles.textContainer}> Adventure </Text>
@@ -226,7 +226,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                                 </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
-                    </View>
+                    </View> */}
 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Fantasy' })}>
@@ -287,7 +287,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                             ))}
                         </ScrollView>
                     </View>
-
+{/* 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Thriller' })}>
                             <View>
@@ -306,7 +306,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                                 </TouchableNativeFeedback>
                             ))}
                         </ScrollView>
-                    </View>
+                    </View> */}
                    
                     
 
@@ -316,7 +316,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         <Text style={styles.textCategory}> Non-Fiction </Text>
                         <View style={styles.horizontalBar} />
                     </View>
-
+{/* 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Biography' })}>
                             <View>
@@ -376,7 +376,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                             ))}
                         </ScrollView>
                     </View>
-                   
+                    */}
                     
                     {/* Professional & Technology */}
                     
@@ -384,7 +384,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                         <Text style={styles.textCategory}> Professional & Technology </Text>
                         <View style={styles.horizontalBar} />
                     </View>
-
+{/* 
                     <View style={styles.container}>
                         <TouchableNativeFeedback onPress={() => handleCategoryClick('CategoryBooksPage', { category: 'Business' })}>
                             <View>
@@ -444,10 +444,10 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                             ))}
                         </ScrollView>
                     </View>
-                   
+                    */}
 
                     {/* Lifestyle */}
-                    
+{/*                     
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategory}> Lifestyle </Text>
                         <View style={styles.horizontalBar} />
@@ -512,7 +512,7 @@ const SearchPage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBas
                             ))}
                         </ScrollView>
                     </View>
-                   
+                    */}
 
                 </View>
 

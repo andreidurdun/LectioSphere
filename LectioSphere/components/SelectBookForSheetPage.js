@@ -114,20 +114,23 @@ const SelectBookForSheetPage = ({ navigation, route, page, removeAuthToken, isAu
     const fetchUserBooks = async () => {
         try {
             const token = await AsyncStorage.getItem('auth_token');
-            // Fetch all shelves to get all books
+            // Fetch all shelves to get books from Read and Reading shelves
             const shelvesResponse = await axios.get(`${apiBaseUrl}/library/shelves/`, {
                 headers: { Authorization: `JWT ${token}` }
             });
             
-            // Collect all books from custom shelves
+            // Collect books from Read and Reading shelves only
             const allBooks = [];
-            const customShelves = shelvesResponse.data?.custom_shelves || [];
+            const standardShelves = shelvesResponse.data?.standard_shelves || {};
             
-            // Get books from custom shelves
-            for (const shelf of customShelves) {
-                if (shelf.books && Array.isArray(shelf.books)) {
-                    allBooks.push(...shelf.books);
-                }
+            // Get books from Read shelf
+            if (standardShelves.Read && Array.isArray(standardShelves.Read)) {
+                allBooks.push(...standardShelves.Read);
+            }
+            
+            // Get books from Reading shelf
+            if (standardShelves.Reading && Array.isArray(standardShelves.Reading)) {
+                allBooks.push(...standardShelves.Reading);
             }
             
             // Remove duplicates based on book id
@@ -147,12 +150,16 @@ const SelectBookForSheetPage = ({ navigation, route, page, removeAuthToken, isAu
                         });
                         
                         const allBooks = [];
-                        const customShelves = shelvesResponse.data?.custom_shelves || [];
+                        const standardShelves = shelvesResponse.data?.standard_shelves || {};
                         
-                        for (const shelf of customShelves) {
-                            if (shelf.books && Array.isArray(shelf.books)) {
-                                allBooks.push(...shelf.books);
-                            }
+                        // Get books from Read shelf
+                        if (standardShelves.Read && Array.isArray(standardShelves.Read)) {
+                            allBooks.push(...standardShelves.Read);
+                        }
+                        
+                        // Get books from Reading shelf
+                        if (standardShelves.Reading && Array.isArray(standardShelves.Reading)) {
+                            allBooks.push(...standardShelves.Reading);
                         }
                         
                         const uniqueBooks = allBooks.filter((book, index, self) => 

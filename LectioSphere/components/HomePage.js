@@ -239,7 +239,7 @@ const HomePage = ({ navigation, page, removeAuthToken, isAuthenticated, apiBaseU
                 const hoursSinceLastFetch = (now - lastFetch) / (1000 * 60 * 60);
                 
                 // If less than 24 hours, use cached data
-                if (hoursSinceLastFetch < 24) {
+                if (hoursSinceLastFetch < 12) {
                     console.log('Using cached events (fetched', hoursSinceLastFetch.toFixed(1), 'hours ago)');
                     const parsedEvents = JSON.parse(cachedEvents);
                     setEventsItems(parsedEvents);

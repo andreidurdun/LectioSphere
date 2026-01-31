@@ -18,7 +18,7 @@ from environs import Env
 # Load environment variables
 env = Env()
 env.read_env()
-HOST_IP = env.str('HOST_IP', default='192.168.1.138')
+HOST_IP = env.str('HOST_IP')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

@@ -521,7 +521,7 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                     ),
                     series: bookData.series ?? '',
                     description: bookData.description ?? '',
-                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                    cover: bookData.cover ?? bookData.thumbnail ?? 'https://default-cover.jpg',
                 }
             };
 
@@ -598,12 +598,12 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                     ),
                     series: bookData.series ?? '',
                     description: bookData.description ?? '',
-                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                    cover: bookData.cover ?? bookData.thumbnail ?? 'https://default-cover.jpg',
                 }
             };
 
             const responseShelf = await axios.post(
-                `${apiBaseUrl}/books/read_list/add/`,
+                `${apiBaseUrl}/library/add_book_to_shelf/Readlist/`,
                 bookPayload,
                 {
                     headers: {
@@ -749,12 +749,12 @@ const BookShow = ({ navigation, route, apiBaseUrl }) => {    const [bookData, se
                     ),
                     series: bookData.series ?? '',
                     description: bookData.description ?? '',
-                    thumbnail: bookData.thumbnail ?? bookData.cover ?? 'https://default-cover.jpg',
+                    cover: bookData.cover ?? bookData.thumbnail ?? 'https://default-cover.jpg',
                 }
             };
 
             const responseShelf = await axios.post(
-                `${apiBaseUrl}/books/currently_reading/add/`,
+                `${apiBaseUrl}/library/add_book_to_shelf/Reading/`,
                 bookPayload,
                 {
                     headers: {
