@@ -233,6 +233,12 @@ Authorization: JWT {{accessToken}}
 
 ###
 
+### US07 - Search books by author
+GET {{baseUrl}}/books/search/?author=Mihai%20Eminescu HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
 ### US09 - View existing book details
 GET {{baseUrl}}/books/get/{{existingBookIsbn}}/ HTTP/1.1
 Authorization: JWT {{accessToken}}
