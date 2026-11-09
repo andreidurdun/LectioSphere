@@ -1,0 +1,72 @@
+@baseUrl = http://127.0.0.1:8000
+@email = andreidurdn2@gmail.com
+@password = 12345678abc
+@isbn = 9780000000000
+@newEmail = new-reader@example.com
+@newUsername = new-reader
+@newFirstName = Test
+@newLastName = Reader
+@newPassword = replace-with-a-strong-password
+
+### Checkpoint 0 — protected endpoint rejects anonymous requests (expect 401)
+GET {{baseUrl}}/reading-sheets/
+Accept: application/json
+
+### Create an account (expect 201)
+# Change the email and username to values that are not already registered.
+# Registration is configured to send an activation email.
+POST {{baseUrl}}/auth/users/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "anamariarusu063@gmail.com",
+  "username": "{{andrei111}}",
+  "first_name": "{{andrei}}",
+  "last_name": "{{durdun}}",
+  "password": "{{password}}",
+    "re_password": "{{password}}"
+}
+
+### Checkpoint 1 — obtain JWT tokens
+# Replace @email and @password above with an existing LectioSphere account.
+# @name login
+POST {{baseUrl}}/auth/jwt/create/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Checkpoint 2 — authenticated user profile (expect 200)
+GET {{baseUrl}}/auth/users/me/
+Authorization: JWT {{login.response.body.$.access}}
+Accept: application/json
+
+### Checkpoint 3 — list the signed-in user's reading sheets (expect 200)
+GET {{baseUrl}}/reading-sheets/
+Authorization: JWT {{login.response.body.$.access}}
+Accept: application/json
+
+### Checkpoint 4 — reading challenge progress (expect 200)
+GET {{baseUrl}}/library/reading_challenge/
+Authorization: JWT {{login.response.body.$.access}}
+Accept: application/json
+
+### Checkpoint 5 — shelves and their books (expect 200)
+GET {{baseUrl}}/library/shelves/
+Authorization: JWT {{login.response.body.$.access}}
+Accept: application/json
+
+### Checkpoint 6 — check whether a book is on one of the user's shelves (expect 200)
+GET {{baseUrl}}/library/book_status/?isbn={{isbn}}
+Authorization: JWT {{login.response.body.$.access}}
+Accept: application/json
+
+### Checkpoint 7 — permanently delete the authenticated account (expect 204)
+# DESTRUCTIVE: run this last and only with a disposable test account.
+DELETE {{baseUrl}}/api/accounts/profile/delete/
+Authorization: JWT {{login.response.body.$.access}}
+Accept: application/json

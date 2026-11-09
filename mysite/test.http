@@ -27,6 +27,7 @@ Content-Type: application/json
     "re_password": "{{testPassword}}"
 }
 
+
 ###
 
 ### US01 - Registration with existing email
@@ -147,8 +148,12 @@ Content-Type: application/json
 ###
 
 ### US03 - Logout
-# There is no backend logout or refresh-token blacklist endpoint; logout is frontend-managed.
-# The JWT refresh route exists, but refresh-token rotation and invalidation are not enabled.
+POST {{baseUrl}}/api/accounts/logout/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "refresh": "{{loginValid.response.body.$.refresh}}"
+}
 
 ###
 

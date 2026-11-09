@@ -100,6 +100,28 @@ class ReadingSheetsView(ViewSet):
 
         return Response(grouped_by_shelf)
 
+    def latest(self, request):
+        sheets = (
+            ReadingSheet.objects.filter(user=request.user)
+            .select_related("book")
+            .order_by("-date", "-pk")[:5]
+        )
+        return Response([
+            {"title": sheet.book.title, "author": sheet.book.author}
+            for sheet in sheets
+        ])
+
+    def simple(self, request):
+        sheets = (
+            ReadingSheet.objects.filter(user=request.user)
+            .select_related("book")
+            .order_by("pk")
+        )
+        return Response([
+            {"title": sheet.book.title, "author": sheet.book.author}
+            for sheet in sheets
+        ])
+
     # GET /reading-sheets/<id>/
     @action(detail=True, methods=["get"])
     def read_sheet(self, request, pk=None):
@@ -177,4 +199,3 @@ class ReadingSheetsView(ViewSet):
         if not sheet:
             return Response({"error": "ReadingSheet not found"}, status=status.HTTP_404_NOT_FOUND)
         return Response(ReadingSheetSerializer(sheet).data)
-

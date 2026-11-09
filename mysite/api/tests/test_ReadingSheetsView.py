@@ -36,14 +36,14 @@ class ReadingSheetsViewTestCase(APITestCase):
             ReadingSheet.objects.create(user=self.user, book=book, shelf=shelf)
 
     def test_list_grouped_by_shelf(self):
-        response = self.client.get("/api/reading-sheets/")
+        response = self.client.get("/reading-sheets/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.json()
         self.assertIn("Raft 1", data)
         self.assertIn("Raft 2", data)
 
     def test_get_latest_titles_authors(self):
-        response = self.client.get("/api/reading-sheets/latest/")
+        response = self.client.get("/reading-sheets/latest/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.json()
         self.assertEqual(len(data), 5)
@@ -52,7 +52,7 @@ class ReadingSheetsViewTestCase(APITestCase):
             self.assertIn("author", entry)
 
     def test_get_all_titles_authors(self):
-        response = self.client.get("/api/reading-sheets/simple/")
+        response = self.client.get("/reading-sheets/simple/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.json()
         self.assertEqual(len(data), 6)

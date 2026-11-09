@@ -22,7 +22,7 @@ class LibraryPageViewTestCase(APITestCase):
         Profile.objects.get_or_create(user=self.user)
 
         # Raft standard și carte
-        self.read_shelf = Shelf.objects.create(user=self.user, name="Read")
+        self.read_shelf = Shelf.objects.get(user=self.user, name="Read")
         self.book = Book.objects.create(
             title="Sample Book",
             author="Jane Author",
@@ -43,7 +43,7 @@ class LibraryPageViewTestCase(APITestCase):
         self.assertEqual(response.data["progress_pages_percent"], 25)
 
     def test_update_reading_goals(self):
-        response = self.client.post("/library/update_reading_goals/", {
+        response = self.client.post("/api/library/update_reading_goals/", {
             "goal_books": 10,
             "goal_pages": 2000
         })
@@ -85,17 +85,17 @@ class LibraryPageViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_create_shelf_success(self):
-        response = self.client.post("/library/create_shelf/", {"name": "MyCustomShelf"})
+        response = self.client.post("/api/library/create_shelf/", {"name": "MyCustomShelf"})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["shelf"]["name"], "MyCustomShelf")
 
     def test_create_shelf_duplicate(self):
         Shelf.objects.create(user=self.user, name="DuplicateShelf")
-        response = self.client.post("/library/create_shelf/", {"name": "DuplicateShelf"})
+        response = self.client.post("/api/library/create_shelf/", {"name": "DuplicateShelf"})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_shelf_missing_name(self):
-        response = self.client.post("/library/create_shelf/", {})
+        response = self.client.post("/api/library/create_shelf/", {})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete_custom_shelf_success(self):

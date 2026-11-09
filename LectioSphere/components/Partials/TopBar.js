@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import UserSearchResult from '../UserSearchResult';
 import SearchResult from '../SearchResult';
+import { revokeRefreshToken } from '../revokeRefreshToken';
 
 
 const icon = require('../../assets/favicon.png');
@@ -115,11 +116,17 @@ const TopBar = ({pageName, page, apiBaseUrl, onSettingsPress}) => {
                 { text: 'Cancel', style: 'cancel' },
                 { 
                     text: 'Logout', 
-                    onPress: async () => {                        try {
+                    onPress: async () => {
+                        try {
+                            await revokeRefreshToken(apiBaseUrl || apiBaseUrl1);
+                        } catch (error) {
+                            console.error('Error revoking refresh token:', error);
+                        }
+
+                        try {
                             // Remove tokens from AsyncStorage
-                            await AsyncStorage.removeItem('auth_token');
-                            await AsyncStorage.removeItem('refresh_token');
-                            await AsyncStorage.removeItem('user_id');
+                            await AsyncStorage.multiRemove(['auth_token', 'refresh_token', 'user_id']);
+                            delete axios.defaults.headers.common['Authorization'];
                             
                             // Navigate to login screen
                             navigation.reset({

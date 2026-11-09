@@ -27,6 +27,8 @@ class PostsView(ViewSet):
         action = request.data.get('action')
         volume_id = request.data.get('id')
 
+        if action not in Post.ActionChoices.values:
+            return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
         # mai departe doar cautam cartea dupa id
         if not volume_id:

@@ -31,6 +31,7 @@ import CreateReadingSheetPage from './components/CreateReadingSheetPage';
 import SelectBookForSheetPage from './components/SelectBookForSheetPage';
 import ReadingSheetPage from './components/ReadingSheetPage';
 import EventPage from './components/EventPage';
+import { revokeRefreshToken } from './components/revokeRefreshToken';
 
 const Stack = createNativeStackNavigator();
 // URL-ul de bază al serverului, utilizat în întreaga aplicație
@@ -133,13 +134,18 @@ export default function App() {
 
   const removeAuthToken = async () => {
     try {
-      await AsyncStorage.removeItem('auth_token');
-      await AsyncStorage.removeItem('refresh_token');
-      // Eliminăm token-ul din header-ul default
+      await revokeRefreshToken(API_BASE_URL);
+    } catch (error) {
+      console.error('Error revoking refresh token:', error);
+    }
+
+    try {
+      await AsyncStorage.multiRemove(['auth_token', 'refresh_token', 'user_id']);
+    } catch (error) {
+      console.error('Error removing auth tokens from AsyncStorage:', error);
+    } finally {
       delete axios.defaults.headers.common['Authorization'];
       setIsAuthenticated(false);
-    } catch (error) {
-      console.error('Error removing auth token from AsyncStorage:', error);
     }
   };
 

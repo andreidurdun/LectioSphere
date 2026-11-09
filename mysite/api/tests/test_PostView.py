@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from django.urls import reverse
 from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.models import UserAccount 
+from api.models import Book
 
 class MadeProgressPostTestCase(APITestCase):
     def setUp(self):
@@ -13,6 +14,16 @@ class MadeProgressPostTestCase(APITestCase):
         refresh = RefreshToken.for_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f'JWT {str(refresh.access_token)}')
         self.url = reverse('add-post') 
+        self.book = Book.objects.create(
+            id="yow0EAAAQBAJ",
+            ISBN="9780000000001",
+            title="Test Book",
+            author="Test Author",
+            genre="Fiction",
+            rating=1,
+            nr_pages=200,
+            description="A book used by post endpoint tests.",
+        )
 
     def test_want_to_read_post(self):
         data = {

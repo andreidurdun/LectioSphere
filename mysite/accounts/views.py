@@ -23,9 +23,35 @@ import os
 import logging
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.views import APIView
 
 logger = logging.getLogger(__name__)
+
+
+class LogoutView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if not isinstance(refresh_token, str) or not refresh_token.strip():
+            return Response(
+                {'detail': 'A refresh token is required.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            RefreshToken(refresh_token).blacklist()
+        except TokenError:
+            return Response(
+                {'detail': 'The refresh token is invalid or expired.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            {'detail': 'Successfully logged out.'},
+            status=status.HTTP_200_OK
+        )
 
 
 def get_object(self):

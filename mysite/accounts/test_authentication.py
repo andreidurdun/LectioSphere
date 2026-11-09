@@ -4,6 +4,7 @@ rulare: python manage.py test accounts.test_authentication
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from accounts.models import UserAccount, Profile
 from django.urls import reverse
 from django.db.models.signals import post_save
@@ -208,7 +209,8 @@ class SecurityTests(BaseAuthTestCase):
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-    
+
+
     @patch('rest_framework_simplejwt.tokens.datetime')
     def test_expired_token_rejected(self, mock_datetime):
         """Test ca token-urile expirate sunt respinse"""
@@ -926,3 +928,55 @@ class AuthorizationTests(BaseAuthTestCase):
         self.assertEqual(self.profile1.bio, 'User1 bio')
         self.assertEqual(self.profile2.bio, 'User2 bio')
 
+
+class LogoutTests(BaseAuthTestCase):
+    def test_logout_blacklists_refresh_token(self):
+        refresh = RefreshToken.for_user(self.user1)
+
+        response = self.client.post(
+            reverse('logout'),
+            {'refresh': str(refresh)},
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['detail'], 'Successfully logged out.')
+        with self.assertRaises(TokenError):
+            RefreshToken(str(refresh))
+
+    def test_logout_requires_refresh_token(self):
+        response = self.client.post(reverse('logout'), {}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('refresh token is required', response.data['detail'].lower())
+
+    def test_logout_rejects_malformed_refresh_token(self):
+        response = self.client.post(
+            reverse('logout'),
+            {'refresh': 'not-a-valid-refresh-token'},
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_logout_rejects_non_string_refresh_token(self):
+        response = self.client.post(
+            reverse('logout'),
+            {'refresh': {'token': 'value'}},
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_logout_does_not_invalidate_other_refresh_tokens(self):
+        first_refresh = RefreshToken.for_user(self.user1)
+        second_refresh = RefreshToken.for_user(self.user1)
+
+        response = self.client.post(
+            reverse('logout'),
+            {'refresh': str(first_refresh)},
+            format='json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(str(RefreshToken(str(second_refresh))), str(second_refresh))

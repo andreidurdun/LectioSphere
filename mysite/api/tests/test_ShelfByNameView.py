@@ -25,10 +25,10 @@ class ShelfByNameViewTestCase(APITestCase):
         )
         
         # Create shelves
-        self.shelf1 = Shelf.objects.create(user=self.user, name="Read")
+        self.shelf1 = Shelf.objects.get(user=self.user, name="Read")
         self.shelf2 = Shelf.objects.create(user=self.user, name="Currently Reading")
         self.shelf3 = Shelf.objects.create(user=self.user, name="My Favorites")
-        self.other_shelf = Shelf.objects.create(user=self.other_user, name="Read")
+        self.other_shelf = Shelf.objects.get(user=self.other_user, name="Read")
         
         # Create books
         self.book1 = Book.objects.create(
@@ -142,10 +142,10 @@ class ShelfByNameViewTestCase(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        # Check that books have expected fie# type: ignore
-        self.assertIn("title", book)# type: ignore
-        self.assertIn("author", book)# type: ignore
-        self.assertIn("ISBN", book)# type: ignore
+        for book in response.data["books"]:
+            self.assertIn("title", book)
+            self.assertIn("author", book)
+            self.assertIn("ISBN", book)
 
     def test_get_shelf_case_sensitive(self):
         """Test that shelf names are case sensitive"""
