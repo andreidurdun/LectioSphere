@@ -2,7 +2,7 @@
 @testEmail = anamariarusu063@gmail.com
 @testUsername = rusu240
 @testPassword = LectioTest!2026
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk0MTU0MDk1LCJpYXQiOjE3OTQxNTA0OTUsImp0aSI6IjNlNTdjOGRiMjAxZjRkZmFiZmQ4NTk3MjIwOTQ2NTM5IiwidXNlcl9pZCI6MX0.tvc_5TuNBTQAi0XUHe9iven-_YSOhm06tG5fE0DrVfw
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk0MjUxODI1LCJpYXQiOjE3OTQyNDgyMjUsImp0aSI6ImE4MjM1NDU2NmIzZTQ1OGFhN2E4MDRjMzAyNDM5NTliIiwidXNlcl9pZCI6MX0.LV0aerzaoCUgjLViuG6SmxsE50lmOXyI6czieO9WwRE
 @activationUid = MQ
 @activationToken = dhqi72-d20e7f767edfaed76029e73543731192
 @resetUid = MQ
@@ -276,6 +276,118 @@ Authorization: JWT {{accessToken}}
 
 ### Unfollow profile ID 1
 PATCH {{baseUrl}}/api/accounts/profile/3/unfollow/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+# Use an access token belonging to user ID 1 for the post lifecycle requests below.
+# The API determines the post owner from the token; it does not accept a user ID in the request body.
+@postBookVolumeId = yow0EAAAQBAJ
+
+### List all posts for the authenticated user (user ID 1)
+GET {{baseUrl}}/posts/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+### Create a post for the authenticated user (user ID 1)
+# @name createPost
+POST {{baseUrl}}/posts/add/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+Content-Type: application/json
+
+{
+    "action": "post",
+    "description": "Test post: created through test.http.",
+    "id": "{{postBookVolumeId}}"
+}
+
+###
+
+### Verify the created post
+GET {{baseUrl}}/posts/{{createPost.response.body.$.id}}/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+### Edit the created post
+# @name updatePost
+PATCH {{baseUrl}}/posts/{{createPost.response.body.$.id}}/update/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+Content-Type: application/json
+
+{
+    "description": "Test post: updated through test.http."
+}
+
+###
+
+### Verify the edited post
+GET {{baseUrl}}/posts/{{createPost.response.body.$.id}}/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+### Add a comment to the test post
+# @name createComment
+POST {{baseUrl}}/posts/{{createPost.response.body.$.id}}/add_comment/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+Content-Type: application/json
+
+{
+    "text": "Test comment: added through test.http. --> var 2"
+}
+
+###
+
+### List comments on the test post (includes the comment created above)
+GET {{baseUrl}}/posts/{{createPost.response.body.$.id}}/list_comments/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+# The API currently supports adding and listing comments, but has no comment update/delete routes.
+
+### Check whether the authenticated user has liked the test post
+GET {{baseUrl}}/posts/{{createPost.response.body.$.id}}/has_liked/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+### Like the test post (toggle_like creates the like if it does not exist)
+# @name likeTestPost
+POST {{baseUrl}}/posts/{{createPost.response.body.$.id}}/toggle_like/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+### Verify the like was added (expected: liked=true)
+GET {{baseUrl}}/posts/{{createPost.response.body.$.id}}/has_liked/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+### Unlike the test post (send toggle_like again to remove the like)
+# @name unlikeTestPost
+POST {{baseUrl}}/posts/{{createPost.response.body.$.id}}/toggle_like/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+### Verify the like was removed (expected: liked=false)
+GET {{baseUrl}}/posts/{{createPost.response.body.$.id}}/has_liked/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+### Delete the created post
+DELETE {{baseUrl}}/posts/{{createPost.response.body.$.id}}/delete/ HTTP/1.1
+Authorization: JWT {{accessToken}}
+
+###
+
+### Verify the post was deleted (expected: 404)
+GET {{baseUrl}}/posts/{{createPost.response.body.$.id}}/ HTTP/1.1
 Authorization: JWT {{accessToken}}
 
 ###

@@ -73,6 +73,7 @@ urlpatterns = [
     
     path("posts/<int:pk>/add_comment/", PostsView.as_view({"post": "add_comment"}), name="add-comment"),
     path("posts/<int:pk>/list_comments/", PostsView.as_view({"get": "list_comments"}), name="list-comments"),
+    path("posts/<int:pk>/toggle_like/", PostsView.as_view({"post": "toggle_like"}), name="toggle-like"),
     path("posts/<int:pk>/has_liked/", PostsView.as_view({"get": "has_liked"}), name="has-liked"),
 
     # --- LIBRARY ---
